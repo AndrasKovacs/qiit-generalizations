@@ -20,7 +20,7 @@ The goal here is to write a paper about generalizing [quotient inductive-inducti
   - Term model construction. For variant 1, it's the same as in "constructing QIITs". For variant 2, it's a more complicated construction which requires iso invariance. From term model construction, we get that:
     1. For each universe level, we uniformly have a Variant 2 QIIT such that all Variant 1 & 2 QIITs below that level are constructible from it.
     
-## Possible content which is not done
+## Possible content which is not done, and won't likely be in any next paper
 
 - Showing that every algebraic flCwF morphism (i.e. a morphism given as the interpreation of a substitution of signatures) has a left adjoint. 
 - Parts of Birkhoff HSP theorem for QIITs. The easy direction (lifting of monos/epis to appropriate displayed morphisms, for certain restricted types) seems clearly more feasible.
