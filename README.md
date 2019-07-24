@@ -22,7 +22,7 @@ The goal here is to write a paper about generalizing [quotient inductive-inducti
     
 ## Possible content which is not done, and won't likely be in any next paper
 
-- Showing that every algebraic flCwF morphism (i.e. a morphism given as the interpreation of a substitution of signatures) has a left adjoint. 
+- Showing that every algebraic flCwF morphism (i.e. a morphism given as the interpretation of a substitution of signatures) has a left adjoint. 
 - Parts of Birkhoff HSP theorem for QIITs. The easy direction (lifting of monos/epis to appropriate displayed morphisms, for certain restricted types) seems clearly more feasible.
 - Extending semantics with more constructions, e.g. coproducts, coequalizers, to get finite colimits on the top of finite limits. Then, we can try to show that categories of algebras are [regular](https://ncatlab.org/nlab/show/regular+category).
 - Generalizing semantics to functorial semantics
