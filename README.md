@@ -18,7 +18,7 @@ The goal here is to write a paper about generalizing [quotient inductive-inducti
   - For Variant 2, extension to "constructing QIITs": for each type in the theory of signatures, we get a split flCwF isofibration instead of a plain displayed flCwF. This gives us a strong form of invariance under isomorphisms of algebras. An illustrating special case: if we have A ~ B isomorphic sets, and A is a group, then B is also a group, and they are also isomorphic as groups.
     - This fails for Variant 1. Sort equations are **not** invariant under iso. E.g., if we have two isomorphic pairs of sets (A, B) ~ (A', B') and A = B, then A' = B' is not necessarily true. It is necessarily true in a univalent setting, but we work with UIP.
   - Term model construction. For variant 1, it's the same as in "constructing QIITs". For variant 2, it's a more complicated construction which requires iso invariance. From term model construction, we get that:
-    1. For each universe level, we uniformly have a Variant 2 QIIT such that all Variant 1 & 2 QIITs below that level are constructible from it.
+    - For each universe level, we uniformly have a Variant 2 QIIT such that all Variant 1 & 2 QIITs below that level are constructible from it.
     
 ## Possible content which is not done, and won't likely be in any next paper
 
