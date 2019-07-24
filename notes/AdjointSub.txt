@@ -1,0 +1,80 @@
+
+We want to show that every substitution (i.e. the a functor which is
+the interpretation of a substitution) has a left adjoint.
+
+(σ : Sub Γ Δ) → Σ(δ : Sub Δ Γ) × (σ ⊣ δ)
+
+definition of σ ⊣ δ:
+
+  (Δᴹ (σᴬ i) j) ~ (Γᴹ i (δᴬ j))   naturally in i, j
+
+  explicitly:
+
+  to  : ∀ {i j}. Δᴹ (σᴬ i) j → Γᴹ i (δᴬ j)
+  fro : ∀ {i j}. Γᴹ i (δᴬ j) → Δᴹ (σᴬ i) j
+  p   : to (fro f) = f
+  q   : fro (to f) = f
+  nat : (f : Γᴹ i' i)(g : Δᴹ j j')(h : Δᴹ (σᴬ i) j) →
+        to (σᴹ f ∘ h ∘ g) = f ∘ to h ∘ δᴹ g
+
+LAdj : Sub Γ Δ → Set
+LAdj σ :≡ Σ(δ : Sub Δ Γ) × (δ ⊣ σ)
+
+-- adjunction composition:
+
+(P : LAdj σ) ∘ᴬ (Q : LAdj δ) : LAdj (σ ∘ δ)
+  :≡ (Q.δ ∘ P.δ, Q.to ∘ P.to, P.fro ∘ Q.fro, _)
+
+  -- as given below:
+
+  σ  : Sub Δ Σ
+  δ  : Sub Γ Δ
+  σ* : Sub Σ Δ
+  δ* : Sub Δ Γ
+  P  : σ ⊣ σ*
+  Q  : δ ⊣ δ*
+
+  to (f : Σᴹ (σ (δ i)) j) : Γᴹ i (δ* (σ* j))
+     :≡ Q.to {i}{σ* j} (P.to {δ i}{j} f)
+     :≡ Q.to (P.to f)
+
+  fro (f : Γᴹ i (δ* (σ* j))) : Σᴹ (σ (δ i)) j
+     :≡ P.fro (Q.fro f)
+
+  p : Q.to (P.to (P.fro (Q.fro f))) = id
+      OK
+
+  q : P.fro (Q.fro (Q.to (P.to f))) = id
+      OK
+
+  nat :   Q.to (P.to ((σ (δ f) ∘ h ∘ g)))
+        = f ∘ Q.to (P.to h) ∘ δ* (σ* g)
+
+      :   Q.to (δ f ∘ P.to h ∘ σ* g)
+        = f ∘ Q.to (P.to h) ∘ δ* (σ* g)
+
+      :   f ∘ Q.to (P.to h) ∘ δ* (σ* g)
+        = f ∘ Q.to (P.to h) ∘ δ* (σ* g)
+      OK
+
+
+-- By induction on signatures?
+--------------------------------------------------------------------------------
+
+(Γ : Con)ᴶ : ?
+(A : Ty Γ)ᴶ : ?
+(σ : Sub Γ Δ)ᴶ : RAdj σ
+(t : Tm Γ A)ᴶ : ?
+
+(id : Sub Γ Γ)ᴶ :
+  δ       :≡ id
+  to      :≡ λ f. f
+  fro     :≡ λ f. f
+  p       :≡ refl
+  q       :≡ refl
+  nat     :≡ refl
+
+((σ : Sub Δ Σ) ∘ (δ : Sub Γ Δ))ᴶ : RAdj (σ ∘ δ)
+  :≡ σᴶ ∘ᴬ δᴶ
+
+(π₁ (σ : Sub Γ (Δ ▶ A)))ᴶ :

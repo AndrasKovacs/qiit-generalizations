@@ -1,0 +1,124 @@
+
+-- Syntax
+--------------------------------------------------------------------------------
+
+Γ     	 : Con
+A     	 : Ty Γ
+σ     	 : Sub Γ Δ
+t     	 : Tm Γ A
+∙     	 : Con
+_▶_   	 : (Γ : Con) → Ty Γ → Con
+_[_]  	 : Ty Δ → Sub Γ Δ → Ty Γ
+id    	 : (Γ : Con) → Sub Γ Γ
+_∘_   	 : Sub Θ Δ → Sub Γ Θ → Sub Γ Δ
+ε     	 : (Γ : Con) → Sub Γ ∙
+_,_   	 : (σ : Sub Γ Δ) → Tm Γ (A[σ]) → Sub Γ (Δ ▶ A)
+π₁    	 : Sub Γ (Δ ▶ A) → Sub Γ Δ
+π₂    	 : (σ : Sub Γ (Δ ▶ A)) → Tm Γ (A [π₁ σ])
+_[_]  	 : Tm Δ A → (σ : Sub Γ Δ) → Tm Γ (A [σ])
+[id]  	 : A [id] = A
+[∘]   	 : A [σ ∘ δ] = A [σ] [δ]
+ass   	 : (σ ∘ δ) ∘ ν = σ ∘ (δ ∘ ν)
+idl   	 : id ∘ σ = σ
+idr   	 : σ ∘ id = σ
+∙η    	 : (σ : Sub Γ ∙) → σ = ε
+▶β₁   	 : π₁ (σ, t) = σ
+▶β₂   	 : π₂ (σ, t) = t
+▶η    	 : (π₁ σ, π₂ σ) = σ
+,∘    	 : (σ, t) ∘ δ = (σ ∘ δ, t [δ])
+
+U     	 : Ty Γ
+El    	 : Tm Γ U → Ty Γ
+U[]   	 : U [σ] = U
+El[]  	 : (El a) [σ] = El (a[σ])
+
+Π     	 : (a : Tm Γ U) → Ty (Γ ▶ El a) → Ty Γ
+app   	 : Tm Γ (Π a B) → Tm (Γ ▶ El a) B
+Π[]   	 : (Π a B) [σ] = Π (a [σ]) (B[σ↑])
+app[] 	 : (app t) [σ↑] = app (t[σ])
+
+Id    	 : (a : Tm Γ U) → Tm Γ (El a) → Tm Γ (El a) → Tm Γ U
+Id[]  	 : (Id a t u)[σ] = Id (a[σ]) (t[σ]) (u[σ])
+Reflect  : Tm Γ (El (Id a t u)) → t = u
+Refl     : (t : Tm Γ (El a)) → Tm Γ (El (Id a t t))
+UIP      : (e : Tm Γ (El (Id a t t))) → e = Refl t
+
+IdU      : (a b : Tm Γ U) → Ty Γ
+IdU[]    : IdU a b [σ] = IdU (a[σ]) (b[σ])
+ReflU    : (a : Tm Γ U) → Tm Γ (IdU a a)
+ReflectU : Tm Γ (IdU a b) → a = b
+UIPU     : (e : Tm Γ (IdU a a)) → e = ReflU a
+
+Π̂        : (T : Set) → (T → Ty Γ) → Ty Γ
+_@̂_      : Tm Γ (Π̂ T B) → (α : T) → Tm Γ (B α)
+Π̂[]      : (Π̂ T B)[σ] = Π̂ T (λ α. (B α)[σ])
+@̂[]      : (t @̂ α)[σ] = (t[σ]) @̂ α
+
+Π̃        : (T : Set) → (T → Tm Γ U) → Tm Γ U
+Π̃[]      : (Π̃ T b) [σ] = Π̃ T (λ α . (b α)[σ])
+_@̃_      : Tm Γ (El (Π̃ T b)) → (α : T) → Tm Γ (El (b α))
+@̃[]      : (t @̃ α)[σ] = (t[σ]) @̃ α
+lam̃      : ((α : T) → Tm Γ (El (b α))) → Tm Γ (El (Π̃ T b))
+β̃        : lam̃ (λ α. t @̃ α) = t
+η̃        : (lam̃ f) @̃ α = f α
+
+
+
+
+
+Abbreviations:
+
+wk    = π₁ id
+vz    = π₂ id
+vs x  = x [wk]
+⟨ t ⟩ = (id, t)
+σ ↑   = (σ ∘ wk, vz)
+a ⇒ B = Π a (B [wk])
+t @ u = (app t) [⟨u⟩]
+
+
+Admissible equations
+
+-- note: with natural isos, naturality in one direction implies
+--       naturality in the other direction
+
+π₁∘ : π₁ f ∘ g = π₁ (f ∘ g)
+
+  π₁ f ∘ g                 -- ▶β₁
+  π₁ (π₁ f ∘ g, π₂ f [g])  -- ,∘
+  π₁ ((π₁ f, π₂ f) ∘ g)    -- ▶η
+  π₁ (f ∘ g)
+
+π₂∘ : π₂ f [g] = π₂ (f ∘ g)
+
+  π₂ f [g]                 -- ▶β₂
+  π₂ (π₁ f ∘ g, π₂ f [g])  -- ,∘
+  π₂ ((π₁ f, π₂ f) ∘ g)    -- ▶η
+  π₂ (f ∘ g)
+
+[id] : t[id] = t
+
+  t[id]                 --  ▶β₂
+  π₂ (id ∘ id, t[id])   --  ,∘
+  π₂ ((id , t) ∘ id)    --  idl
+  π₂ (id , t)           --  ▶β₂
+  t
+
+[∘] : t[f][g] = t [f ∘ g]
+
+  t[f][g]                    -- ▶β₂
+  π₂ (id ∘ f ∘ g, t[f][g])   -- ,∘
+  π₂ ((id ∘ f, t[f]) ∘ g)    -- ,∘
+  π₂ ((id , t) ∘ f ∘ g)      -- ass
+  π₂ ((id , t) ∘ (f ∘ g))    -- π₂∘
+  t[f ∘ g]
+
+Refl[] : Refl t [σ] = Refl (t[σ])
+  -- by (UIP (Refl t [σ]))
+
+lam̃[] : lam̃ f [σ]  = lam̃ (λ α. f α [σ])
+
+  lam̃ f [σ]
+  lam̃ (λ α. lam̃ f [σ] @̃ α)   -- η̃
+  lam̃ (λ α. (lam̃ f @̃ α)[σ])  -- @̃[]
+  lam̃ (λ α. f α [σ])         -- β̃

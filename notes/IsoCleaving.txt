@@ -1,0 +1,365 @@
+
+First, we build notation and lemmas for isomorphisms and displayed isos.
+Then we extend the CwFᵏₑ model with iso-cleaving for types and type equations.
+
+Cleanup TODOs:
+  - Pointwise iso application cleanup (right now it's denoted with a bang (!)) and lemmas
+
+-- Isomorphisms
+--------------------------------------------------------------------------------
+
+Notation: if we have a (Γ : Con), then we have the following definition for
+isomorphisms in the interpretation of Γ.
+
+Γ.iso (i : Γᴬ) (j : Γᴬ) :≡
+  Σ (to  : Γᴹ i j)
+  × (fro : Γᴹ j i)
+  × (p   : to ∘ fro = Γ.id)
+  × (q   : fro ∘ to = Γ.id)
+
+We notate isos by f, g, h. We may also implicitly coerce isos to their first components.
+
+Note: to prove Γ.iso equality, it is enough to prove equality of the first components.
+
+
+-- Identity iso ("id" overloaded")
+id {i : Γᴬ} : Γ.iso i i
+id {i} = (Γ.id, Γ.id, Γ.idl, Γ.idr)
+
+-- Iso composition ("∘" overloaded)
+(f : Γ.iso j k) Γ.∘ (g : Γ.iso i j) : Γ.iso i k
+(to, fro, p, q) ∘ (to', fro', p', q') :≡ (to ∘ to', fro' ∘ fro, proof1, proof2)
+  where
+    proof1 :
+      = (to ∘ to') ∘ (fro' ∘ fro)
+      = to ∘ id ∘ fro                    -- by p'
+      = to ∘ fro                         -- by p
+      = id
+    proof2 :
+        (fro' ∘ fro) ∘ (to ∘ to')
+     =  fro' ∘ id ∘ to'  -- by q
+     =  fro' ∘ to'
+     =  id               -- by q'
+
+-- Inverse
+(f : Γ.iso i j) ⁻¹ : Γ.iso j i
+(to, fro, p, q) ⁻¹ :≡ (fro, to, q, p)
+
+-- Inversion properties (trivial)
+f ⁻¹ ⁻¹    = f
+(f ∘ g) ⁻¹ = g ⁻¹ ∘ f ⁻¹
+f ∘ f⁻¹    = id
+f⁻¹ ∘ f    = id
+
+-- Iso composition is unital and associative: holds by Γ.idl, idr, ass
+idl : id ∘ f = f
+idr : f ∘ id = f
+ass : (f ∘ g) ∘ h = f ∘ (g ∘ h)
+
+
+-- Mapping over isos with (σ : Sub Γ Δ), i.e. functors preserve iso.
+-- Overloaded application notation
+(σ : Sub Γ Δ) (f : Γ.iso i j) : Δ.iso (σᴬ i) (σᴬ j)
+σ (to, fro, p, q) = (σᴹ to, σᴹ fro, proof1, proof2)
+
+  proof1 : σᴹ to ∘ σᴹ fro
+        =  σᴹ (to ∘ fro)   -- σ.∘ (functor law)
+        =  σᴹ id           -- p
+        =  id              -- σ.id (functor law)
+
+  proof2 : σᴹ fro ∘ σᴹ to = id  -- likewise
+
+-- Mapping by id, holds by definition of idᴹ.
+(id : Sub Γ Δ)(f : Γ.iso i j) = f
+
+-- Mapping by composite functor, holds by (σ ∘ δ)ᴹ definition.
+((σ : Sub Δ Σ) ∘ (δ : Sub Γ Δ)) (f : Γ.iso i j) = σ (δ f)
+
+-- Mapping over composite iso, holds by σ.∘
+σ (f ∘ g) = σ f ∘ σ g
+
+-- Mapping over identity iso, holds by σ.id
+σ id = id
+
+
+-- Displayed isomorphisms
+--------------------------------------------------------------------------------
+
+Displayed isos live in a displayed category, lying over an iso in the
+base category.
+
+A.iso (ii : Aᴬ i) (jj : Aᴬ j) (f : Γ.iso i j) :≡
+  Σ (to  : Aᴹ ii jj f.to)
+  × (fro : Aᴹ jj ii f.fro)
+  × (p   : to A.∘ fro = A.id)       -- note: p and q are well-typed up to f.p and f.q
+  × (q   : fro A.∘ to = A.id)
+
+As with plain isos, it is enough to show equality of first (or second) components.
+
+-- Identity
+id : A.iso ii ii Γ.id
+id :≡ (id, id, idl, idr)
+
+-- Composition
+(ff : A.iso jj kk f) ∘ (gg : A.iso ii jj g) : A.iso ii kk (f ∘ g)
+(to, fro, p, q) ∘ (to', fro', p', q') :≡ (to ∘ to', fro' ∘ fro, proof1, proof2)
+  where
+    proof1 : (to ∘ to') ∘ (fro' ∘ fro) = id  -- OK
+    proof2 : (fro' ∘ fro) ∘ (to ∘ to') = id  -- OK
+
+-- Inverse
+(ff : A.iso ii jj f)⁻¹ : A.iso jj ii (f ⁻¹)
+(to, fro, p, q)⁻¹ :≡ (fro, to, q, p)
+
+-- Lemma about reindexing displayed isos
+A[σ].iso ii jj f = A.iso ii jj (σ f)
+   -- holds because of the definition of A.iso, (A[σ])ᴹ and (σ f)
+
+-- total iso of displayed iso (overloaded _,_ notation)
+(f : Γ.iso i j, ff : A.iso ii jj f)
+    : (Γ ▶ A).iso (i, ii) (j, jj)
+
+    : Σ(to  : Σ(g : Γᴹ i j) × Aᴹ ii jj g)
+      ×(fro : Σ(g : Γᴹ j i) × Aᴹ jj ii g)
+      ×(p   : to (Γ ▶ A).∘ fro = (Γ ▶ A).id)
+      ×(q   : fro (Γ ▶ A).∘ to = (Γ ▶ A).id)
+
+    : Σ(to  : Σ(g : Γᴹ i j) × Aᴹ ii jj g)
+      ×(fro : Σ(g : Γᴹ j i) × Aᴹ jj ii g)
+      ×(p   : (to.₁ Γ.∘ fro.₁ = Γ.id) × (to.₂ A.∘ fro.₂ = A.id))
+      ×(q   : (fro.₁ Γ.∘ to.₁ = Γ.id) × (fro.₂ A.∘ to.₂ = A.id))
+(f, ff) :≡ ((f.to, ff.to), (f.fro, ff.fro), (f.p, ff.p), (f.q, ff.q))
+
+-- mapping over isos with a CwF section ("dependent functor")
+-- Overloaded application notation
+(t : Tm Γ A)(f : Γ.iso i j) : A.iso (tᴬ i) (tᴬ j) f
+t (to, fro, p, q) :≡ (tᴹ to, tᴹ fro, proof1, proof2)
+  where
+    proof1 : tᴹ to ∘ tᴹ fro = id    -- by functoriality of tᴹ
+    proof2 : tᴹ fro ∘ tᴹ to = id    -- by functoriality of tᴹ
+
+-- eta rule for total isos
+(f : (Δ ▶ A).iso i j) → ((π₁ id) f, (π₂ id) f) = f
+  ((π₁ id) f, (π₂ id) f) = f
+  (f.to.₁ , f.to.₂) = f.to   OK
+
+-- mapping with extended Sub
+((σ : Sub Γ Δ), (t : Tm Γ (A[σ]))) (f : Γ.iso i j) = (σ f, t f)
+  (σ , t)ᴹ f.to = (σᴹ f.to, tᴹ f.to)   OK
+
+-- total iso composition
+(f, ff) ∘ (g, gg) = (f ∘ g, ff ∘ gg)
+  (f.to, ff.to) (Γ ▶ A).∘ (g.to, gg.to) = (f.to ∘ g.to, ff.to ∘ gg.to)
+  (f.to, ff.to) (Γ ▶ A).∘ (g.to, gg.to) = (f.to ∘ g.to, ff.to ∘ gg.to)
+  (f.to ∘ g.to, ff.to ∘ gg.to) = = (f.to ∘ g.to, ff.to ∘ gg.to)
+  OK
+
+-- functoriality of displayed iso mapping
+t (f ∘ g) = t f ∘ t g      -- by t.∘
+t id = id                  -- by t.id
+
+-- mapping by substituted section
+(t [σ]) f = t (σ f)        -- by definition of (t[σ])ᴹ
+
+
+-- Iso-cleaving
+--------------------------------------------------------------------------------
+
+We extend CwFᵏₑᴰ with the notion of iso-cleaving (extension compared
+to the "Constructing Quotient Inductive-Inductive Types" paper). We
+can also call such a CwFᵏₑᴰ a "split isofibration". Components of iso-cleaving:
+
+coe    : Γ.iso i j → Aᴰ i → Aᴰ j
+coh    : (f : Γ.iso i j)(ii : Aᴰ i) → A.iso ii (coe f ii) f
+coe-id : coe id ii = ii
+coe-∘  : coe (f ∘ g) ii = coe f (coe g ii)
+coh-id : coh id ii = id
+coh-∘  : coh (f ∘ g) ii = coh f (coe g ii) ∘ coh g ii
+
+
+We have to show iso-cleaving for all type formers in the CwF model, and
+preservation of iso-cleaving for all type equations. We show this in order.
+
+With type equations, we only need to show equalities of coe and coh, because of UIP.
+
+
+(A : Ty Δ) [ (σ : Sub Γ Δ) ] : Ty Γ
+  A[σ].coe (f : Γ.iso i j)(ii : Aᴬ (σᴬ i)) : Aᴬ (σᴬ j)
+    :≡ A.coe (σ f) ii
+
+  A[σ].coh (f : Γ.iso i j)(ii : Aᴬ (σᴬ i)) : A.iso ii (A.coe (σ f) ii)
+    :≡ A.coh (σ f) ii
+
+  A[σ].coe-id : A.coe (σ id) ii = ii
+    OK by σ.id and A.coe-id
+
+  A[σ].coe-∘  : A.coe (σ (f ∘ g)) ii = A.coe (σ f) (A.coe (σ g) ii)
+    OK by σ.∘ and A.coe-∘
+
+  A[σ].coh-id : A.coh (σ id) = id
+    OK by σ.id and A.coh-id
+
+  A[σ].coh-∘ : A.coh (σ (f ∘ g)) ii = A.coh (σ f) (A.coe (σ g) ii) ∘ A.coh (σ g) ii
+    OK by σ.∘ and A.con-∘
+
+(A : Ty Γ)[id] = A
+  A.coe (id f) ii = A.coe f ii   -- OK by definition of id
+  A.coh (id f) ii = A.coh f ii   -- OK by definition of id
+
+(A : Ty Γ)[σ ∘ δ] = A[σ][δ]
+  A.coe ((σ ∘ δ) f) ii = A.coe (σ (δ f)) ii  -- OK by definition of ∘
+  A.coh ((σ ∘ δ) f) ii = A.coh (σ (δ f)) ii  -- OK by definition of ∘
+
+(U : Ty Γ)
+  U.coe (f : Γ.iso i j)(ii : Set) : Set
+    :≡ ii
+  U.coh (f : Γ.iso i j)(ii : Set) : U.iso ii ii f
+    :≡ (id, id, refl, refl)      -- identity isomorphism in category of sets
+
+  -- these are all OK because U.coe and U.coh are constant
+  U.coe-id
+  U.coe-∘
+  U.coh-id
+  U.coh-∘
+
+U[(σ : Sub Γ Δ)] = U
+  -- OK because U.coe and U.coh are constant
+
+(El (a : Tm Γ U))
+  (El a).coe (f : Γ.iso i j)(ii : (El a)ᴬ i) : (El a)ᴬ j
+                            (ii : aᴬ i)      : aᴬ j
+    :≡ aᴹ f.to ii
+
+  (El a).coh (f : Γ.iso i j)(ii : aᴬ i) : (El a).iso ii (aᴹ f.to ii)
+                                        :    (aᴹ f.to ii = aᴹ f.to ii)
+                                           × (aᴹ f.fro (aᴹ f.to ii) = ii)
+    :≡ (refl, prf2) -- where prf2 holds by aᴹ functoriality and f.q
+
+  (El a).coe-id : aᴹ id.to ii = ii  -- OK by a.id
+  (El a).coe-∘  : aᴹ ((f ∘ g).to) ii = aᴹ (f.to) (aᴹ (g.to) ii) -- OK by a.∘
+
+  -- coh-id and coh-∘ hold by UIP
+
+(El a)[σ] = El (a[σ])
+  -- coe:
+  aᴹ (σᴹ f.to) ii = (a[σ])ᴹ f.to ii     -- by (a[σ])ᴹ definition
+  -- coh holds by UIP
+
+(Π a B)
+  (Π a B).coe (f : Γ.iso i j)(ii : (Π a B)ᴬ i) : (Π a B)ᴬ j
+              (f : Γ.iso i j)(ii : (α : aᴬ i) → Bᴬ (i, α)) (α : aᴬ j) : Bᴬ (j, α)
+
+      aᴹ f.fro α : aᴬ i
+      ii (aᴹ f.fro α) : Bᴬ (i, aᴹ f.fro α)
+
+      prf : (El a).iso (aᴹ f.fro α) α f
+      prf :≡ ((El a).coh (f ⁻¹) α) ⁻¹
+
+      (f , prf) : (Γ ▶ El a).iso (i, aᴹ f.fro α) (j, α)
+
+      -- since prf is an El iso, it's proof irrelevant, we will not refer to it later
+      -- or will just refer to it with an underscore
+
+  (Π a B).coe f ii α :≡ B.coe (f , _) (ii (aᴹ f.fro α))
+
+
+  (Π a B).coh (f : Γ.iso i j)(ii : (α : aᴬ i) → Bᴬ (i, α))
+    : (Π a B).iso ii (λ α. B.coe (f, _) (ii (aᴹ f.fro α))) f
+
+    : Σ (to  : (α : aᴬ i) → Bᴹ (f.to,  refl)(ii α)((Π a b).coe f (aᴹ f.to α)))
+      × (fro : (α : aᴬ j) → Bᴹ (f.fro, refl)((Π a b).coe f α)(ii (aᴹ f.fro α)))
+      × (p   : (α : aᴬ j) → to (aᴹ f.fro α) B.∘ fro α = B.id α)
+      × (q   : (α : aᴬ i) → fro (aᴹ f.to α) B.∘ to α = B.id α)
+
+    : Σ (to  : (α : aᴬ i) → Bᴹ (f.to,  refl)(ii α) (B.coe (f , _) (ii (aᴹ f.fro (aᴹ f.to α))))
+      × (fro : (α : aᴬ j) → Bᴹ (f.fro, refl) (B.coe (f , _) (ii (aᴹ f.fro α))) (ii (aᴹ f.fro α)))
+      × (p   : (α : aᴬ j) → to (aᴹ f.fro α) ∘ fro α = id)
+      × (q   : (α : aᴬ i) → fro (aᴹ f.to α) ∘ to α = id)
+
+    -- note: making use of f.q
+
+    : Σ (to  : (α : aᴬ i) → Bᴹ (f.to,  refl)(ii α) (B.coe (f , _) (ii α))
+      × (fro : (α : aᴬ j) → Bᴹ (f.fro, refl) (B.coe (f , _) (ii (aᴹ f.fro α))) (ii (aᴹ f.fro α)))
+      × (p   : (α : aᴬ j) → to ∘ fro = id)
+      × (q   : (α : aᴬ i) → fro ∘ to = id)
+
+    to  :≡ λ α. (B.coh (f, _) (ii α)).to
+    fro :≡ λ α. (B.coh (f, _) (ii (aᴹ f.fro α))).fro
+
+    p : (B.coh (f, _) (ii (aᴹ f.fro α))).to ∘ (B.coh (f, _) (ii (aᴹ f.fro α)))⁻¹.to  = id
+      : (B.coh (f, _) (ii (aᴹ f.fro α))).to ∘ (B.coh (f, _) (ii (aᴹ f.fro α))).fro  = id
+      -- OK by (B.coh (f, _) (ii (aᴹ f.fro α))).p
+
+    q : (B.coh (f, _) (ii (aᴹ f.fro (aᴹ f.to α))))⁻¹.to  ∘ (B.coh (f, _) (ii α)).to = id
+      : (B.coh (f, _) (ii α)).fro  ∘ (B.coh (f, _) (ii α)).to = id
+      -- OK by (B.coh (f, _) (ii α)).q
+
+  (Π a B).coe-id  : (Π a b).coe id ii α = ii α
+                  : B.coe id (ii (aᴹ id α)) = ii α
+                  : B.coe id (ii α) = ii α
+      -- OK by B.coe-id
+
+  (Π a B).coe-∘ : B.coe (f ∘ g, _) (ii (aᴹ (g.fro ∘ f.fro) α))  = B.coe (f, _) (B.coe (g, _) (ii (aᴹ g.fro (aᴹ f.fro α))))
+                : B.coe (f ∘ g, _) (ii (aᴹ g.fro (aᴹ f.fro α))) = B.coe (f, _) (B.coe (g, _) (ii (aᴹ g.fro (aᴹ f.fro α))))
+      -- OK by B.coe-∘
+
+  (Π a B).coh-id
+    : (Π a B).coh id ii = id
+    : (Π a B).coh id ii α = id           -- funext
+    : (B.coh (id, _) (ii α)).to = id     -- first components
+    -- OK by B.coh-id
+
+  (Π a B).coh-∘
+    : coh (f ∘ g) ii α = (coh f (coe g ii) ∘ coh g ii) α
+    : coh (f ∘ g) ii α = coh f (coe g ii) (aᴹ g.to α) ∘ coh g ii α
+    : coh (f ∘ g) ii α = coh f (coe g ii) (aᴹ g.to α) ∘ coh g ii α
+
+    -- by definitions, and taking first components
+    : (B.coh (f ∘ g, _) (ii α)).to
+    =   (B.coh (f, _) (B.coe (g , _) (ii α))).to
+      ∘ (B.coh (g, _) (ii α)).to
+
+    -- by B.coh-∘
+    : (B.coh (f ∘ g, _) (ii α)).to = B.coh ((f ∘ g, _) (ii α).to
+    OK
+
+(Π a B)[σ] = Π (a[σ]) (B[σ↑])
+  -- coe:
+  B.coe (σ f , _) (ii (aᴹ (σ f).fro α))  = B[σ].coe (f , _) (ii ((a[σ])ᴹ f.fro α))
+  B.coe (σ f , _) (ii (aᴹ (σᴹ f.fro) α)) = B.coe (σ f , _) (ii (aᴹ (σᴹ f.fro) α))
+  OK
+
+  -- coh, first component
+  (B.coh (σ f, _) (ii α)).to = (B[σ].coh (f, _) (ii α)).to
+  (B.coh (σ f, _) (ii α)).to = (B.coh (σ  f, _) (ii α)).to
+  OK
+
+(Π̂ (A : Set) (B : A → Ty Γ))
+  (Π̂ A B).coe (f : Γ.iso i j)(ii : (α : A) → (B α)ᴬ i) : (α : A) → (B α)ᴬ j
+    :≡ λ α. (B α).coe f (ii α)
+
+
+  (Π̂ A B).coh f ii : (Π̂ A B).iso ii (λ α. (B α).coe f (ii α) f
+    :≡ ( λ α. ((B α).coh f (ii α)).to
+       , λ α. ((B α).coh f (ii α)).fro
+       , λ α. ((B α).coh f (ii α)).p
+       , λ α. ((B α).coh f (ii α)).q )
+
+  (Π̂ A B).coe-id : (B α).coe id (ii α) = ii α                                  -- by (B α).coe-id
+  (Π̂ A B).coe-∘  : (B α).coe f ((B α).coe g (ii α)) = (B α).coe (f ∘ g) (ii α) -- by (B α).coe-∘
+
+  (Π̂ A B).coh-id : (B α).coh id (ii α).to = (B α).id    -- by (B α).coh-id
+
+  (Π̂ A B).coh-∘  : (λ α. (B α).coh (f ∘ g) (ii α).to)
+                 = (λ α. (B α).coh f ((B α).coe g (ii α)).to) ∘ (λ α. (B α).coh g (ii α).to)
+
+                 : (B α).coh (f ∘ g) (ii α).to
+                 = (B α).coh f ((B α).coe g (ii α)).to ∘ (B α).coh g (ii α).to
+                 -- by (B α).coh-∘
+
+(Π̂ A B)[σ] = (Π̂ A (λ α → (B α) [σ]))
+  -- coe: (B α).coe (σ f) (ii α) = (B α [σ]).coe f (ii α)
+        : (B α).coe (σ f) (ii α) = (B α).coe (σ f) (ii α)
+
+  -- coh: ((B α).coh (σ f) (ii α)).to = ((B α [σ]).coe f (ii α)).to
+        : ((B α).coh (σ f) (ii α)).to = ((B α).coe (σ f) (ii α)).to

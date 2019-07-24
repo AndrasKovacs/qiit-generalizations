@@ -1,0 +1,243 @@
+
+-- About CwFᵏₑ model of the syntax. WIP.
+--------------------------------------------------------------------------------
+
+-- Notation
+
+  If Γ : Con in syntax, then we write Γᴬ, Γᴹ, Γᴰ and Γˢ for objects,
+  morphisms, displayed objects and sections in Γ's CwFᵏₑ
+  interpretation.  We write for example Γ.id, Γ.▶, Γ.ε etc. for other
+  components, or just write them without Γ. when it can be done
+  unambiguously.
+
+  If A : Ty Γ in syntax, we write Aᴬ, Aᴹ, Aᴰ, Aˢ analogously for
+  displayed CwFᵏₑ components.
+
+  -- Notation for CwFᵏₑ
+  i, j, k, l        objects in Γᴬ
+  i*, j*, k*, l*    displayed objects in (Γᴰ i)
+  f, g, h           morphisms in (Γᴹ i j)
+  f*, g*, h*        sections  in (Γˢ i j*)
+
+  -- Notation for displayed CwFᵏₑ-s:
+  ii, jj, kk       objects in (Aᴬ i)
+  ii*, jj*, kk*    displayed objects in Aᴰ {i} i* ii
+  ff, gg, hh       displayed morphisms in Aᴹ {i} ii {j} jj f
+  ff*, gg*, hh*    displayed sections in Aˢ {i} ii {j*} jj* f*
+
+  In short:
+    - * means "displayed component"
+    - double variable means "component in displayed CwF"
+
+  If σ : Sub Γ Δ in syntax, we write σᴬ, σᴹ, σˢ, σᴰ for action on
+  objects, morphisms, sections and displayed objects, and write
+  e.g. σ.id, σ.∘ for functoriality, and likewise for other
+  preservation laws.
+
+  We use the same notation for (t : Tm Γ A) as for Sub Γ Δ.
+
+
+Pros & cons:
+  + : closer to Ahrens & Lumsdaine, closer to category-theoretic notation
+  + : we can immediately tell that we are working in the CwFᵏₑ model and not in the syntax
+  - : having two different notations for mostly the same thing
+
+
+CwFᵏₑ from (Γ : Con)
+--------------------------------------------------------------------------------
+
+-- Category
+Γᴬ      : Set
+Γᴹ      : Γᴬ → Γᴬ → Set
+id      : Γᴹ i i
+_∘_     : Γᴹ j k → Γᴹ i j → Γᴹ i k
+ass     : (f ∘ g) ∘ h = f ∘ (g ∘ h)
+idl     : id ∘ f = f
+idr     : f ∘ id = f
+
+-- Terminal object
+∙       : Γᴬ
+ε       : Γᴹ i ∙
+∙η      : {f : Γᴹ i ∙} → f = ε
+
+-- Family
+Γᴰ      : Γᴬ → Set
+Γˢ      : ∀ i → Γᴰ i → Set
+_[_]    : Γᴰ j → Γᴹ i j → Γᴰ i
+_[_]    : Γˢ j j* → (f : Γᴹ i j ) → Γˢ (j* [f])
+[id]    : i* [id] = i*
+[∘]     : i* [f ∘ g] = i* [f] [g]
+
+-- Comprehension
+_▶_     : (i : Γᴬ) → Γᴰ i → Γᴬ
+_,_     : (f : Γᴹ i j) → Γˢ i (j* [f]) → Γᴹ i (j ▶ j*)
+π₁      : Γᴹ i (j ▶ j*) → Γᴹ i j
+π₂      : (f : Γᴹ i (j ▶ j*)) → Γˢ i (j* [π₁ f])
+▶β₁     : π₁ (f , f*) = f
+▶β₂     : π₂ (f , f*) = f*
+▶η      : (π₁ f , π₂ f) = f
+,∘      : (f , f*) ∘ g = (f ∘ g , f* [ g ])
+
+-- Constant families
+K       : Γᴬ → {i : Γᴬ} → Γᴰ i
+K[]     : K i {j} [f] = K i
+appK    : Γˢ i (K j) → Γᴹ i j
+absK    : Γᴹ i j → Γˢ i (K j)
+appK[]  : appK f* ∘ f = appK (f* [f])
+Kβ      : appK (absK f)  = f
+Kη      : absK (appK f*) = f*
+
+-- Identity
+Eq      : Γˢ i i* → Γˢ i i* → Γᴰ i
+Eq[]    : Eq f* g* [f] = Eq (f* [f]) (g* [f])
+Reflect : Γˢ i (Eq f* g*) → f* = g*
+Refl    : (f* : Γˢ i i*) → Γˢ i (Eq f* f*)
+UIP     : (f* : Γˢ i (Eq g* g*)) → f* = Refl g*
+
+
+
+-- Abbreviations:
+
+wk    = π₁ id
+vz    = π₂ id
+vs x  = x [wk]
+⟨ t ⟩ = (id , t)
+f ↑   = (f ∘ wk , vz)
+
+-- Notion of induction and initiality (these are equivalent, TODO to include here the proof)
+
+Induction : Γᴬ → Set
+Induction i = (i* : Γᴰ i) → Γˢ i i*
+
+Initial : Γᴬ → Set
+Initial i = (j : Γᴬ) → isContr (Γᴹ i j)
+
+
+-- Admissible equations
+
+π₁∘ : π₁ f ∘ g = π₁ (f ∘ g)
+
+  π₁ f ∘ g                 -- ▶β₁
+  π₁ (π₁ f ∘ g, π₂ f [g])  -- ,∘
+  π₁ ((π₁ f, π₂ f) ∘ g)    -- ▶η
+  π₁ (f ∘ g)
+
+π₂∘ : π₂ f [g] = π₂ (f ∘ g)
+
+  π₂ f [g]                 -- ▶β₂
+  π₂ (π₁ f ∘ g, π₂ f [g])  -- ,∘
+  π₂ ((π₁ f, π₂ f) ∘ g)    -- ▶η
+  π₂ (f ∘ g)
+
+[id] : t[id] = t
+
+  t[id]                 --  ▶β₂
+  π₂ (id ∘ id, t[id])   --  ,∘
+  π₂ ((id , t) ∘ id)    --  idl
+  π₂ (id , t)           --  ▶β₂
+  t
+
+[∘] : t[f][g] = t [f ∘ g]
+
+  t[f][g]                    -- ▶β₂
+  π₂ (id ∘ f ∘ g, t[f][g])   -- ,∘
+  π₂ ((id ∘ f, t[f]) ∘ g)    -- ,∘
+  π₂ ((id , t) ∘ f ∘ g)      -- ass
+  π₂ ((id , t) ∘ (f ∘ g))    -- π₂∘
+  t[f ∘ g]
+
+absK[] : absK f [g] = absK (f ∘ g)
+
+  absK f [g]                -- Kη
+  absK (appK (absK f [g]))  -- appK[]
+  absK (appK (absK f) ∘ g)  -- Kβ
+  absK (f ∘ g)
+
+Refl[] : Refl f* [g] = Refl (f*[g])
+  -- by UIP (Refl f* [g])
+
+
+-- Displayed CwFᵏₑ (abbreviated as CwFᴷₑᴰ) from (A : Ty Γ)
+--------------------------------------------------------------------------------
+
+We diverge from CQIIT paper notation the following way: the base
+construction is always the *last* argument. This is to conform in the
+definition of displayed CwF to the output of the logical predicate
+interpretation which would mostly mechanically generate the
+definition. Likewise, we interleave base indices and displayed indices
+in the arguments.
+
+
+-- Displayed category
+Aᴬ  : Γᴬ → Set
+Aᴹ  : {i}(ii : Aᴬ i) {j} (jj : Aᴬ j) → Γᴹ i j → Set
+id  : Aᴹ ii ii id
+_∘_ : Aᴹ jj kk f → Aᴹ ii jj g → Aᴹ ii kk (f ∘ g)
+ass : (ff ∘ gg) ∘ hh = ff ∘ (gg ∘ hh)
+idl : id ∘ ff = ff
+idr : ff ∘ id = ff
+
+-- Terminal object
+∙   : Aᴬ ∙
+ε   : Aᴹ ii ∙ ε
+∙η  : {ff : Aᴹ ii ∙ f} → ff = ε
+
+-- Family
+Aᴰ    : {i}(ii : Aᴬ i) → Γᴰ i → Set
+Aˢ    : {i}(ii : Aᴬ i){j*}(jj* : Aᴰ ii j*) → Γˢ i j* → Set
+_[_]  : Aᴰ jj j* → Aᴹ ii jj f → Aᴰ ii (j* [f])
+_[_]  : Aˢ jj kk* g* → (ff : Aᴹ ii jj f) → Aˢ ii (kk* [ff]) (g* [f])
+[id]  : ii* [id] = ii*
+[∘]   : ii* [ff ∘ gg] = ii* [ff] [gg]
+
+-- Comprehension
+_▶_     : (ii : Aᴬ i) → Aᴰ ii i* → Aᴬ (i ▶ i*)
+_,_     : (ff : Aᴹ ii jj f) → Aˢ ii (jj* [ff]) f* → Aᴹ ii (jj ▶ jj*) (f, f*)
+π₁      : Aᴹ ii (jj ▶ jj*) f → Aᴹ ii jj (π₁ f)
+π₂      : (ff : Aᴹ ii (jj ▶ jj*) f) → Aˢ ii (jj* [π₁ ff]) (π₂ f)
+▶β₁     : π₁ (ff , ff*) = ff
+▶β₂     : π₂ (ff , ff*) = ff*
+▶η      : (π₁ ff , π₂ ff) = ff
+,∘      : (ff , ff*) ∘ gg = (ff ∘ gg , ff* [ gg ])
+
+-- Constant families
+K             : Aᴬ i → {jj : Aᴬ j} → Aᴰ jj (K j)
+K[]           : K ii {jj} [ff] = K ii
+appK          : Aˢ ii (K jj) f* → Aᴹ ii jj (appK f*)
+absK          : Aᴹ ii jj f → Aˢ ii (K jj) (absK f)
+appK[]        : appK ff* ∘ ff = appK (ff* [ff])
+Kβ            : appK (absK ff)  = ff
+Kη            : absK (appK ff*) = ff*
+
+-- Identity
+Eq            : Aˢ ii ii* f* → Aˢ ii ii* g* → Aᴰ ii (Eq f* g*)
+Eq[]          : Eq ff* gg* [ff] = Eq (ff* [ff]) (gg* [ff])
+Reflect       : Aˢ ii (Eq ff* gg*) h* → ff* = gg*
+Refl          : (ff* : Aˢ ii ii* f*) → Aˢ ii (Eq ff* ff*) (Refl f*)
+UIP           : (ff* : Aˢ ii (Eq gg* gg*) f*) → ff* = Refl gg*
+
+-- Admissible equations analogously as in CwFᴷₑ
+
+
+
+-- Split iso-cleaving structure on the top of CwFᴷₑᴰ, from (A : Ty Γ)
+--------------------------------------------------------------------------------
+
+coe    : Γ.iso i j → Aᴰ i → Aᴰ j
+coh    : (f : Γ.iso i j)(ii : Aᴰ i) → A.iso ii (coe f ii) f
+coe-id : coe id ii = ii
+coe-∘  : coe (f ∘ g) ii = coe f (coe g ii)
+coh-id : coh id ii = id
+coh-∘  : coh (f ∘ g) ii = coh f (coe g ii) ∘ coh g ii
+
+
+
+-- CwFᵏₑ morphisms (abbreviated as CwFᴷₑᴹ) from (σ : Sub Γ Δ)
+--------------------------------------------------------------------------------
+
+TODO
+
+-- CwFᵏₑ sections (abbreviated as CwFᴷₑˢ) from (t : Tm Γ A)
+--------------------------------------------------------------------------------
+
+TODO
