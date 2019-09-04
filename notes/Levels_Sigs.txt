@@ -1,0 +1,800 @@
+
+Goal:
+  - Bootstrap the model theory of signatures *before* using induction on signatures in any way.
+  - 1. Define notion of model for ToS as a record type.
+  - 2. Define a bootstrap signature as a context in an arbitrary ToS model (related: Church-coding, "finally tagless")
+  - 3. Define flCwF model of ToS
+  - 4. Show that ToS itself has a bootstrap signature, get model theory of ToS from flCwF model
+  - 5. Now we can talk about induction on signatures, and assumptions of initial ToS models.
+
+--------------------------------------------------------------------------------
+
+We work in a cumulative extensional TT with countable universes. Unfortunately,
+we need to work with "universe polymorphically" in a number of cases, but we
+would like to avoid assuming universe polmorphism or ordinal-indexed universes.
+
+Instead, we use a meta-metatheory to talk about universe-polymorphic
+constructions in ETT. The meta-metatheory can be anything as far as it can embed
+ETT syntax.
+
+ALTERNATIVELY:
+  - we assume universe polymorphism in ETT.
+  - we assume propositional subtyping (see later)
+  - then we never have to go outside ETT
+  Rules for universe polymorphism: TODO
+
+We have countable predicative universes Setᵢ. We have cumulative Π and Σ types,
+for Π we only need cumulativity in the codomain type. Cumulativity works the
+same way as in current Coq, also described in the following paper:
+
+  https://subs.emis.de/LIPIcs/volltexte/2018/9199/pdf/LIPIcs-FSCD-2018-29_.pdf
+
+      i ≤ j
+  ───────────────
+  Γ ⊢ Setᵢ ≤ Setⱼ
+
+       Γ, x : A ⊢ B₁ ≤ B₂
+  ───────────────────────────────
+  Γ ⊢ (x : A) → B₁ ≤ (x : A) → B₂
+
+  Γ ⊢ A₁ ≤ A₂   Γ, x : A₁ ⊢ B₁ ≤ B₂
+  ─────────────────────────────────
+   Γ ⊢ Σ(x : A₀)×B₁ ≤ Σ(x : A₁)×B₂
+
+  Γ ⊢ t : A     Γ ⊢ A ≤ B
+  ───────────────────────
+       Γ ⊢ t : B
+
+NOTATION: we may use Agda-like notation for universe polymorphism:
+
+  f : ∀{i}(A : Setᵢ) → B
+
+This is only a shorthand for quantifying over "i" in the metatheory, constructing
+an ETT term at every level.
+
+--------------------------------------------------------------------------------
+-- Closed QIITs
+--------------------------------------------------------------------------------
+
+1. Notion of ToS model at lvl i
+  Con : Set i
+  Ty  : → Set i
+  Tm  : → Set i
+  Sub : → Set i
+
+  Cumulativity: i ≤ j, M : ToSᵢ implies M : ToSⱼ
+
+2. *Bootstrap* signatures
+  A bootstrap signature is a context in an *arbitrary* model, at an arbitrary level:
+
+    sig : ∀{i}(M : ToSᵢ) → M.Con
+
+  Note that the level polymorphism is realized outside of ETT.
+
+  We use bootstrap signatures to get a model theory for ToS before we talk about
+  induction on signatures.
+
+  Related: Church-encodings, "finally tagless" embeddings
+
+3. flCwF model can be given as a ToS(i+2) for arbitrary i.
+   In algebras
+
+4. ToS given as signature
+  - We can represent ToSᵢ models without issue now for all ᵢ.
+  - However, we can categories of models for all ᵢ, where algebras
+    all have ᵢ-level sorts. We only have morphisms between same-level
+    algebras.
+  - At this point, we don't have notions of large elimination!
+
+  Assume that we have a ToS model at the lowest level:
+    syn : ToS₀e
+
+  Show cumulativity, only for ToS now
+    if γ : ToSᵢ then γ : ToS(i+j)
+    We show this by looking at the signature of ToS and the flCwFᵢ
+    models, and noting that everything is parametric in the levels.
+
+  Assume that syn is initial when lifted to any level.
+
+  Alternative definition of signature: a context in syn.
+
+5. Term model
+
+  Construct displayed model over syn
+
+    (Γ : Con)ᶜ : Sub Ω Γ → Γᴬ : Set₁
+
+  Γᴬ comes from the lowest-level flCwF model of ToS.
+  Hence, Γᴬ : Set₁
+
+  Hence, this is a diplayed ToS model at level 1, over syn. Syn
+  is at lvl 0 but is lifted to 1 here by cumulativity.
+
+6. Lifting algebras
+
+  Plan 1: we do a single term model construction at the lowest level, then show
+    - that the term algebra can be lifted to any level
+    - that we have induction for the lifted term algebra at any level
+    - plus:
+         it should be a meta-theorem that lifting is the identity function
+         for canonical signatures. E.g. the lifting function for Nat-algebras
+	 is the identity function, because Natᵢ ≤ Natⱼ, and likewise for any
+	 concrete canonical Γ signature.
+
+         Maybe we can handwave this.
+
+    Lifting:
+
+      assume i ≤ j
+
+      (Γ : Con)ᵁ     : Γᴬᵢ → Γᴬⱼ
+      (A : Ty Γ)ᵁ    : Aᴬ γ → Aᴬ (Γᵁ γ)
+      (σ : Sub Γ Δ)ᵁ : Δᵁ (σᴬ γ) = σᴬ (Γᵁ γ)
+      (t : Tm Γ A)ᵁ  : Aᵁ (tᴬ γ) = tᴬ (Γᵁ γ)
+      ...
+
+  Plan 2: the same as above, but we
+    - add "propositional subtyping" to ETT, which is just the internalization of
+      A ≤ B, and has reflection and UIP the same way as equality.
+    - Using this, we prove that Γᴬᵢ ≤ Γᴬⱼ, for any Γ and i ≤ j.
+    - This is a bit hacky, but a bit more convenient than Plan 1.
+
+    Propositional subtyping:
+
+         Γ ⊢ A, B : Setᵢ               Γ ⊢ A ≤ B            Γ ⊢ t : Subty A B
+      ──────────────────────   ──────────────────────────   ─────────────────
+      Γ ⊢ Subty A B : Setᵢ     Γ ⊢ subty A B : Subty A B       Γ ⊢ A ≤ B
+
+      Γ ⊢ t, u : Subty A B
+      ────────────────────
+          Γ ⊢ t = u
+
+      (Subty A B)[σ] ≡ Subty (A[σ]) (B[σ])
+      (subty A B)[σ] ≡ subty (A[σ]) (B[σ])
+
+    Proving subtyping of algebras, induction on syn.
+      assume i, j, i ≤ j
+
+      (Γ : Con)ᵁ     : Subty Γᴬᵢ Γᴬⱼ                     : Set (i ⊔ j)
+      (A : Ty Γ)ᵁ    : (γ : Γᴬᵢ) → Subty (Aᴬᵢ γ) (Aᴬⱼ γ) : Set (i ⊔ j) -- well-typed by Γᵁ
+      (σ : Sub Γ Δ)ᵁ : (γ : Γᴬᵢ) → σᴬᵢ γ = σᴬⱼ γ         : Set (i ⊔ j) -- well-typed by Γᵁ
+      (t : Tm Γ A)ᵁ  : (γ : Γᴬᵢ) → tᴬᵢ γ = tᴬⱼ γ         : Set (i ⊔ j) -- well-typed by Γᵁ
+
+      ∙ᵁ  : Subty ⊤ ⊤
+        OK
+
+      (Γ ▶ A)ᵁ : Subty (Σ(γ : Γᴬᵢ)×(Aᴬ γ)) (Σ(γ : Γᴬⱼ)×(Aᴬ γ))
+        OK
+
+      (A[σ])ᵁ (γ : Γᴬᵢ) : Subty (Aᴬᵢ (σᴬᵢ γ)) (Aᴬⱼ (σᴬⱼ γ))    -- here we lift γ with Γᵁ
+        Aᵁ (σᴬᵢ γ : Δᴬᵢ) : Subty (Aᴬᵢ (σᴬᵢ γ)) (Aᴬⱼ (σᴬᵢ γ))   -- here we lift (σᴬᵢ γ) with Δᵁ
+        OK
+
+      Uᵁ (γ : Γᴬᵢ) : Subty Setᵢ Setⱼ OK
+
+      (El a)ᵁ (γ : Γᴬᵢ) : Subty (aᴬᵢ γ) (aᴬⱼ γ)
+         aᵁ γ : aᴬᵢ γ = aᴬⱼ γ
+	 OK
+
+      (Π a B)ᵁ γ : Subty ((x : aᴬᵢ γ) → Bᴬᵢ (γ, x)) ((x : aᴬⱼ γ) → Bᴬⱼ (γ, x))
+        aᵁ γ : aᴬᵢ γ = aᴬⱼ γ
+	OK
+
+      ...
+
+7. Eliminator model
+
+  assume level i
+
+  assume Ω : Con, con := Ωᵁ (Ωᶜ id)
+         ωᴰ : Ωᴰ con
+
+  So, we show that the lifting of the term model supports elimination.
+
+  (Γ : Con)ᴱ     : (ν : Sub Ω Γ) → Γˢ (νᴬ con) (νᴰ ωᴰ) : Setᵢ
+  (A : Ty Γ)ᴱ    : (ν : Sub Ω Γ)(t : Tm Ω (A[ν])) → Aˢ (tᴬ con)(tᴰ ωᴰ)(Γᴱ ν)
+  (σ : Sub Γ Δ)ᴱ : (ν : Sub Ω Γ) → Δᴱ (σ ∘ ν) = σˢ (Γᴱ ν)
+  (t : Tm Γ A)ᴱ  : (ν : Sub Ω Γ) → Aᴱ ν (t[ν]) = tˢ (Γᴱ ν)
+
+  This is a level i displayed model over syn.
+
+  TODO:
+    There could be problems with lifting the term model!  Probably we need to
+    define term model on all levels, and show that lifting a term model is a
+    term model. Because of this, it could be worthwhile to consider Plan 2 with
+    propositional subtyping.
+
+aa--------------------------------------------------------------------------------
+-- Infinitary QIITs
+--------------------------------------------------------------------------------
+
+We need at least two levels to parametrize stuff with.
+  - One level for all inductive sorts: i
+  - One level for all external types:  j
+
+1. Notion of model for ToS(i,j):
+
+    Con : Set i
+    Sub : ... → Set i
+    Ty  : ... → Set i
+    Tm  : ... → Set i
+    Π̂ : (T : Set j) → (T → Ty Γ) → Ty Γ
+    Π̃ : (T : Set j) → (T → Tm Γ U) → Tm Γ U
+
+  In the syntax, every Con-Tm sort will be j + 1 large, otherwise we'd
+  get Russell paradox. It still makes sense though to talk about models with
+  different Con-Tm levels.
+
+  Unfortunately, Tm : Set (j + 1) in the syntax implies that we can never have
+  term models at level 0. So, even if we're only defining natural numbers, if
+  we construct a term model out of signature syntax, we get Nat : Set₁.
+
+2. Bootstrap signatures at external level j.
+
+  The "j" level refers to the size of external types.
+
+    sig : ∀{i}(M : ToS(i,j)) → M.Con
+
+3. flCwF model at (i,j)
+
+     flCwFM : ToS(2 + i ⊔ j, j)
+
+     algebras:
+       (Γ : Con)ᴬ     : Set (1+i⊔j)      : Set (2+i⊔j)
+       (A : Ty Γ)ᴬ    : Γᴬ → Set (1+i⊔j) : Set (2+i⊔j)
+       (σ : Sub Γ Δ)ᴬ : Γᴬ → Δᴬ          : Set (1+i⊔j)   -- lifted by 1
+       (t : Tm Γ A)ᴬ  : (γ : Γᴬ) → Aᴬ γ  : Set (1+i⊔j)   -- lifted by 1
+       ...
+       Uᴬ γ = Set i : Set (i + 1)
+       (Π̂ (T : Set j) B)ᴬ γ = (α : T) → (B α)ᴬ γ : Set (1 + i ⊔ j) -- lifted by 1
+       (Π̃ (T : Set j) B)ᴬ γ = (α : T) → (b α)ᴬ γ : Set (1 + i ⊔ j) -- lifted by 1
+       ...
+
+     ⟦Γ : Con⟧ : flCwF (1 + i ⊔ j) : Set (2 + i ⊔ j)
+
+4. representing ToS as a bootstrap signature.
+
+
+
+
+
+We have countable predicative universes Setᵢ. We have cumulative Π and Σ types,
+for Π we only need cumulativity in the codomain type. Cumulativity works the
+same way as in current Coq, also described in the following paper:
+
+  https://subs.emis.de/LIPIcs/volltexte/2018/9199/pdf/LIPIcs-FSCD-2018-29_.pdf
+
+      i ≤ j
+  ───────────────
+  Γ ⊢ Setᵢ ≤ Setⱼ
+
+       Γ, x : A ⊢ B₁ ≤ B₂
+  ───────────────────────────────
+  Γ ⊢ (x : A) → B₁ ≤ (x : A) → B₂
+
+  Γ ⊢ A₁ ≤ A₂   Γ, x : A₁ ⊢ B₁ ≤ B₂
+  ─────────────────────────────────
+   Γ ⊢ Σ(x : A₀)×B₁ ≤ Σ(x : A₁)×B₂
+
+  Γ ⊢ t : A     Γ ⊢ A ≤ B
+  ───────────────────────
+       Γ ⊢ t : B
+
+NOTATION: we may use Agda-like notation for universe polymorphism:
+
+  f : ∀{i}(A : Setᵢ) → B
+
+This is only a shorthand for quantifying over "i" in the metatheory, constructing
+an ETT term at every level.
+
+--------------------------------------------------------------------------------
+-- Closed QIITs
+--------------------------------------------------------------------------------
+
+1. Notion of ToS model at lvl i
+  Con : Set i
+  Ty  : → Set i
+  Tm  : → Set i
+  Sub : → Set i
+
+  Cumulativity: i ≤ j, M : ToSᵢ implies M : ToSⱼ
+
+2. *Bootstrap* signatures
+  A bootstrap signature is a context in an *arbitrary* model, at an arbitrary level:
+
+    sig : ∀{i}(M : ToSᵢ) → M.Con
+
+  Note that the level polymorphism is realized outside of ETT.
+
+  We use bootstrap signatures to get a model theory for ToS before we talk about
+  induction on signatures.
+
+  Related: Church-encodings, "finally tagless" embeddings
+
+3. flCwF model can be given as a ToS(i+2) for arbitrary i.
+   In algebras
+
+4. ToS given as signature
+  - We can represent ToSᵢ models without issue now for all ᵢ.
+  - However, we can categories of models for all ᵢ, where algebras
+    all have ᵢ-level sorts. We only have morphisms between same-level
+    algebras.
+  - At this point, we don't have notions of large elimination!
+
+  Assume that we have a ToS model at the lowest level:
+    syn : ToS₀
+
+  Show cumulativity, only for ToS now
+    if γ : ToSᵢ then γ : ToS(i+j)
+    We show this by looking at the signature of ToS and the flCwFᵢ
+    models, and noting that everything is parametric in the levels.
+
+  Assume that syn is initial when lifted to any level.
+
+  Alternative definition of signature: a context in syn.
+
+5. Term model
+
+  Construct displayed model over syn
+
+    (Γ : Con)ᶜ : Sub Ω Γ → Γᴬ : Set₁
+
+  Γᴬ comes from the lowest-level flCwF model of ToS.
+  Hence, Γᴬ : Set₁
+
+  Hence, this is a diplayed ToS model at level 1, over syn. Syn
+  is at lvl 0 but is lifted to 1 here by cumulativity.
+
+6. Lifting algebras
+
+  Plan 1: we do a single term model construction at the lowest level, then show
+    - that the term algebra can be lifted to any level
+    - that we have induction for the lifted term algebra at any level
+    - plus:
+         it should be a meta-theorem that lifting is the identity function
+         for canonical signatures. E.g. the lifting function for Nat-algebras
+	 is the identity function, because Natᵢ ≤ Natⱼ, and likewise for any
+	 concrete canonical Γ signature.
+
+         Maybe we can handwave this.
+
+    Lifting:
+
+      assume i ≤ j
+
+      (Γ : Con)ᵁ     : Γᴬᵢ → Γᴬⱼ
+      (A : Ty Γ)ᵁ    : Aᴬ γ → Aᴬ (Γᵁ γ)
+      (σ : Sub Γ Δ)ᵁ : Δᵁ (σᴬ γ) = σᴬ (Γᵁ γ)
+      (t : Tm Γ A)ᵁ  : Aᵁ (tᴬ γ) = tᴬ (Γᵁ γ)
+      ...
+
+  Plan 2: the same as above, but we
+    - add "propositional subtyping" to ETT, which is just the internalization of
+      A ≤ B, and has reflection and UIP the same way as equality.
+    - Using this, we prove that Γᴬᵢ ≤ Γᴬⱼ, for any Γ and i ≤ j.
+    - This is a bit hacky, but a bit more convenient than Plan 1.
+
+    Propositional subtyping:
+
+         Γ ⊢ A, B : Setᵢ               Γ ⊢ A ≤ B            Γ ⊢ t : Subty A B
+      ──────────────────────   ──────────────────────────   ─────────────────
+      Γ ⊢ Subty A B : Setᵢ     Γ ⊢ subty A B : Subty A B       Γ ⊢ A ≤ B
+
+      Γ ⊢ t, u : Subty A B
+      ────────────────────
+          Γ ⊢ t = u
+
+      (Subty A B)[σ] ≡ Subty (A[σ]) (B[σ])
+      (subty A B)[σ] ≡ subty (A[σ]) (B[σ])
+
+    Proving subtyping of algebras, induction on syn.
+      assume i, j, i ≤ j
+
+      (Γ : Con)ᵁ     : Subty Γᴬᵢ Γᴬⱼ                     : Set (i ⊔ j)
+      (A : Ty Γ)ᵁ    : (γ : Γᴬᵢ) → Subty (Aᴬᵢ γ) (Aᴬⱼ γ) : Set (i ⊔ j) -- well-typed by Γᵁ
+      (σ : Sub Γ Δ)ᵁ : (γ : Γᴬᵢ) → σᴬᵢ γ = σᴬⱼ γ         : Set (i ⊔ j) -- well-typed by Γᵁ
+      (t : Tm Γ A)ᵁ  : (γ : Γᴬᵢ) → tᴬᵢ γ = tᴬⱼ γ         : Set (i ⊔ j) -- well-typed by Γᵁ
+
+      ∙ᵁ  : Subty ⊤ ⊤
+        OK
+
+      (Γ ▶ A)ᵁ : Subty (Σ(γ : Γᴬᵢ)×(Aᴬ γ)) (Σ(γ : Γᴬⱼ)×(Aᴬ γ))
+        OK
+
+      (A[σ])ᵁ (γ : Γᴬᵢ) : Subty (Aᴬᵢ (σᴬᵢ γ)) (Aᴬⱼ (σᴬⱼ γ))    -- here we lift γ with Γᵁ
+        Aᵁ (σᴬᵢ γ : Δᴬᵢ) : Subty (Aᴬᵢ (σᴬᵢ γ)) (Aᴬⱼ (σᴬᵢ γ))   -- here we lift (σᴬᵢ γ) with Δᵁ
+        OK
+
+      Uᵁ (γ : Γᴬᵢ) : Subty Setᵢ Setⱼ OK
+
+      (El a)ᵁ (γ : Γᴬᵢ) : Subty (aᴬᵢ γ) (aᴬⱼ γ)
+         aᵁ γ : aᴬᵢ γ = aᴬⱼ γ
+	 OK
+
+      (Π a B)ᵁ γ : Subty ((x : aᴬᵢ γ) → Bᴬᵢ (γ, x)) ((x : aᴬⱼ γ) → Bᴬⱼ (γ, x))
+        aᵁ γ : aᴬᵢ γ = aᴬⱼ γ
+	OK
+
+      ...
+
+7. Eliminator model
+
+  assume level i
+
+  assume Ω : Con, con := Ωᵁ (Ωᶜ id)
+         ωᴰ : Ωᴰ con
+
+  So, we show that the lifting of the term model supports elimination.
+
+  (Γ : Con)ᴱ     : (ν : Sub Ω Γ) → Γˢ (νᴬ con) (νᴰ ωᴰ) : Setᵢ
+  (A : Ty Γ)ᴱ    : (ν : Sub Ω Γ)(t : Tm Ω (A[ν])) → Aˢ (tᴬ con)(tᴰ ωᴰ)(Γᴱ ν)
+  (σ : Sub Γ Δ)ᴱ : (ν : Sub Ω Γ) → Δᴱ (σ ∘ ν) = σˢ (Γᴱ ν)
+  (t : Tm Γ A)ᴱ  : (ν : Sub Ω Γ) → Aᴱ ν (t[ν]) = tˢ (Γᴱ ν)
+
+  This is a level i displayed model over syn.
+
+  TODO:
+    There could be problems with lifting the term model!  Probably we need to
+    define term model on all levels, and show that lifting a term model is a
+    term model. Because of this, it could be worthwhile to consider Plan 2 with
+    propositional subtyping.
+
+--------------------------------------------------------------------------------
+-- Infinitary QIITs
+--------------------------------------------------------------------------------
+
+We need at least two levels to parametrize stuff with.
+  - One level for all inductive sorts: i
+  - One level for all external types:  j
+
+1. Notion of model for ToS(i,j):
+
+    Con : Set i
+    Sub : ... → Set i
+    Ty  : ... → Set i
+    Tm  : ... → Set i
+    Π̂ : (T : Set j) → (T → Ty Γ) → Ty Γ
+    Π̃ : (T : Set j) → (T → Tm Γ U) → Tm Γ U
+
+  In the syntax, every Con-Tm sort will be j + 1 large, otherwise we'd
+  get Russell paradox. It still makes sense though to talk about models with
+  different Con-Tm levels.
+
+  Unfortunately, Tm : Set (j + 1) in the syntax implies that we can never have
+  term models at level 0. So, even if we're only defining natural numbers, if
+  we construct a term model out of signature syntax, we get Nat : Set₁.
+
+2. Bootstrap signatures at external level j.
+
+  The "j" level refers to the size of external types.
+
+    sig : ∀{i}(M : ToS(i,j)) → M.Con
+
+3. flCwF model at (i,j)
+
+     flCwFM : ToS(2 + i ⊔ j, j)
+
+     algebras:
+       (Γ : Con)ᴬ     : Set (1+i⊔j)      : Set (2+i⊔j)
+       (A : Ty Γ)ᴬ    : Γᴬ → Set (1+i⊔j) : Set (2+i⊔j)
+       (σ : Sub Γ Δ)ᴬ : Γᴬ → Δᴬ          : Set (1+i⊔j)   -- lifted by 1
+       (t : Tm Γ A)ᴬ  : (γ : Γᴬ) → Aᴬ γ  : Set (1+i⊔j)   -- lifted by 1
+       ...
+       Uᴬ γ = Set i : Set (i + 1)
+       (Π̂ (T : Set j) B)ᴬ γ = (α : T) → (B α)ᴬ γ : Set (1 + i ⊔ j) -- lifted by 1
+       (Π̃ (T : Set j) B)ᴬ γ = (α : T) → (b α)ᴬ γ : Set (1 + i ⊔ j) -- lifted by 1
+       ...
+
+     ⟦Γ : Con⟧ : flCwF (1 + i ⊔ j) : Set (2 + i ⊔ j)
+
+4. representing ToS as a bootstrap signature.
+
+
+
+
+
+We have countable predicative universes Setᵢ. We have cumulative Π and Σ types,
+for Π we only need cumulativity in the codomain type. Cumulativity works the
+same way as in current Coq, also described in the following paper:
+
+  https://subs.emis.de/LIPIcs/volltexte/2018/9199/pdf/LIPIcs-FSCD-2018-29_.pdf
+
+      i ≤ j
+  ───────────────
+  Γ ⊢ Setᵢ ≤ Setⱼ
+
+       Γ, x : A ⊢ B₁ ≤ B₂
+  ───────────────────────────────
+  Γ ⊢ (x : A) → B₁ ≤ (x : A) → B₂
+
+  Γ ⊢ A₁ ≤ A₂   Γ, x : A₁ ⊢ B₁ ≤ B₂
+  ─────────────────────────────────
+   Γ ⊢ Σ(x : A₀)×B₁ ≤ Σ(x : A₁)×B₂
+
+  Γ ⊢ t : A     Γ ⊢ A ≤ B
+  ───────────────────────
+       Γ ⊢ t : B
+
+NOTATION: we may use Agda-like notation for universe polymorphism:
+
+  f : ∀{i}(A : Setᵢ) → B
+
+This is only a shorthand for quantifying over "i" in the metatheory, constructing
+an ETT term at every level.
+
+--------------------------------------------------------------------------------
+-- Closed QIITs
+--------------------------------------------------------------------------------
+
+1. Notion of ToS model at lvl i
+  Con : Set i
+  Ty  : → Set i
+  Tm  : → Set i
+  Sub : → Set i
+
+  Cumulativity: i ≤ j, M : ToSᵢ implies M : ToSⱼ
+
+2. *Bootstrap* signatures
+  A bootstrap signature is a context in an *arbitrary* model, at an arbitrary level:
+
+    sig : ∀{i}(M : ToSᵢ) → M.Con
+
+  Note that the level polymorphism is realized outside of ETT.
+
+  We use bootstrap signatures to get a model theory for ToS before we talk about
+  induction on signatures.
+
+  Related: Church-encodings, "finally tagless" embeddings
+
+3. flCwF model can be given as a ToS(i+2) for arbitrary i.
+   In algebras
+
+4. ToS given as signature
+  - We can represent ToSᵢ models without issue now for all ᵢ.
+  - However, we can categories of models for all ᵢ, where algebras
+    all have ᵢ-level sorts. We only have morphisms between same-level
+    algebras.
+  - At this point, we don't have notions of large elimination!
+
+  Assume that we have a ToS model at the lowest level:
+    syn : ToS₀
+
+  Show cumulativity, only for ToS now
+    if γ : ToSᵢ then γ : ToS(i+j)
+    We show this by looking at the signature of ToS and the flCwFᵢ
+    models, and noting that everything is parametric in the levels.
+
+  Assume that syn is initial when lifted to any level.
+
+  Alternative definition of signature: a context in syn.
+
+5. Term model
+
+  Construct displayed model over syn
+
+    (Γ : Con)ᶜ : Sub Ω Γ → Γᴬ : Set₁
+
+  Γᴬ comes from the lowest-level flCwF model of ToS.
+  Hence, Γᴬ : Set₁
+
+  Hence, this is a diplayed ToS model at level 1, over syn. Syn
+  is at lvl 0 but is lifted to 1 here by cumulativity.
+
+6. Lifting algebras
+
+  Plan 1: we do a single term model construction at the lowest level, then show
+    - that the term algebra can be lifted to any level
+    - that we have induction for the lifted term algebra at any level
+    - plus:
+         it should be a meta-theorem that lifting is the identity function
+         for canonical signatures. E.g. the lifting function for Nat-algebras
+	 is the identity function, because Natᵢ ≤ Natⱼ, and likewise for any
+	 concrete canonical Γ signature.
+
+         Maybe we can handwave this.
+
+    Lifting:
+
+      assume i ≤ j
+
+      (Γ : Con)ᵁ     : Γᴬᵢ → Γᴬⱼ
+      (A : Ty Γ)ᵁ    : Aᴬ γ → Aᴬ (Γᵁ γ)
+      (σ : Sub Γ Δ)ᵁ : Δᵁ (σᴬ γ) = σᴬ (Γᵁ γ)
+      (t : Tm Γ A)ᵁ  : Aᵁ (tᴬ γ) = tᴬ (Γᵁ γ)
+      ...
+
+  Plan 2: the same as above, but we
+    - add "propositional subtyping" to ETT, which is just the internalization of
+      A ≤ B, and has reflection and UIP the same way as equality.
+    - Using this, we prove that Γᴬᵢ ≤ Γᴬⱼ, for any Γ and i ≤ j.
+    - This is a bit hacky, but a bit more convenient than Plan 1.
+
+    Propositional subtyping:
+
+         Γ ⊢ A, B : Setᵢ               Γ ⊢ A ≤ B            Γ ⊢ t : Subty A B
+      ──────────────────────   ──────────────────────────   ─────────────────
+      Γ ⊢ Subty A B : Setᵢ     Γ ⊢ subty A B : Subty A B       Γ ⊢ A ≤ B
+
+      Γ ⊢ t, u : Subty A B
+      ────────────────────
+          Γ ⊢ t = u
+
+      (Subty A B)[σ] ≡ Subty (A[σ]) (B[σ])
+      (subty A B)[σ] ≡ subty (A[σ]) (B[σ])
+
+    Proving subtyping of algebras, induction on syn.
+      assume i, j, i ≤ j
+
+      (Γ : Con)ᵁ     : Subty Γᴬᵢ Γᴬⱼ                     : Set (i ⊔ j)
+      (A : Ty Γ)ᵁ    : (γ : Γᴬᵢ) → Subty (Aᴬᵢ γ) (Aᴬⱼ γ) : Set (i ⊔ j) -- well-typed by Γᵁ
+      (σ : Sub Γ Δ)ᵁ : (γ : Γᴬᵢ) → σᴬᵢ γ = σᴬⱼ γ         : Set (i ⊔ j) -- well-typed by Γᵁ
+      (t : Tm Γ A)ᵁ  : (γ : Γᴬᵢ) → tᴬᵢ γ = tᴬⱼ γ         : Set (i ⊔ j) -- well-typed by Γᵁ
+
+      ∙ᵁ  : Subty ⊤ ⊤
+        OK
+
+      (Γ ▶ A)ᵁ : Subty (Σ(γ : Γᴬᵢ)×(Aᴬ γ)) (Σ(γ : Γᴬⱼ)×(Aᴬ γ))
+        OK
+
+      (A[σ])ᵁ (γ : Γᴬᵢ) : Subty (Aᴬᵢ (σᴬᵢ γ)) (Aᴬⱼ (σᴬⱼ γ))    -- here we lift γ with Γᵁ
+        Aᵁ (σᴬᵢ γ : Δᴬᵢ) : Subty (Aᴬᵢ (σᴬᵢ γ)) (Aᴬⱼ (σᴬᵢ γ))   -- here we lift (σᴬᵢ γ) with Δᵁ
+        OK
+
+      Uᵁ (γ : Γᴬᵢ) : Subty Setᵢ Setⱼ OK
+
+      (El a)ᵁ (γ : Γᴬᵢ) : Subty (aᴬᵢ γ) (aᴬⱼ γ)
+         aᵁ γ : aᴬᵢ γ = aᴬⱼ γ
+	 OK
+
+      (Π a B)ᵁ γ : Subty ((x : aᴬᵢ γ) → Bᴬᵢ (γ, x)) ((x : aᴬⱼ γ) → Bᴬⱼ (γ, x))
+        aᵁ γ : aᴬᵢ γ = aᴬⱼ γ
+	OK
+
+      ...
+
+7. Eliminator model
+
+  assume level i
+
+  assume Ω : Con, con := Ωᵁ (Ωᶜ id)
+         ωᴰ : Ωᴰ con
+
+  So, we show that the lifting of the term model supports elimination.
+
+  (Γ : Con)ᴱ     : (ν : Sub Ω Γ) → Γˢ (νᴬ con) (νᴰ ωᴰ) : Setᵢ
+  (A : Ty Γ)ᴱ    : (ν : Sub Ω Γ)(t : Tm Ω (A[ν])) → Aˢ (tᴬ con)(tᴰ ωᴰ)(Γᴱ ν)
+  (σ : Sub Γ Δ)ᴱ : (ν : Sub Ω Γ) → Δᴱ (σ ∘ ν) = σˢ (Γᴱ ν)
+  (t : Tm Γ A)ᴱ  : (ν : Sub Ω Γ) → Aᴱ ν (t[ν]) = tˢ (Γᴱ ν)
+
+  This is a level i displayed model over syn.
+
+  TODO:
+    There could be problems with lifting the term model!  Probably we need to
+    define term model on all levels, and show that lifting a term model is a
+    term model. Because of this, it could be worthwhile to consider Plan 2 with
+    propositional subtyping.
+
+--------------------------------------------------------------------------------
+-- Infinitary QIITs
+--------------------------------------------------------------------------------
+
+We need at least two levels to parametrize stuff with.
+  - One level for all inductive sorts: i
+  - One level for all external types:  j
+
+1. Notion of model for ToS(i,j):
+
+    Con : Set i
+    Sub : ... → Set i
+    Ty  : ... → Set i
+    Tm  : ... → Set i
+    Π̂ : (T : Set j) → (T → Ty Γ) → Ty Γ
+    Π̃ : (T : Set j) → (T → Tm Γ U) → Tm Γ U
+
+  In the syntax, every Con-Tm sort will be j + 1 large, otherwise we'd
+  get Russell paradox. It still makes sense though to talk about models with
+  different Con-Tm levels.
+
+  Unfortunately, Tm : Set (j + 1) in the syntax implies that we can never have
+  term models at level 0. So, even if we're only defining natural numbers, if
+  we construct a term model out of signature syntax, we get Nat : Set₁.
+
+  Note that i≤i' → j≤j' → ToS(i, j) ≤ ToS(i', j')
+
+2. Bootstrap signatures at external level j.
+
+  The "j" level refers to the size of external types.
+
+    sig : ∀{i}(M : ToS(i,j)) → M.Con
+
+3. flCwF model at (i,j)
+
+     flCwFM : ToS(2 + i ⊔ j, j)
+
+     algebras:
+       (Γ : Con)ᴬ     : Set (1+i⊔j)      : Set (2+i⊔j)
+       (A : Ty Γ)ᴬ    : Γᴬ → Set (1+i⊔j) : Set (2+i⊔j)
+       (σ : Sub Γ Δ)ᴬ : Γᴬ → Δᴬ          : Set (1+i⊔j)   -- lifted by 1
+       (t : Tm Γ A)ᴬ  : (γ : Γᴬ) → Aᴬ γ  : Set (1+i⊔j)   -- lifted by 1
+       ...
+       Uᴬ γ = Set i : Set (i + 1)
+       (Π̂ (T : Set j) B)ᴬ γ = (α : T) → (B α)ᴬ γ : Set (1 + i ⊔ j) -- lifted by 1
+       (Π̃ (T : Set j) B)ᴬ γ = (α : T) → (b α)ᴬ γ : Set (1 + i ⊔ j) -- lifted by 1
+       ...
+
+     ⟦Γ : Con⟧ : flCwF (1 + i ⊔ j) : Set (2 + i ⊔ j)
+
+4. representing ToS as a bootstrap signature.
+
+  The signature for ToSⱼ is at level (j + 1).
+
+  We note that instantiating the bootstrap signature with flCwF(i,j) gives us
+  exactly ToS(i, j) as algebra
+
+  For each j:
+    assume syn : ToS(j + 1, j)
+      by cumulativity, for any i, syn : ToS(1 + i ⊔ j, j)
+
+    assume induction for syn on all (1 + i ⊔ j, j) levels
+
+5. Term model for all j:
+
+   Displayed model over syn: ToS(j+1, j)
+
+   Normally, if Γ signature has external types in Setⱼ, we would want
+   the inductive sorts of the initial algebra to be in Setⱼ as well.
+
+   We can't do that, because the theory of signatures has terms in Set(j+1).
+
+   The displayed model is itself at level (j+2, j)
+
+    (Γ : Con)ᶜ     : Sub Ω Γ → Γᴬ(j+1)                                    : Set(j+2)
+    (A : Ty Γ)ᶜ    : (ν : Sub Ω Γ) → Tm Ω (A[ν]) → Aᴬ (Γᶜ ν)              : Set(j+2)
+    (σ : Sub Γ Δ)ᶜ : (ν : Sub Ω Γ) → Δ.iso (Δᶜ (σ ∘ ν)) (σᴬ (Γᶜ ν))
+    (t : Tm Γ A)ᶜ  : (ν : Sub Ω Γ) → A.iso (Aᶜ ν (t[ν])) (tᴬ (Γᶜ ν)) Γ.id
+
+    Uᶜ : (ν : Sub Ω Γ) → Tm Ω U → Set(j+1)
+    Uᶜ ν a :≡ Tm Ω (El a) : Set (j+1)
+
+
+    ...
+
+  Summary: if we have
+    Γ : Conⱼ  -- signature with external stuff in Setⱼ
+
+  then we get term model Γᶜ id : Γᴬ(j+1)
+
+  Note: ToS(j+2, j+1) can build a term model for ToS(j+1,j)
+
+6. Cumulativity for algebras (we use internal subtyping)
+
+  Goal: If Γ: Conⱼ, then i ≤ i' → Γᴬ i ≤ Γᴬ i'
+
+  Displayed model over syntax at (1 + i ⊔ i' ⊔ j, j)
+
+  (Γ : Con)ᵁ     : Subty Γᴬᵢ Γᴬⱼ                     : Set (1 + i ⊔ i' ⊔ j)
+  (A : Ty Γ)ᵁ    : (γ : Γᴬᵢ) → Subty (Aᴬᵢ γ) (Aᴬⱼ γ) : Set (1 + i ⊔ i' ⊔ j)
+  (σ : Sub Γ Δ)ᵁ : (γ : Γᴬᵢ) → σᴬᵢ γ = σᴬⱼ γ         : Set (1 + i ⊔ i' ⊔ j)
+  (t : Tm Γ A)ᵁ  : (γ : Γᴬᵢ) → tᴬᵢ γ = tᴬⱼ γ         : Set (1 + i ⊔ i' ⊔ j)
+
+7. Eliminators:
+
+  assume level i
+
+  assume Ω : Con, con := Ωᶜ id : Γᴬ(1+j)
+         ωᴰ : Ωᴰ(1+i⊔j) con
+
+  Note: con is at the lowest level j+1, but ωᴰ is not! We raise (Ωᶜ id) by subtyping.
+
+  Displayed model over synⱼ at (1+i⊔j, j)
+
+  (Γ : Con)ᴱ     : (ν : Sub Ω Γ) → Γˢ(1+i⊔j) (νᴬ con) (νᴰ ωᴰ) : Set (1+i⊔j)
+  (A : Ty Γ)ᴱ    : (ν : Sub Ω Γ)(t : Tm Ω (A[ν])) → Aˢ (tᴬ con)(tᴰ ωᴰ)(Γᴱ ν)
+  (σ : Sub Γ Δ)ᴱ : (ν : Sub Ω Γ) → Δᴱ (σ ∘ ν) = σˢ (Γᴱ ν)
+  (t : Tm Γ A)ᴱ  : (ν : Sub Ω Γ) → Aᴱ ν (t[ν]) = tˢ (Γᴱ ν)
+  ...
+
+  SUMMARY:
+    If Γ : Conⱼ, and we have syn : ToSⱼ
+       con   : Γᴬ(j+1)
+       elimᵢ : (α : Γᴰ(1+i⊔j)) → Γˢ(1+i⊔j) con α

@@ -1,80 +1,246 @@
 
-We want to show that every substitution (i.e. the a functor which is
-the interpretation of a substitution) has a left adjoint.
-
-(σ : Sub Γ Δ) → Σ(δ : Sub Δ Γ) × (σ ⊣ δ)
-
-definition of σ ⊣ δ:
-
-  (Δᴹ (σᴬ i) j) ~ (Γᴹ i (δᴬ j))   naturally in i, j
-
-  explicitly:
-
-  to  : ∀ {i j}. Δᴹ (σᴬ i) j → Γᴹ i (δᴬ j)
-  fro : ∀ {i j}. Γᴹ i (δᴬ j) → Δᴹ (σᴬ i) j
-  p   : to (fro f) = f
-  q   : fro (to f) = f
-  nat : (f : Γᴹ i' i)(g : Δᴹ j j')(h : Δᴹ (σᴬ i) j) →
-        to (σᴹ f ∘ h ∘ g) = f ∘ to h ∘ δᴹ g
-
-LAdj : Sub Γ Δ → Set
-LAdj σ :≡ Σ(δ : Sub Δ Γ) × (δ ⊣ σ)
-
--- adjunction composition:
-
-(P : LAdj σ) ∘ᴬ (Q : LAdj δ) : LAdj (σ ∘ δ)
-  :≡ (Q.δ ∘ P.δ, Q.to ∘ P.to, P.fro ∘ Q.fro, _)
-
-  -- as given below:
-
-  σ  : Sub Δ Σ
-  δ  : Sub Γ Δ
-  σ* : Sub Σ Δ
-  δ* : Sub Δ Γ
-  P  : σ ⊣ σ*
-  Q  : δ ⊣ δ*
-
-  to (f : Σᴹ (σ (δ i)) j) : Γᴹ i (δ* (σ* j))
-     :≡ Q.to {i}{σ* j} (P.to {δ i}{j} f)
-     :≡ Q.to (P.to f)
-
-  fro (f : Γᴹ i (δ* (σ* j))) : Σᴹ (σ (δ i)) j
-     :≡ P.fro (Q.fro f)
-
-  p : Q.to (P.to (P.fro (Q.fro f))) = id
-      OK
-
-  q : P.fro (Q.fro (Q.to (P.to f))) = id
-      OK
-
-  nat :   Q.to (P.to ((σ (δ f) ∘ h ∘ g)))
-        = f ∘ Q.to (P.to h) ∘ δ* (σ* g)
-
-      :   Q.to (δ f ∘ P.to h ∘ σ* g)
-        = f ∘ Q.to (P.to h) ∘ δ* (σ* g)
-
-      :   f ∘ Q.to (P.to h) ∘ δ* (σ* g)
-        = f ∘ Q.to (P.to h) ∘ δ* (σ* g)
-      OK
-
-
--- By induction on signatures?
+Proving that every substitution has a left adjoint.
 --------------------------------------------------------------------------------
 
-(Γ : Con)ᴶ : ?
-(A : Ty Γ)ᴶ : ?
-(σ : Sub Γ Δ)ᴶ : RAdj σ
-(t : Tm Γ A)ᴶ : ?
+We overload notation for the category part of flCwF semantics of
+signatures. Hence, by Γ we might mean a category or a signature, and a (σ : Sub
+Γ Δ) can be a substitution or a functor. Our goal is to show that every (σ : Sub
+Γ Δ) has a left adjoint. This can be understood as the generalization of
+free-forgetful adjunctions, where we have an arbitrary substitution instead of a
+forgetful one.
 
-(id : Sub Γ Γ)ᴶ :
-  δ       :≡ id
-  to      :≡ λ f. f
-  fro     :≡ λ f. f
-  p       :≡ refl
-  q       :≡ refl
-  nat     :≡ refl
+Given (σ : Sub Γ Δ), the existence of a left adjoint can be defined
+(equivalently to the standard homset-iso or unit-counit definitions) as saying
+that for every (i : Δᴬ), the comma category (i ↓ σ) has an initial object.
 
-((σ : Sub Δ Σ) ∘ (δ : Sub Γ Δ))ᴶ : RAdj (σ ∘ δ)
-  :≡ σᴶ ∘ᴬ δᴶ
+Assuming QIITs, to construct such an initial object, it suffices to show that
+(i ↓ σ) can be specified with a signature, and then the existence of the initial
+object follows.
 
-(π₁ (σ : Sub Γ (Δ ▶ A)))ᴶ :
+Example 1: coproducts given as left adjoint to the diagonal substitution
+
+  Informally, we have (diag : Sub (A : U) (A : U, B : U) := λ(A : U). (A, A))
+
+  Assume an algebra of (A : U, B : U), which is a pair of sets (A, B).
+
+  The signature for the comma category ((A, B) ↓ diag) is
+
+    C  : U           -- An object of (A : U)
+    Aᴹ : A → El C    -- Morphism from (A, B) to (diag C)
+    Bᴹ : B → El C    -- Morphism from (A, B) to (diag C)
+
+  The initial object for this is just the set coproduct.
+
+  This can be generalized to coproducts of arbitrary structures, by
+  having (diag : Sub Γ (Γ ++ Γ)), where _++_ is telescope extension.
+
+
+The work to do here is basically a lot of signature massaging. I envision two ways
+to proceed:
+  1. First develop tools for telescope manipulation.
+  2. Given (σ : Sub Γ Δ) and (i : Δᴬ) try to construct (i ↓ σ) directly by
+     induction on Δ.
+
+--------------------------------------------------------------------------------
+
+warmup: COPRODUCTS
+
+end result:
+  γ    : Γ-alg
+  inj₁ : A → γ
+  inj₂ : B → γ
+but we interleave the 3 components
+
+(Γ : Con)ᴹ  : Γᴬ → Γᴬ → Con
+(Γ : Con)ᶠ  : (i j : Γᴬ) → Sub (Γᴹ i j) Γ
+(A : Ty Γ)⁰ : (ii : Aᴬ i)(jj : Aᴬ j)(t : Tm Γ A) → Ty (Γᴹ i j)
+(A : Ty Γ)¹ : (ii : Aᴬ i)(jj : Aᴬ j)(t : Tm Γ A) → Ty (Γᴹ i j)
+
+∙ᴹ i j = ∙
+∙ᶠ i j = id
+(Γ ▶ A)ᴹ (i, ii) (j, jj) = Γᴹ i j ▶ A⁰ ii jj vz ▶ (A¹ ii jj vz)[wk]
+(Γ ▶ A)ᶠ (i, ii) (j, jj) = Γᶠ i j ∘ wk²
+
+
+
+-- OLD, issue with only being able to depend on Γ in Sub Γ Δ
+--------------------------------------------------------------------------------
+
+Let's try 2 first.
+
+--------------------------------------------------------------------------------
+assuming (Γ : Con)
+--------------------------------------------------------------------------------
+
+(Δ : Con)ᶜ : (i : Δᴬ)(ν : Sub Γ Δ) → Con             -- comma signature
+(Δ : Con)ᶠ : (i : Δᴬ)(ν : Sub Γ Δ) → Sub (Δᶜ i ν) Γ  -- forgetful sub to Γ
+
+(σ : Sub Δ Σ)ᶜ : (i : Δᴬ)(ν : Sub Γ Δ) → Sub (Δᶜ i ν) (Σᶜ (σᴬ i) (σ ∘ ν))
+(σ : Sub Δ Σ)ᶠ : (i : Δᴬ)(ν : Sub Γ Δ) → Δᶠ i ν = Σᶠ (σᴬ i) (σ ∘ ν) ∘ σᶜ i ν
+
+(A : Ty Δ)ᶜ    : (i : Δᴬ)(ii : Aᴬ i)(ν : Sub Γ Δ)(t : Tm Γ A[ν]) → Ty (Δᶜ i ν)
+(t : Tm Δ A)ᶜ  : (i : Δᴬ)(ν : Sub Γ Δ) → Tm (Δᶜ i ν) (Aᶜ i (tᴬ i) ν t[ν])
+
+∙ᶜ i ν := Γ
+∙ᶠ i ν := id
+
+(Δ ▶ A)ᶜ (i, ii) (ν, t) := Δᶜ i ν ▶ Aᶜ i ii ν t
+
+(Δ ▶ A)ᶠ (i, ii) (ν, t) : Sub (Δᶜ i ν ▶ Aᶜ i ii ν t) Γ
+  := Δᶠ i ν ∘ wk
+
+((A : Ty Σ)[σ : Sub Δ Σ])ᶜ (i : Δᴬ) (ii : Aᴬ (σᴬ i)) (ν : Sub Γ Δ)(t : Tm Γ A[σ ∘ ν])
+  : Ty (Δᶜ i ν)
+
+  Aᶜ (σᴬ i) ii (σ ∘ ν) t : Ty (Σᶜ (σᴬ i) (σ ∘ ν))
+  σᶜ i ν : Sub (Δᶜ i ν) (Σᶜ (σᴬ i) (σ ∘ ν))
+
+  (A[σ])ᶜ i ii ν t := (Aᶜ (σᴬ i) ii (σ ∘ ν) t)[σᶜ i ν]
+
+idᶜ i ν : Sub (Δᶜ i ν) (Δᶜ i ν)
+  := id
+
+idᶠ i ν : Δᶠ i ν = Δᶠ (idᴬ i) (id ∘ ν) ∘ id
+  OK
+
+((σ : Sub Σ θ) ∘ (δ : Sub Δ Σ))ᶜ i ν : Sub (Δᶜ i ν) (θᶜ (σᴬ (δᴬ i)) (σ ∘ δ ∘ ν))
+  δᶜ i ν            : Sub (Δᶜ i ν) (Σᶜ (δᴬ i) (δ ∘ ν))
+  σᶜ (δᴬ i) (δ ∘ ν) : Sub (Σᶜ (δᴬ i) (δ ∘ ν)) (θᶜ (σᴬ i) (σ ∘ δ ∘ ν))
+  := σᶜ (δᴬ i) (δ ∘ ν) ∘ δᶜ i ν
+
+(σ ∘ δ)ᶠ i ν
+  : Δᶠ i ν = θᶠ (σᴬ (δᴬ i)) (σ ∘ δ ∘ ν) ∘ σᶜ (δᴬ i) (δ ∘ ν) ∘ δᶜ i ν
+  δᶠ i ν : Δᶠ i ν = Σᶠ (δᴬ i) (δ ∘ ν) ∘ δᶜ i ν
+  σᶠ (δᴬ i) (δ ∘ ν) : Σᶠ (δᴬ i) (δ ∘ ν) = θᶠ (σᴬ (δᴬ i)) (σ ∘ δ ∘ ν) ∘ σᶜ (δᴬ i) (δ ∘ ν)
+  OK
+
+εᶜ i ν : Sub (Δᶜ i ν) Γ
+  := Δᶠ i ν
+
+εᶠ i ν : Δᶠ i ν = id ∘ Δᶠ i ν
+  OK
+
+((σ : Sub Δ Σ) , (t : Tm Δ A[σ]))ᶜ i ν
+  : Sub (Δᶜ i ν) (Σᶜ (σᴬ i) (σ ∘ ν) ▶ Aᶜ (σᴬ i) (tᴬ i) (σ ∘ ν) t[ν])
+
+  σᶜ i ν : Sub (Δᶜ i ν) (Σᶜ (σᴬ i) (σ ∘ ν))
+  tᶜ i ν : Tm (Δᶜ i ν) ((A[σ])ᶜ  i (tᴬ i) ν (t[ν]))
+         : Tm (Δᶜ i ν) (Aᶜ (σᴬ i) (tᴬ i) (σ ∘ ν) (t[ν]) [σᶜ i ν])
+
+  (σ, t)ᶜ i ν := (σᶜ i ν, tᶜ i ν)
+
+(σ, t)ᶠ i ν
+  : Δᶠ i ν = (Σ ▶ A)ᶠ (σᴬ i, tᴬ i) (σ ∘ ν, t[ν]) ∘ (σᶜ i ν, tᶜ i ν)
+  : Δᶠ i ν = Σᶠ (σᴬ i) (σ ∘ ν) ∘ wk ∘ (σᶜ i ν, tᶜ i ν)
+  : Δᶠ i ν = Σᶠ (σᴬ i) (σ ∘ ν) ∘ σᶜ i ν
+  σᶠ i ν : Δᶠ i ν = Σᶠ (σᴬ i) (σ ∘ ν) ∘ σᶜ i ν
+  OK
+
+(π₁ σ)ᶜ i ν : Sub (Δᶜ i ν) (Σᶜ (₁ (σᴬ i)) (π₁ (σ ∘ ν)))
+  σ      : Sub Δ (Σ ▶ A)
+  σᶜ i ν : Sub (Δᶜ i ν) ((Σ ▶ A)ᶜ (σᴬ i) (σ ∘ ν))
+         : Sub (Δᶜ i ν) (Σᶜ (₁ (σᴬ i)) (π₁ (σ ∘ ν)) ▶ Aᶜ _ (₂ (σᴬ i)) _ (π₂ (σ ∘ ν)))
+
+  := π₁ (σᶜ i ν)
+
+(π₁ σ)ᶠ i ν : Δᶠ i ν = Σᶠ (₁ (σᴬ i)) (π₁ (σ ∘ ν)) ∘ π₁ (σᶜ i ν)
+  σᶠ i ν : Δᶠ i ν = (Σ ▶ A)ᶠ (σᴬ i) (σ ∘ ν) ∘ σᶜ i ν
+         : Δᶠ i ν = Σᶠ (₁ (σᴬ i)) (π₁ (σ ∘ ν)) ∘ wk ∘ σᶜ i ν
+	 : Δᶠ i ν = Σᶠ (₁ (σᴬ i)) (π₁ (σ ∘ ν)) ∘ π₁ (σᶜ i ν)
+  OK
+
+(π₂ σ)ᶜ i ν
+  := π₂ (σᶜ i ν)
+
+((t : Tm Σ A)[σ : Sub Δ Σ]) i ν
+  : Tm (Δᶜ i ν) ((A[σ])ᶜ i (tᴬ (σᴬ i)) ν t[σ ∘ ν])
+  : Tm (Δᶜ i ν) (Aᶜ (σᴬ i) (tᴬ (σᴬ i)) (σ ∘ ν) t[σ ∘ ν] [σᶜ i ν])
+
+  tᶜ (σᴬ i) (σ ∘ ν) : Tm (Σᶜ (σᴬ i) (σ ∘ ν)) (Aᶜ (σᴬ i) (tᴬ (σᴬ  i)) (σ ∘ ν) t[σ ∘ ν])
+  σᶜ i ν            : Sub (Δᶜ i ν) (Σᶜ (σᴬ i) (σ ∘ ν))
+
+  (t[σ])ᶜ i ν := tᶜ (σᴬ i) (σ ∘ ν) [σᶜ i ν]
+
+[id] : (A[id])ᶜ i ii ν t = Aᶜ i ii ν t
+     : OK
+
+TODO
+
+[∘] : A [σ ∘ δ] = A [σ] [δ]
+ass : (σ ∘ δ) ∘ ν = σ ∘ (δ ∘ ν)
+idl : id ∘ σ = σ
+idr : σ ∘ id = σ
+∙η  : (σ : Sub Γ ∙) → σ = ε
+▶β₁ : π₁ (σ, t) = σ
+▶β₂ : π₂ (σ, t) = t
+▶η  : (π₁ σ, π₂ σ) = σ
+,∘  : (σ, t) ∘ δ = (σ ∘ δ, t [δ])
+
+--------------------------------------------------------------------------------
+
+(U : Ty Δ)ᶜ i (ii : Set) ν (t : Tm Γ U) : Ty (Δᶜ i ν)
+  := ii ⇒̂ El (t[Δᶠ i ν])
+
+(El a)ᶜ (i : Δᴬ) (ii : aᴬ i) (ν : Sub Γ Δ) (t : Tm Γ (El a[ν])) : Ty (Δᶜ i ν)
+  a : Tm Δ U
+  aᶜ i ν : Tm (Δᶜ i ν) (Uᶜ i (aᴬ i) ν a[ν])
+         : Tm (Δᶜ i ν) (Π̂ (aᴬ i) (λ _. El (a[ν ∘ Δᶠ i ν])))
+
+  aᶜ i ν @̂ ii : Tm (Δᶜ i ν) (El a[ν ∘ Δᶠ i ν])
+    t[Δᶠ i ν] : Tm (Δᶜ i ν) (El a[ν ∘ Δᶠ i ν])
+
+  (El a)ᶜ i ii ν t := El (Id (a[ν ∘ Δᶠ i ν]) (aᶜ i ν @̂ ii) (t[Δᶠ i ν]))
+
+U[] : (U[σ])ᶜ i ii ν t = Uᶜ i ii ν t
+    : (Uᶜ (σᴬ i) ii (σ ∘ ν) t)[σᶜ i ν] = Uᶜ i ii ν t
+    : Π̂ ii (λ α. El (t[Σᶠ (σᴬ i) (σ ∘ ν) ∘ σᶜ i ν]))
+    = Π̂ ii (λ α. El (t[Δᶠ i ν]))
+  OK -- by (σᶠ ν i)
+
+El[] : ((El a)[σ])ᶜ i ii ν t = (El a[σ])ᶜ i ii ν t
+     : ((El a)ᶜ (σᴬ i) ii (σ ∘ ν) t)[σᶜ i ν]
+       =
+       El (Id (a[σ ∘ ν ∘ Δᶠ i ν]) ((a[σ])ᶜ i ν @̂ ii) (t[Δᶠ i ν]))
+
+     : ((El a)ᶜ (σᴬ i) ii (σ ∘ ν) t)[σᶜ i ν]
+       =
+       El (Id (a[σ ∘ ν ∘ Δᶠ i ν]) ((a[σ])ᶜ i ν @̂ ii) (t[Δᶠ i ν]))
+
+     : El (Id (a[σ ∘ ν ∘ Σᶠ (σᴬ i) (σ ∘ ν) ∘ σᶜ i ν])
+              (aᶜ (σᴬ i) (σ ∘ ν) [σᶜ i ν] @̂ ii)
+              (t[Σᶠ (σᴬ i) (σ ∘ ν) ∘ σᶜ i ν]))
+       =
+       El (Id (a[σ ∘ ν ∘ Δᶠ i ν])
+              (aᶜ (σᴬ i) (σ ∘ ν) [σᶜ i ν] @̂ ii)
+	      (t[Δᶠ i ν]))
+
+     : El (Id (a[σ ∘ ν ∘ Δᶠ i ν])
+              (aᶜ (σᴬ i) (σ ∘ ν) [σᶜ i ν] @̂ ii)
+              (t[Δᶠ i ν]))
+       =
+       El (Id (a[σ ∘ ν ∘ Δᶠ i ν])
+              (aᶜ (σᴬ i) (σ ∘ ν) [σᶜ i ν] @̂ ii)
+	      (t[Δᶠ i ν]))
+  OK
+
+(Π a B)ᶜ (i : Δᴬ) (ii : (α : aᴬ i) → Bᴬ (i, α)) (ν : Sub Γ Δ) (t : Tm Γ (Π a[ν] B[ν↑]))
+  : Ty (Δᶜ i ν)
+
+  aᶜ i ν : Tm (Δᶜ i ν) (Uᶜ i (aᴬ i) ν a[ν])
+         : Tm (Δᶜ i ν) (aᴬ i ⇒̂ El (a[ν ∘ Δᶠ i ν]))
+
+  Bᶜ : (i : (Δ ▶ El a)ᴬ)(ii : Bᴬ i)(ν : Sub Γ (Δ ▶ El a))(t : Tm Γ B[ν])
+       → Ty ((Δ ▶ El a)ᶜ i ν)
+     : (i : (Δ ▶ El a)ᴬ)(ii : Bᴬ i)(ν : Sub Γ (Δ ▶ El a))(t : Tm Γ B[ν])
+       → Ty (Δᶜ (₁ i) (π₁ ν)
+             ▶ El (Id (a[π₁ ν ∘ Δᶠ (₁ i) (π₁ ν)])
+	          (aᶜ (₁ i) (π₁ ν) @̂ (₂ i))
+		  ((π₂ ν)[Δᶠ (₁ i) (π₁ ν)])))
+
+  Bᶜ (i, x) (ii x) (ν, ?)
+    ? : Tm Γ (El a[ν])
+
+  aᶜ i ν @̂ x : Tm (Δᶜ i ν) (El a[ν ∘ Δᶠ i ν])    ISSUE: we can only depend on Γ here!
+                                                        reconsider
+
+  Π̂ (aᴬ i) λ x. Bᶜ (i, x) (ii x) (ν, ?)
