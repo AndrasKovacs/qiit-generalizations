@@ -1,6 +1,8 @@
 
 Goal:
-  - Bootstrap the model theory of signatures *before* using induction on signatures in any way.
+  - Rigorous treatment of levels and large elimination, model theory for signatures which covers
+    everything which we do elsewhere.
+  - Bootstrapping the model theory of signatures *before* using induction on signatures.
   - 1. Define notion of model for ToS as a record type.
   - 2. Define a bootstrap signature as a context in an arbitrary ToS model (related: Church-coding, "finally tagless")
   - 3. Define flCwF model of ToS
@@ -726,7 +728,7 @@ We need at least two levels to parametrize stuff with.
 
 4. representing ToS as a bootstrap signature.
 
-  The signature for ToSⱼ is at level (j + 1).
+  aThe signature for ToSⱼ is at level (j + 1).
 
   We note that instantiating the bootstrap signature with flCwF(i,j) gives us
   exactly ToS(i, j) as algebra

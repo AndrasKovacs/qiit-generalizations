@@ -58,8 +58,8 @@ but we interleave the 3 components
 
 ∙ᴹ i j = ∙
 ∙ᶠ i j = id
-(Γ ▶ A)ᴹ (i, ii) (j, jj) = Γᴹ i j ▶ A⁰ ii jj vz ▶ (A¹ ii jj vz)[wk]
-(Γ ▶ A)ᶠ (i, ii) (j, jj) = Γᶠ i j ∘ wk²
+(Γ ▶ A)ᴹ (i, ii) (j, jj) = Γᴹ i j ▶ A ▶ A⁰ ii jj vz ▶ (A¹ ii jj vz)[wk]
+(Γ ▶ A)ᶠ (i, ii) (j, jj) = Γᶠ i j ∘ wk³
 
 
 
