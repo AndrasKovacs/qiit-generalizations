@@ -1,0 +1,29 @@
+
+Jon Sterling cumulativity:
+  - it seems to basically work as nicely as we can get
+  - the context lifting rule can only be justified if we interpret
+    Con as Setω or UUω.
+    + In the std semantics, we interpret Γ.A as Σ Γ ↑(i,ω)A, where we
+      semantically lift A to ω.
+    + Context lifting rule says that Γ.A = Γ.↑(i,j)A. This works, because
+      by lifting composition, ↑(j,ω)(↑(i,j)A) = ↑(i, ω)A
+  - So, it seems that the benefit is that we can skip context and Sub
+    lifting altogether, but the cost is that we are forced to have
+    semantic ω.
+
+Proposal: use Jon Sterling algebraic cumulativity, add some extra stuff:
+
+  - ⊤, extensional equality type
+
+  - admissible stuff (TODO: check)
+    + i ⊔ j for levels
+    + Π, Σ : n(A : Ty Γ i) → Ty (Γ ▶ A) j → Ty Γ (i ⊔ j)
+    + Cumulative subtyping.
+      _<_ : Ty Γ i → Ty Γ j → Ty Γ (i ⊔ j)
+      _<_ A B = Id (↑A) B
+
+      Hence, if p : Tm Γ (A < B), then Id (↑A) B, and by equality
+      reflection and cumulativity Tm Γ A = Tm Γ B
+
+  - Sterling cumulativity is nice because it's finitary QIIT with sort
+    equations, also has canonicity and set-theoretic model.

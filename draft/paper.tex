@@ -1,0 +1,153 @@
+
+\documentclass{llncs}
+
+\usepackage{proof}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[utf8]{inputenc}
+\usepackage{todonotes}
+\input{abbrevs.tex}
+
+\begin{document}
+
+\title{Generalizations of Quotient Inductive-Inductive Types\thanks{This work
+    was supported by EFOP-3.6.3-VEKOP-16-2017-00002 grant and COST
+    Action EUTypes CA15123.}}
+
+\author{Ambrus Kaposi \and Andr{\'a}s Kov{\'a}cs}
+\institute{E{\"o}tv{\"o}s Lor{\'a}nd University, Budapest, Hungary \\ \{akaposi$|$kovacsandras\}@inf.elte.hu}
+
+\maketitle
+
+\begin{abstract}
+Quotient inductive-inductive types (QIITs) are generalized inductive types which
+allow sorts to be indexed over previously declared sorts, and allow usage of
+equality constructors. QIITs are especially useful for algebraic descriptions of
+type theories and constructive definitions of real, ordinal and surreal
+numbers. We develop new metatheory for large QIITs, large elimination, recursive
+equations, infinitary constructors and equations between sorts.
+%% First, we develop tools which allow precise and convenient handling
+%% of universe levels, working internally in an extensional type theory with
+%% cumulative universes.
+As in prior work, we describe QIITs using a type theory where each context
+represents a QIIT signature. However, in our case the theory of signatures can
+also describe its own signature. We use self-description to bootstrap a model
+theory for the theory of signatures without using preterms or assuming a
+pre-existing internal syntax for a type theory. We give initial algebra
+semantics for described QIITs, and we show the equivalence of initiality and
+induction. We present two extensions of a previous term model construction. The
+first one constructs all large infinitary QIITs without sort equations from the
+QIIT of the theory of signatures. The second one constructs all large finitary
+QIITs with sort equations, from the same syntax. This separation is required
+because handling infinitary constructors in the term model requires showing a
+strong form of invariance under algebra isomorphisms, which is violated by sort
+equations.
+
+\end{abstract}
+
+\section{Introduction}
+
+\todo[inline]{Citations}
+
+The aim of this work is to provide theoretical underpinning to a general notion
+of inductive types, called quotient inductive-inductive types (QIITs). QIITs are
+of interest because there are many commonly used mathematical structures, which
+can be conveniently described as QIITs in type theory, but cannot be defined as
+less general inductive types, or doing so incurs large encoding overhead.
+
+Categories are a good example. Signatures for QIITs allow having multiple sorts,
+with later ones indexed over previous ones, and equations as well. We need both
+features in order to write down the signature of categories:
+\begin{alignat*}{5}
+  & Obj && : \Set \\
+  & Mor && : Obj \ra Obj \ra \Set \\
+  & id  && : Mor\,i\,j \\
+  & \blank\circ\blank && : Mor\,j\,k\ra Mor\,i\,j \ra Mor\,i\,k \\
+  & idl && : id \circ f = f \\
+  & idr && : f \circ id = f \\
+  & ass && : f \circ (g \circ h) = (f \circ g) \circ h
+\end{alignat*}
+The benefit of having a QIIT signature is getting a model theory ``for free'',
+from the metatheory of QIITs. This model theory includes a category of algebras
+which has an initial object and also some additional structure. For the
+signature of categories, we get the empty category as the initial object, but it
+is common to consider categories with more structure, which have more
+interesting initial models.
+
+Algebraic notions of models of type theories are examples for this. Here,
+initial models represent syntax, and initiality corresponds to induction on
+syntax. A number of different notions have been used, from contextual categories
+and comprehension categories to categories with families, but all of these are
+categories with extra structure.
+
+The main motivation of the current paper is to extend QIITs so that it
+accommodates all algebraic notions of type theories which have been used in
+previous works. As a beneficial side effect of fulfilling this goal, infinitary
+QIITs such as real numbers will be covered as well.
+
+We generalize previous notions of QIITs in the following ways:
+\begin{enumerate}
+  \item
+  \textbf{Large constructors, large elimination} and models at different
+  universe levels. This feature is routinely used in the metatheory of type
+  theory, but it has not been presented explicitly in previous works about
+  QIITs. In order to handle universe levels gracefully, we develop a set of
+  tools, working inside an extensional type theory with \emph{algebraic
+    cumulativity}.
+  \item
+  \textbf{Infinitary constructors}. This enables defining Cauchy real numbers
+  and surreal numbers as QIITs. Also, the theory of QIIT signatures is itself
+  large and infinitary, thus it can ``eat itself'', i.e.\ include its own
+  signature and provide its own metatheory.  We use this self-representation to
+  bootstrap the model theory of signatures, without having to assume any
+  pre-existing internal syntax.
+  \item
+  \textbf{Recursive equations}, i.e. equations appearing as assumptions
+  of constructors. These have occurred previously in syntaxes of cubical type
+  theories, as boundary conditions.
+  \item
+  \textbf{Sort equations}, or equations between type constructors. They have
+  been used recently to conveniently represent type-theoretic universes, for
+  example Russell-style universes or cumulative hierarchies.
+\end{enumerate}
+
+We also develop semantics. We show that for each signature, there is a cwf
+(category with families) of algebras, extended with $\Sigma$-types, an
+extensional identity type and constant families. This additional structure
+corresponds to a type-theoretic flavor of finite limits, and it was shown
+in \cite{TODO} that the category of such cwfs is biequivalent to the category
+of finitely complete categories.
+
+As to the existence of initial algebras, we present two different term model
+constructions, yielding the following statements:
+
+\begin{enumerate}
+\item
+  All large infinitary QIITs with recursive equations, but \emph{without
+  sort equations}, are reducible to the theory of signatures, i.e.\
+  their initial algebras are constructible from the initial algebra for
+  the theory of signatures.
+\item
+  All large finitary QIITs with sort equations, but no recursive equations,
+  are reducible to the theory of signatures.
+\end{enumerate}
+
+The reason for the two separate constructions is that sort equations are not as
+well-behaved as the other extensions: they are modelled as strict equalities of
+sets in algebras, and so they do not respect isomorphism of sets. We make
+essential use of invariance under set isomorphism in the first term model
+construction, so we cannot throw sort equations into that mix.
+
+
+
+
+
+
+
+
+
+
+
+\bibliography{references}
+
+\end{document}

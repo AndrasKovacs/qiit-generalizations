@@ -1,3 +1,4 @@
+
 {-# OPTIONS --rewriting #-}
 
 open import StrictLib
@@ -103,6 +104,45 @@ id' i A x = x
 
 --------------------------------------------------------------------------------
 
+Con : Set
+Con = ∃ U
+
+Ty : Con → ℕ → Set
+Ty (i , Γ) j = El Γ → U j
+
+Sub : Con → Con → Set
+Sub (_ , Γ) (_ , Δ) = El Γ → El Δ
+
+Tm : (Γ : Con) → ∀ {j} → Ty Γ j → Set
+Tm (i , Γ) {j} A = (γ : El Γ) → El (A γ)
+
+↑T : ∀ {Γ i} → Ty Γ i → Ty Γ (suc i)
+↑T {i , Γ}{j} A γ = ↑ (A γ)
+
+↑Tm : ∀ {Γ i}{A : Ty Γ i} → Tm Γ (↑T {Γ}{i} A) ≡ Tm Γ A
+↑Tm {i , Γ} {j} {A} = (λ f → ∀ x → f x) & ext λ γ → El↑ (A γ)
+
+infixl 4 _▶_
+_▶_ : (Γ : Con) → ∀ {j} → Ty Γ j → Con
+_▶_ (i , Γ) {j} A = i ⊔ j , Σ' (↑⊔ Γ j) λ x → ⊔↑ i (A (coe (El↑⊔ Γ j) x))
+
+-- does not work! Perhaps only works with U ω
+↑▶ : ∀ {Γ : Con}{i}{A : Ty Γ i} → (Γ ▶ A) ≡ (Γ ▶ ↑T {Γ}{i} A)
+↑▶ {i , Γ} {j} {A} = {!!}
+
+Pi : ∀ {Γ}{i}(A : Ty Γ i) → Ty (Γ ▶ A) i → Ty Γ i
+Pi {i , Γ}{j} A B γ =
+  -- coercion hell but plausible
+  Π' (A γ) (λ x → B ((coe (El↑ Γ ⁻¹ ◾ {!!}) γ) , {!x!}))
+
+
+-- question: when do we *not* get coercion hell?
+
+-- Semantic U has homogeneous type operators!
+-- If we only use homogeneous type operators, then everything is fine
+-- But: we don't get russell univs or even univs easily!
+
+
 -- Con : ℕ → Set
 -- Con = U
 
@@ -166,75 +206,75 @@ id' i A x = x
 
 -- let's index Con and Ty
 
-Con : ℕ → Set
-Con = U
+-- Con : ℕ → Set
+-- Con = U
 
-Ty : ∀ {i} → Con i → ℕ → Set
-Ty {i} Γ j = El Γ → U j
+-- Ty : ∀ {i} → Con i → ℕ → Set
+-- Ty {i} Γ j = El Γ → U j
 
-↑T : ∀ {i j}{Γ : Con i} → Ty Γ j → Ty Γ (suc j)
-↑T A γ = ↑ (A γ)
+-- ↑T : ∀ {i j}{Γ : Con i} → Ty Γ j → Ty Γ (suc j)
+-- ↑T A γ = ↑ (A γ)
 
-Ty↑Γ : ∀ {i j Γ} → Ty {suc i} (↑ Γ) j ≡ Ty Γ j
-Ty↑Γ {i} {j}{Γ} = (λ a b → a → b) & El↑ Γ ⊗ refl
+-- Ty↑Γ : ∀ {i j Γ} → Ty {suc i} (↑ Γ) j ≡ Ty Γ j
+-- Ty↑Γ {i} {j}{Γ} = (λ a b → a → b) & El↑ Γ ⊗ refl
 
--- this one is derivable
-↑T' : ∀ {i j}{Γ : Con i} → Ty Γ j → Ty (↑ Γ) (suc j)
-↑T' {i}{j}{Γ} A γ = ↑ (A (coe (El↑ Γ) γ))
+-- -- this one is derivable
+-- ↑T' : ∀ {i j}{Γ : Con i} → Ty Γ j → Ty (↑ Γ) (suc j)
+-- ↑T' {i}{j}{Γ} A γ = ↑ (A (coe (El↑ Γ) γ))
 
- -- let A' : Ty (↑ Γ) j
- --     A' = coe (Ty↑Γ {i}{j}{Γ} ⁻¹) A
- -- in ↑T {suc i}{j}{↑ Γ} A'
+--  -- let A' : Ty (↑ Γ) j
+--  --     A' = coe (Ty↑Γ {i}{j}{Γ} ⁻¹) A
+--  -- in ↑T {suc i}{j}{↑ Γ} A'
 
-⊔↑T : ∀ {i Γ j} → Ty {i} Γ j → Ty (↑⊔ Γ j) (i ⊔ j)
-⊔↑T {i}{Γ}{j} A γ = ⊔↑ i (A (coe (El↑⊔ {i} Γ j) γ))
+-- ⊔↑T : ∀ {i Γ j} → Ty {i} Γ j → Ty (↑⊔ Γ j) (i ⊔ j)
+-- ⊔↑T {i}{Γ}{j} A γ = ⊔↑ i (A (coe (El↑⊔ {i} Γ j) γ))
 
-Sub : ∀ {i} → Con i → ∀ {j} → Con j → Set
-Sub Γ Δ = El Γ → El Δ
+-- Sub : ∀ {i} → Con i → ∀ {j} → Con j → Set
+-- Sub Γ Δ = El Γ → El Δ
 
-Sub↑ΓΔ : ∀ {i Γ j Δ} → Sub (↑ {i} Γ) (↑ {j} Δ) ≡ Sub Γ Δ
-Sub↑ΓΔ {i}{Γ}{j}{Δ} = (λ a b → a → b) & El↑ Γ ⊗ El↑ Δ
+-- Sub↑ΓΔ : ∀ {i Γ j Δ} → Sub (↑ {i} Γ) (↑ {j} Δ) ≡ Sub Γ Δ
+-- Sub↑ΓΔ {i}{Γ}{j}{Δ} = (λ a b → a → b) & El↑ Γ ⊗ El↑ Δ
 
-Tm : ∀ {i}(Γ : Con i){j} → Ty Γ j → Set
-Tm Γ A = (γ : El Γ) → El (A γ)
+-- Tm : ∀ {i}(Γ : Con i){j} → Ty Γ j → Set
+-- Tm Γ A = (γ : El Γ) → El (A γ)
 
-Tm↑ΓA : ∀ {i}{Γ : Con i}{j}{A : Ty Γ j}
-  → Tm {suc i} (↑ Γ){suc j} (↑T' {i}{j}{Γ} A) ≡ Tm Γ A
-Tm↑ΓA {i} {Γ} {j} {A} rewrite El↑ Γ =
-  (λ f → ∀ x → f x) & ext λ γ → El↑ (A γ)
+-- Tm↑ΓA : ∀ {i}{Γ : Con i}{j}{A : Ty Γ j}
+--   → Tm {suc i} (↑ Γ){suc j} (↑T' {i}{j}{Γ} A) ≡ Tm Γ A
+-- Tm↑ΓA {i} {Γ} {j} {A} rewrite El↑ Γ =
+--   (λ f → ∀ x → f x) & ext λ γ → El↑ (A γ)
 
-∙ : ∀ {i} → Con i
-∙ = ⊤'
+-- ∙ : ∀ {i} → Con i
+-- ∙ = ⊤'
 
-infixl 3 _▶_
-_▶_ : ∀ {i}(Γ : Con i) → Ty Γ i → Con i
-_▶_ = Σ'
+-- infixl 3 _▶_
+-- _▶_ : ∀ {i}(Γ : Con i) → Ty Γ i → Con i
+-- _▶_ = Σ'
 
-infix 4 _[_]T
-_[_]T : ∀ {i Γ j Δ k}(A : Ty {j} Δ k)(σ : Sub Γ Δ) → Ty {i} Γ k
-_[_]T A σ γ = A (σ γ)
+-- infix 4 _[_]T
+-- _[_]T : ∀ {i Γ j Δ k}(A : Ty {j} Δ k)(σ : Sub Γ Δ) → Ty {i} Γ k
+-- _[_]T A σ γ = A (σ γ)
 
-FinToPos : ∀ {i} → Fin i → Pos (lvl i)
-FinToPos zero    = zero
-FinToPos (suc x) = suc (FinToPos x)
+-- FinToPos : ∀ {i} → Fin i → Pos (lvl i)
+-- FinToPos zero    = zero
+-- FinToPos (suc x) = suc (FinToPos x)
 
-subFin : ∀ {i} → Fin i → ℕ
-subFin {suc n} zero    = n
-subFin {suc n} (suc x) = subFin {n} x
+-- subFin : ∀ {i} → Fin i → ℕ
+-- subFin {suc n} zero    = n
+-- subFin {suc n} (suc x) = subFin {n} x
 
-lookupFinToPos : ∀ {i} x → lookup (FinToPos {i} x) ≡ UU (lvl (subFin x))
-lookupFinToPos zero    = refl
-lookupFinToPos (suc x) = lookupFinToPos x
+-- lookupFinToPos : ∀ {i} x → lookup (FinToPos {i} x) ≡ UU (lvl (subFin x))
+-- lookupFinToPos zero    = refl
+-- lookupFinToPos (suc x) = lookupFinToPos x
 
-u : ∀ {i}{Γ : Con i} → ∀ j → Fin j → Ty Γ j
-u j x _ = U' (FinToPos x)
+-- u : ∀ {i}{Γ : Con i} → ∀ j → Fin j → Ty Γ j
+-- u j x _ = U' (FinToPos x)
 
-Russell : ∀ {i}{Γ : Con i}{j}{x : Fin j} → Tm {i} Γ (u {i}{Γ} j x) ≡ Ty Γ (subFin x)
-Russell {i} {Γ} {j} {x} = (λ x → El Γ → x) & lookupFinToPos x
+-- Russell : ∀ {i}{Γ : Con i}{j}{x : Fin j} → Tm {i} Γ (u {i}{Γ} j x) ≡ Ty Γ (subFin x)
+-- Russell {i} {Γ} {j} {x} = (λ x → El Γ → x) & lookupFinToPos x
 
-Pi : ∀ {i j}{Γ : Con i}(A : Ty Γ j) → Ty (↑⊔ Γ j ▶ ⊔↑T A) j → Ty Γ j
-Pi {i}{j}{Γ} A B γ = Π' (A γ) (λ x → B ((coe {!!} γ) , coe {!!} x))
-  -- a bit awful
+-- Pi : ∀ {i j}{Γ : Con i}(A : Ty Γ j) → Ty (↑⊔ Γ j ▶ ⊔↑T A) j → Ty Γ j
+-- Pi {i}{j}{Γ} A B γ = Π' (A γ) (λ x → B ((coe {!!} γ) , coe {!!} x))
+--   -- a bit awful
 
 
 -- Con : ℕ → Set

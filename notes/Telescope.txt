@@ -1,0 +1,25 @@
+
+-- Signature telescopes
+--------------------------------------------------------------------------------
+
+-- defined as an extension of the syntax
+
+Tel  : Con → Set                          -- telescope
+_++_ : (Γ : Con) → Tel Γ → Con            -- extension by telescope
+∙    : Tel Γ                              -- empty Tel
+_,_  : (Δ : Tel Γ) → Ty (Γ ++ Δ) → Tel Γ  -- extended Tel
+++∙  : Γ ++ []     = Γ
+++,  : Γ ++ (Δ, A) = (Γ ++ Δ) , A
+_[_] : Tel Δ → Sub Γ Δ → Tel Γ
+∙[]  : ∙ [σ] = ∙
+,[]  : (Δ, A)[σ] = Δ[σ] , A[σ]
+
+-- functoriality of Tel substitution is provable by induction on syntax
+
+-- Telescope from Sub
+--------------------------------------------------------------------------------
+
+-- defined by induction on Δ
+tel : Sub Γ Δ → Tel Γ
+tel ε      = ∙
+tel (σ, t) =

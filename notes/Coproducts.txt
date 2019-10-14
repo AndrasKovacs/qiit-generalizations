@@ -1,0 +1,39 @@
+
+Goal: binary coproducts of algebras
+--------------------------------------------------------------------------------
+
+We try to use the framework described in Levels_Sigs.txt.
+
+Assume syntax for signatures at level j (i.e. signatures where external sets live in Setⱼ)
+
+Assume arbitrary level i for inductive sorts for algebras.
+
+Given Γ : Con signature, we want the coproduct of γ₀ γ₁ : Γᴬ algebras.
+
+We do this by constructing a signature which represents the category of
+γ₀ → γ* ← γ₁ cospans.
+
+--------------------------------------------------------------------------------
+
+Induction on signatures
+
+-- Γᴹ : Γᴬ → Γᴬ → Set
+-- Aᴹ : Aᴬ γ₀ → Aᴬ γ₁ → Γᴹ γ₀ γ₁ → Set
+
+(Γ : Con)ᶜ : Γᴬ → Γᴬ → Con       -- cospan context, depending on γ₀ γ₁
+(Γ : Con)ᵘ : Sub (Γᶜ γ₀ γ₁) Γ    -- forgetful substitution back to Γ
+
+(A : Ty Γ)⁰ :  Tm (Γᶜ γ₀ γ₁ ▶ A[Γᵘ]) A[Γᵁ∘wk] → Aᴬ γ₀ → Ty (Γᶜ γ₀ γ₁)
+(A : Ty Γ)¹ :  Tm (Γᶜ γ₀ γ₁ ▶ A[Γᵘ]) A[Γᵁ∘wk] → Aᴬ γ₁ → Ty (Γᶜ γ₀ γ₁)
+
+-- ∙ᶜ _ _ :≡ ∙
+-- ∙ᵘ     :≡ id
+
+(Γ ▶ A)ᶜ (γ₀, α₀)(γ₁, α₁) :≡ Γᶜ γ₀ γ₁ ▶ A[Γᵘ] ▶ A⁰ vz α₀ ▶ A¹ vz α₁ [p]
+(Γ ▶ A)ᵘ = Γᵘ ∘ p³
+
+(A[σ])⁰ (t : Tm (Γᶜ γ₀ γ₁ ▶ A[σ ∘ Γᵘ]) A[σ∘Γᵁ∘p]) (α : Aᴬ (σᴬ γ₀))
+  : Ty (Γᶜ γ₀ γ₁)
+
+  A⁰ (σᴬ γ₀)(σᴬ σ₁) :
+    Tm (Δᶜ (σ₀ γ₀) (σᴬ γ₁) ▶ A[Δᵘ]) A[Δᵁ∘wk] → Aᴬ (σᴬ γ₀) → Ty (Δᶜ (σᴬ γ₀) (σᴬ γ₁))
