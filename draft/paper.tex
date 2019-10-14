@@ -8,6 +8,13 @@
 \usepackage{todonotes}
 \input{abbrevs.tex}
 
+%% abbrevs
+%% ------------------------------------------------------------
+
+\newcommand{\Lift}{\Uparrow}
+
+%% ------------------------------------------------------------
+
 \begin{document}
 
 \title{Generalizations of Quotient Inductive-Inductive Types\thanks{This work
@@ -46,6 +53,7 @@ equations.
 \end{abstract}
 
 \section{Introduction}
+\label{sec:intro}
 
 \todo[inline]{Citations}
 
@@ -138,14 +146,147 @@ sets in algebras, and so they do not respect isomorphism of sets. We make
 essential use of invariance under set isomorphism in the first term model
 construction, so we cannot throw sort equations into that mix.
 
+In Section \ref{sec:levels} we set up cumulative universes which we use in later
+sections. In Section \ref{sec:tos} we introduce the theory of QIIT
+signatures. In Section \ref{sec:cwfmodel} we develop initial algebra semantics,
+also covering the theory of signatures itself. In Sections
+\ref{sec:infinitary_term}-\ref{sec:sort_term} we present the two term model
+constructions. We discuss related work and conclusions in Sections
+\ref{sec:related}-\ref{sec:conclusion}.
+
+
+\section{Cumulative Extensional Type Theory}
+\label{sec:levels}
+
+In the following sections, we will consider QIIT algebras at arbitrary finite
+levels, along with large eliminations, where the initial algebra can be at a
+different level than the target algebra. For a simple example, consider natural
+number algebras at a given level $i$, given as the $\Sigma$-type $NatAlg_i :\equiv(Nat :
+\Set_i)\times Nat\times(Nat \ra Nat)$. The initial such algebra is the set of
+natural numbers, which is at level $0$, but in type theory we often want to
+eliminate into larger $\Set_i$, for example when computing a $Nat$-indexed family
+of types.
+
+Universe levels are usually viewed as a bureaucratic and tedious part of type
+theory, and are often omitted or mentioned only in passing. Here we intend to
+model universe levels in a precise way, because large eliminations are an
+essential part of the practical usage of inductive types. Hence, we need a way
+to conveniently reason about levels without overmuch administrative
+burden. Unfortunately, simple universe setups are insufficient for this
+purpose. We need two features: cumulativity and a way to quantify over finite
+levels.
+
+\subsection{Cumulativity}
+
+Cumulativity makes handling of algebras and constructions at different levels
+much easier. For example, given an algebra $\gamma : NatAlg_i$, cumulativity
+allows us to also have $\gamma : NatAlg_{i+j}$. In a non-cumulative setting such
+as Agda, we may only have for each type $A : \Set_i$ a type $\mathsf{Lift}_{i\,j}\,A :
+\Set_{i+j}$ which is isomorphic to $A$ up to definitional equality.
+
+In the most basic form, cumulativity requires that whenever $A : \Set_i$, then
+also $A : \Set_{i+j+1}$. However, the $NatAlg$ example above also required a form
+of cumulativity for $\Sigma$ and $\Pi$ types, and we need this in general for
+QIIT algebras.
+
+We use Sterling's cumulative algebraic type theory \cite{TODO} as the general
+setting for the rest of the paper. The reason for this is twofold. First, it
+supports the right kind of cumulativity for our purposes. Second, it is itself a
+finitary QIIT with sort equations, hence its model theory is covered in this
+paper\footnote{Which is, of course, somewhat circular, but not more circular than
+  e.g.\ the study of models of ZFC in ZFC.}.
+
+We extend the base theory with an extensional identity type and
+$\Sigma$-types. In \cite{TODO} a proof of canonicity is provided for the base
+theory, which also includes a standard set-theoretic model. It is
+straightforward to extend the canonicity proof to cover our additional type
+formers.
+
+From now on, we refer to this theory as cETT (cumulative extensional type
+theory). When working in cETT, we use conventional type-theoretic notation. We
+have Russell-style universes $\Set_i$ indexed by natural numbers, dependent
+functions as $(x : A)\ra B$, and dependent pairs as $(x : A)\times B$ with
+projections $\proj1$ and $\proj2$. We also have a \emph{lifting} operation on
+types, which introduces cumulativity. The most important rules for lifting are
+the following:
+
+\begin{figure}
+
+Universe formation
+\[
+  \infer{\Gamma \vdash \Set_i : \Set_{i+j+1}}{}
+\]
+
+Type lifting
+\[
+%% \begin{gathered}
+  \infer{\Gamma \vdash\,\Lift_j A : \Set_{i+j+1}}
+        {\Gamma \vdash A : \Set_i}
+%% \end{gathered}
+\]
+Universe lifting
+\[
+  \Lift_j Set_i = Set_{i+j}
+\]
+Term lifting
+\[
+\{t\,|\,\Gamma \vdash t : A\} = \{t\,|\,\Gamma \vdash t :\,\,\Lift_j A\}
+\]
+Context lifting
+\[
+(\Gamma,\,x : A) = (\Gamma,\,x :\,\Lift_j A)
+\]
+Function lifting
+\[
+\Lift_j((x : A)\ra B) = (x :\,\Lift_j A)\ra\,\Lift_j B
+\]
+Pair lifting
+\[
+\Lift_j((x : A)\times B) = (x :\,\Lift_j A)\,\times\Lift_j B
+\]
+
+\caption{Some of the rules for lifting}
+\label{lifting}
+\end{figure}
+
+In Figure \ref{lifting}, we include an excerpt of Sterling's rules, with a
+slight change of presentation. We use $i+j+1$ levels instead of assuming $i < j$
+and lifting to $\Set_j$. We also omit rules for naturality and substitution of
+lifting. In general, we can expect that lifting never impedes constructions,
+because it appropriately computes out of the way.
+
+Of special note is the \emph{term lifting rule}. It is a sort equation, an
+equation between sets of terms, expressing that lifted types have exactly the
+same terms as unlifted ones. This allows us to have $t :\,\,\Lift_j A$ whenever $t
+: A$. Together with the universe lifting rule, this implies $A : Set_{i+j+1}$
+whenever $A : Set_i$. Similarly, the lifting rules for functions and pairs give
+us cumulativity for $NatAlg$.
 
 
 
 
 
+\section{Theory of Signatures}
+\label{sec:tos}
 
+\subsection{Bootstrapping}
 
+\section{Categories with Families of Algebras}
+\label{sec:cwfmodel}
 
+\section{Infinitary Term Models}
+\label{sec:infinitary_term}
+
+\subsection{Preservation of Isomorphisms}
+
+\section{Term Models for Sort Equations}
+\label{sec:sort_term}
+
+\section{Related Work}
+\label{sec:related}
+
+\section{Conclusion}
+\label{sec:conclusion}
 
 
 \bibliography{references}
