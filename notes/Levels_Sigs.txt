@@ -728,7 +728,7 @@ We need at least two levels to parametrize stuff with.
 
 4. representing ToS as a bootstrap signature.
 
-  aThe signature for ToSⱼ is at level (j + 1).
+  The signature for ToSⱼ is at level (j + 1).
 
   We note that instantiating the bootstrap signature with flCwF(i,j) gives us
   exactly ToS(i, j) as algebra
