@@ -39,6 +39,10 @@
 \newcommand{\ReflU}{\mathsf{ReflU}}
 \newcommand{\Sig}{\mathsf{Sig}}
 
+\newcommand{\Sg}{\mathsf{\Sigma}}
+\newcommand{\flCwF}{\mathsf{flCwF}}
+\newcommand{\Kfam}{\mathsf{K}}
+
 
 
 %% ------------------------------------------------------------
@@ -147,11 +151,11 @@ We generalize previous notions of QIITs in the following ways:
   example Russell-style universes or cumulative hierarchies.
 \end{enumerate}
 
-We also develop semantics. We show that for each signature, there is a cwf
+We also develop semantics. We show that for each signature, there is a CwF
 (category with families) of algebras, extended with $\Sigma$-types, extensional
 identity, and constant families. This additional structure corresponds to a
 type-theoretic flavor of finite limits, and it was shown in \cite{TODO} that the
-category of such cwfs is biequivalent to the category of finitely complete
+category of such CwFs is biequivalent to the category of finitely complete
 categories.
 
 As to the existence of initial algebras, we present two different term model
@@ -176,9 +180,9 @@ construction, so we cannot throw sort equations into that mix.
 
 In Section \ref{sec:levels} we set up cumulative universes which we use in later
 sections. In Section \ref{sec:tos} we introduce the theory of QIIT
-signatures. In Section \ref{sec:cwfmodel} we develop initial algebra semantics,
+signatures. In Section \ref{sec:categorical_semantics} we develop initial algebra semantics,
 also covering the theory of signatures itself. In Sections
-\ref{sec:infinitary_term}-\ref{sec:sort_term} we present the two term model
+\ref{sec:infinitary_term_model}-\ref{sec:sort_term} we present the two term model
 constructions. We discuss related work and conclusions in Sections
 \ref{sec:related}-\ref{sec:conclusion}.
 
@@ -237,7 +241,7 @@ functions as $(x : A)\ra B$, and dependent pairs as $(x : A)\times B$ with
 projections $\proj1$ and $\proj2$. We also use a field projection notation
 for iterated pairs. For example, for $t : (A : \Set_i) \times (B : \Set_i)
 \times (f : A \ra B)$, we use $t.B$ to denote the projection of the second
-component.
+component. Sometimes we omit the $t.$ prefix if it is clear from context.
 
 We write propositional equality as $t = u$, with $\refl_t$ for reflexivity. We
 have equality reflection for $\blank=\blank$. The unit type is $\top$, with
@@ -305,7 +309,7 @@ we leave it like that. Instead, for the sake of simplicity, we quantify over
 levels in an unspecified metatheory \emph{outside} cETT. Hence, a universe
 polymorphic cETT term is understood as a $\mathbb{N}$-indexed family of
 terms. We use the $\forall$ symbol for this, e.g.\ as $\forall\,i.\,\Set_i \ra
-\Set_i$. This is sufficient, because we do not need to internalize
+\Set_i$. This is sufficient in this paper, because we do not need to internalize
 level-polymorphic constructions in cETT.
 
 \section{Signatures}
@@ -324,7 +328,7 @@ ToS models (or ToS-algebras). $\ToS_{i,j}$ is an iterated $\Sigma$-type, contain
 all of the following components.
 \begin{enumerate}
 \item
-  A category with families (cwf), where all four underlying sets (of
+  A category with families (CwF), where all four underlying sets (of
   objects, morphisms, types and terms) are in $\Set_i$. Following notation in
   \cite{TODO}, we denote these respectively as $\Con : \Set_i$, $\Sub : \Con \ra
   \Con \ra \Set_i$, $\Ty : \Con \ra \Set_i$ and $\Tm : (\Gamma : \Con) \ra
@@ -351,17 +355,18 @@ all of the following components.
 \item
   An identity type $\Id : (a : \Tm\,\Gamma\,\U)\ra
   \Tm\,\Gamma\,(\El\,a)\ra\Tm\,\Gamma\,(\El\,a)\ra \Tm\,\Gamma\,\U$, with
-  $\Refl : (T : \Tm\,\Gamma\,(\El\,a))\ra \Id\,a\,t\,t$ and equality reflection.
+  $\Refl : (T : \Tm\,\Gamma\,(\El\,a))\ra \Id\,a\,t\,t$, equality reflection
+  and uniqueness of identity proofs.
 \item
   An identity type $\IdU : \Tm\,\Gamma\,\U \ra \Tm\,\Gamma\,\U \ra \Ty\,\Gamma$, with
-  evident $\ReflU$ and equality reflection.
+  evident $\ReflU$, equality reflection and uniqueness of identity proofs.
 \end{enumerate}
 \end{nidefinition}
-In the above listing, we omit most cwf components and equations for substitution and
+In the above listing, we omit most CwF components and equations for substitution and
 $\beta\eta$-conversion, but these should be understood to be also part of $\ToS_{i,j}$.
 
 %% \paragraph{Notational conventions.}
-\emph{Notational conventions.} Cwf components by default support de Bruijn
+\emph{Notational conventions.} CwF components by default support de Bruijn
 indices, which are not easily readable. We use instead a nameful notation for
 binders in context extension, $\Pii$ and $\lami$, e.g.\ as $(\emptycon \ext a :
 U \ext t : \El\,a)$. We also define a type-theoretic version of $\appi$ for
@@ -388,7 +393,7 @@ components of an arbitrary $\ToS$ model.
 \begin{example}
 The signature for natural
 numbers is the following, where $\emptycon$, $\blank\ext\blank$, $\U$, $\El$ and
-$\Pii$ all refer to components of $M$:
+$\Pii$ all refer to components of the $\lambda$-bound $M$:
 \begin{alignat*}{3}
   & NatSig : \Sig_0 \\
   & NatSig :\equiv \lambda (M : \ToS_{i,0}). (\emptycon\,\ext\, N : \U \,\ext\, zero : \El\,N \ext suc : \Pii\,(n : N)\,(\El\,N))
@@ -441,17 +446,111 @@ in $\Pii$ domains. A minimal example:
 \[
 RecEqSig :\equiv \emptycon \ext A : \U \ext a : \El\,A \ext f : \Pii\,(x : A)\,(\Pii\,(\Id\,A\,x\,a)\,(\El\,A))
 \]
-There more complicated and interesting examples, e.g.\ boundary conditions in
+There are more complicated and interesting examples, e.g.\ boundary conditions in
 various cubical type theories\cite{TODO}. Note that our $\Id$ allows iterated
 equations as well, but these are all made trivial in the semantics, where we
 assume uniqueness of identity proofs.
 \end{example}
 
-\subsection{A Signature for the Theory of Signatures}
+\section{Categorical Semantics}
+\label{sec:categorical_semantics}
 
-\todo{put this in infinitary term models beginning}
+For each signature, we would like to have at least
+\begin{enumerate}
+  \item A category of algebras, with homomorphisms as morphisms.
+  \item A notion of induction, which requires a notion of dependent algebras.
+  \item A proof that for algebras, initiality is equivalent to supporting induction.
+\end{enumerate}
 
-Starting from Section \ref{sec:infinitary_term}, we need to do proofs and
+Following \cite{TODO}, we do this by creating a model of ToS, where contexts are
+categories supporting the above requirements and substitutions are strictly
+structure-preserving functors. Then, each signature can applied to this model,
+yielding an interpretation of the signature as a structured category of
+algebras. First, we fix our notion of such structured category.
+
+\begin{nidefinition}{Finite limit CwFs.}
+For a level $i$, there is a cETT type $\flCwF_i : \Set_{i+1}$, which is an
+iterated $\Sigma$-type with the following components:
+\begin{enumerate}
+  \item A CwF with underlying sets all in $\Set_i$.
+  \item $\Sigma$-type $\Sg : (A : \Ty\,\Gamma)\ra \Ty\,(\Gamma \ext A)
+    \ra \Ty\,\Gamma$, with usual projections and pairing.
+  \item Identity type $\Id : (A : \Ty\,\Gamma)\ra \Tm\,\Gamma\,A\ra
+    \Tm\,\Gamma\,A\ra \Ty\,\Gamma$, with equality reflection and uniqueness
+    of identity proofs.
+  \item Constant families. This includes a type former $\Kfam : \Con \ra
+    \Ty\,\Gamma$, where $\Gamma$ is implicitly quantified, and an isomorphism
+    between $\Sub\,\Gamma\,\Delta$ and $\Tm\,\Gamma\,(\Kfam\,\Delta)$ which is
+    natural in $\Gamma$. The idea is that $\Kfam\,\Delta$ is a representation
+    of $\Delta$ as a type in any context. Dybjer and Clairambault called constant
+    families ``democracy'' in \cite{TODO}.
+\end{enumerate}
+\end{nidefinition}
+
+We use $\Ty$ in an flCwF to represent ``dependent objects'', and $\Tm$
+for ``dependent morphisms''. We use these to define induction.
+
+\begin{nidefinition} Notion of induction internally to $C : \flCwF_i$:
+\begin{alignat*}{3}
+  & Inductive : C.\Con \ra \Set_i \\
+  & Inductive\,\Gamma :\equiv (A : C.\Ty\,\Gamma)\ra C.\Tm\,\Gamma\,A
+\end{alignat*}
+\end{nidefinition}
+
+In the categorical semantics for a concrete signature, this informally means
+that an algebra supports induction if for any dependent algebra over it (which
+is a bundle of induction motives and methods), there is a dependent morphism
+into it (which is a bundle of eliminator functions and their $\beta$-rules).
+
+\begin{theorem}{Equivalence of initiality and induction.}
+An object $\Gamma : C.\Con$ supports induction if and only if it is
+initial. Moreover, induction and initiality are both proof irrelevant
+predicates on objects.
+\end{theorem}
+\begin{proof} Shown by brief internal flCwF reasoning in \cite{TODO}.\qed
+\end{proof}
+
+The reason for the ``finite limit CwF'' naming is the following: Dybjer and
+Clairambault showed\cite{TODO} that the 2-category of flCwFs is biequivalent to
+the 2-category of finitely complete (or ``lex'') categories. It can be also seen
+that the categorical product of $\Gamma$ and $\Delta$ in an flCwF can be given
+as $\Gamma \ext \Kfam\, \Delta$, and equalizers can be given using the identity
+type.
+
+So, why do we use flCwF instead of lex categories? After all, the former
+structure has more components and has more immediate complexity than the
+latter. The reason is that flCwFs allow us to define induction in strictly the
+same way as one would write it down in type theory, since we have $\Ty$ and
+$\Tm$ for a primitive notion of dependent objects and morphisms. In contrast,
+dependent objects in lex categories is a derived notion, and the induction
+principles we get are what we want only up to isomorphisms. This issue is
+perhaps not very relevant to those with a purely categorical perspective, but we
+are concerned with eventually implementing QIITs in proof assistants, so we
+prefer if our semantics computes notions strictly.
+
+
+\begin{nidefinition}{flCwF model for ToS.} For $i$ and $j$ levels, there is
+an $M : \ToS_{1+\max(i+1,j),j}$ such that $M.\Con = \flCwF_{\max(i+1,j)}$.
+
+
+\todo{flip level indices in ToS, maybe shorten cETT part, add more explanation
+      on role of i,j in ToS(i,j)}
+
+
+\end{nidefinition}
+
+
+
+
+
+\section{Infinitary Term Models}
+\label{sec:infinitary_term_models}
+
+\subsection{Induction on Signatures}
+
+\todo{sync}
+
+Starting from Section \ref{sec:infinitary_term_models}, we need to do proofs and
 constructions by induction on signatures. However, the current signatures do not
 support induction, analogously to how induction is not available for Church
 encodings. We would like to have two things: a notion of signature induction,
@@ -463,24 +562,13 @@ of induction on signatures by
   \item Building categorical semantics, which for each signature provides a notion of induction.
 \end{enumerate}
 On the other hand, in this paper we will only \emph{assume} the existence of a
-syntax for ToS starting from Section \ref{sec:infinitary_term}. We do not provide a
+syntax for ToS starting from Section \ref{sec:infinitary_term_models}. We do not provide a
 construction of the syntax from simpler type formers, although we do show that
 lower-level ToS syntaxes are constructible from higher-level ones.
 
-
-
-
-
-
-\section{Categories with Families of Algebras}
-\label{sec:cwfmodel}
-
-\section{Infinitary Term Models}
-\label{sec:infinitary_term}
-
 \subsection{Preservation of Isomorphisms}
 
-\section{Term Models for Sort Equations}
+\section{Term Models with Sort Equations}
 \label{sec:sort_term}
 
 \section{Related Work}

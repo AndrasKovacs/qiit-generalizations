@@ -714,14 +714,14 @@ We need at least two levels to parametrize stuff with.
      flCwFM : ToS(2 + i ⊔ j, j)
 
      algebras:
-       (Γ : Con)ᴬ     : Set (1+i⊔j)      : Set (2+i⊔j)
-       (A : Ty Γ)ᴬ    : Γᴬ → Set (1+i⊔j) : Set (2+i⊔j)
-       (σ : Sub Γ Δ)ᴬ : Γᴬ → Δᴬ          : Set (1+i⊔j)   -- lifted by 1
-       (t : Tm Γ A)ᴬ  : (γ : Γᴬ) → Aᴬ γ  : Set (1+i⊔j)   -- lifted by 1
+       (Γ : Con)ᴬ     : Set ((1+i)⊔j)      : Set (1+((1+i)⊔j))
+       (A : Ty Γ)ᴬ    : Γᴬ → Set ((1+i)⊔j) : Set (1+((1+i)⊔j))
+       (σ : Sub Γ Δ)ᴬ : Γᴬ → Δᴬ            : Set ((1+i)⊔j)   -- lifted by 1
+       (t : Tm Γ A)ᴬ  : (γ : Γᴬ) → Aᴬ γ    : Set ((1+i)⊔j)   -- lifted by 1
        ...
        Uᴬ γ = Set i : Set (i + 1)
-       (Π̂ (T : Set j) B)ᴬ γ = (α : T) → (B α)ᴬ γ : Set (1 + i ⊔ j) -- lifted by 1
-       (Π̃ (T : Set j) B)ᴬ γ = (α : T) → (b α)ᴬ γ : Set (1 + i ⊔ j) -- lifted by 1
+       (Π̂ (T : Set j) B)ᴬ γ = (α : T) → (B α)ᴬ γ : Set ((1 + i) ⊔ j) -- lifted by 1
+       (Π̃ (T : Set j) B)ᴬ γ = (α : T) → (b α)ᴬ γ : Set ((1 + i) ⊔ j) -- lifted by 1
        ...
 
      ⟦Γ : Con⟧ : flCwF (1 + i ⊔ j) : Set (2 + i ⊔ j)
