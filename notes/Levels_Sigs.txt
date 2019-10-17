@@ -711,7 +711,7 @@ We need at least two levels to parametrize stuff with.
 
 3. flCwF model at (i,j)
 
-     flCwFM : ToS(2 + i ⊔ j, j)
+     flCwFM : ToS(1+((1+i)⊔j), j)
 
      algebras:
        (Γ : Con)ᴬ     : Set ((1+i)⊔j)      : Set (1+((1+i)⊔j))

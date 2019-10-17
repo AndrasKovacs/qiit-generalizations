@@ -193,33 +193,40 @@ constructions. We discuss related work and conclusions in Sections
 In the following sections, we will consider QIIT algebras at arbitrary finite
 levels, along with large eliminations, where the initial algebra can be at a
 different level than the target algebra. For a simple example, consider natural
-number algebras at a given level $i$, given as the $\Sigma$-type $NatAlg_i :\equiv(Nat :
-\Set_i)\times Nat\times(Nat \ra Nat)$. The initial such algebra is the set of
-natural numbers, which is at level $0$, but in type theory we often want to
-eliminate into larger $\Set_i$, for example when computing a $Nat$-indexed family
-of types.
-
-Universe levels are usually viewed as a bureaucratic and tedious part of type
-theory, and are often omitted or mentioned only in passing. Here we intend to
-model universe levels in a precise way, because large eliminations are an
-essential part of the practical usage of inductive types. Hence, we need a way
-to conveniently reason about levels without too much administrative
-burden. Unfortunately, simple universe setups are insufficient for this
-purpose. We need two features: cumulativity and a way to quantify over finite
+number algebras at a given level $i$, given as the $\Sigma$-type $NatAlg_i
+:\equiv(Nat : \Set_i)\times Nat\times(Nat \ra Nat)$. The initial such algebra is
+the set of natural numbers, which is at level $0$, but in type theory we often
+want to eliminate into larger $\Set_i$, for example when computing a
+$Nat$-indexed family of types. To support convenient reasoning about levels in
+this paper, we need two features: cumulativity and a way to quantify over finite
 levels.
+
+%% Universe levels are usually viewed as a bureaucratic and tedious part of type
+%% theory, and are often omitted or mentioned only in passing. Here we intend to
+%% model universe levels in a precise way, because large eliminations are an
+%% essential part of the practical usage of inductive types. Hence, we need a way
+%% to conveniently reason about levels without too much administrative
+%% burden. Unfortunately, simple universe setups are insufficient for this
+%% purpose. We need two features: cumulativity and a way to quantify over finite
+%% levels.
 
 \subsection{Cumulativity}
 
-Cumulativity makes handling of algebras and constructions at different levels
-much easier. For example, given an algebra $\gamma : NatAlg_i$, cumulativity
-allows us to also have $\gamma : NatAlg_{i+j}$. In a non-cumulative setting such
-as Agda, we may only have for each type $A : \Set_i$ a type $\mathsf{Lift}_{i\,j}\,A :
-\Set_{i+j}$ which is isomorphic to $A$ up to definitional equality.
+%% Cumulativity makes handling of algebras and constructions at different levels
+%% much easier. For example, given an algebra $\gamma : NatAlg_i$, cumulativity
+%% allows us to also have $\gamma : NatAlg_{i+j}$. In a non-cumulative setting such
+%% as Agda, we may only have for each type $A : \Set_i$ a type $\mathsf{Lift}_{i\,j}\,A :
+%% \Set_{i+j}$ which is isomorphic to $A$ up to definitional equality.
 
-In the most basic form, cumulativity requires that whenever $A : \Set_i$, then
-also $A : \Set_{i+j+1}$. However, the $NatAlg$ example above also required a
-form of cumulativity for $\Sigma$ and $\Pi$ types, which we also need in general
-for QIIT algebras.
+We need cumulativity to reduce administrative overhead. In the most basic form,
+cumulativity requires that whenever $A : \Set_i$, and $i < j$ then also $A :
+\Set_j$. We also need cumulativity for $\Sigma$ and function types, in order to
+have cumulativity for algebras in general. For example, we want to have $\gamma
+: NatAlg_j$ whenever $\gamma : NatAlg_i$ and $i < j$.
+
+%% However, the $NatAlg$ example above also required a form of
+%% cumulativity for $\Sigma$ and $\Pi$ types, which we also need in general for
+%% QIIT algebras.
 
 We use Sterling's cumulative algebraic type theory \cite{TODO} as the general
 setting for the rest of the paper. The reason for this is twofold. First, it
@@ -229,7 +236,7 @@ it\footnote{Which is, of course, somewhat circular, but not more circular than
   e.g.\ the study of models of ZFC in ZFC.}.
 
 We extend the base theory with an extensional identity type, $\Sigma$-types and
-the unity type. In \cite{TODO} a proof of canonicity is provided for the base
+the unit type. In \cite{TODO} a proof of canonicity is provided for the base
 theory, which also includes a standard set-theoretic model. It is
 straightforward to extend the canonicity proof to cover our additional type
 formers.
@@ -248,45 +255,65 @@ have equality reflection for $\blank=\blank$. The unit type is $\top$, with
 inhabitant $\tt$.
 
 We also have a lifting operation on types, which introduces cumulativity.
-
+\vspace{-1.5em}
 \begin{figure}
 \begin{mathpar}
   \inferrule*[lab=universe formation]
              {\\}
              {\Gamma \vdash \Set_i : \Set_{i+j+1}}
 
-  \inferrule*[lab=type lifting]
-             {\Gamma \vdash A : \Set_i}
-             {\Gamma \vdash\,\Lift_j A : \Set_{i+j+1}}
+  \inferrule*[lab=function formation]
+             {\Gamma \vdash A : \U_i \\ \Gamma,\,x : A \vdash B : \U_j}
+             {\Gamma \vdash (x : A)\ra B : \U_{\max(i,j)} }
 
-  \inferrule*[lab=universe lifting]{}{\Lift_j \Set_i = \Set_{i+j}}
+  \inferrule*[lab=$\Sigma$ formation]
+             {\Gamma \vdash A : \U_i \\ \Gamma,\,x : A \vdash B : \U_j}
+             {\Gamma \vdash (x : A)\times B : \U_{\max(i,j)} }
+
+  \inferrule*[lab=unit formation]
+             {\\}
+             {\Gamma \vdash \top : \Set_i}
+
+  \inferrule*[lab=type lifting]
+             {\Gamma \vdash A : \Set_i \\ i < j}
+             {\Gamma \vdash\,\Lift_j A : \Set_{j}}
+
+  \inferrule*[lab=lift composition]{}{\Lift_j (\Lift_i A) =\,\,\Lift_{j} A}
 
   \inferrule*[lab=term lifting]
              {}
-             {\{t\,|\,\Gamma \vdash t : A\} = \{t\,|\,\Gamma \vdash t :\,\,\Lift_j A\}}
+             {\{t\,|\,\Gamma \vdash t : A\} = \{t\,|\,\Gamma \vdash t :\,\,\Lift_i A\}}
 
   \inferrule*[lab=context lifting]
              {}
-             {(\Gamma,\,x : A) = (\Gamma,\,x :\,\,\Lift_j A)}
+             {(\Gamma,\,x : A) = (\Gamma,\,x :\,\,\Lift_i A)}
+
+  \inferrule*[lab=universe lifting]{}{\Lift_j \Set_i = \Set_i}
 
   \inferrule*[lab=function lifting]
              {}
-             {\Lift_j((x : A)\ra B) = (x :\,\Lift_j A)\ra\,\Lift_j B}
+             {\Lift_i((x : A)\ra B) = (x :\,\Lift_i A)\ra\,\Lift_i B}
 
   \inferrule*[lab=pair lifting]
              {}
-             {\Lift_j((x : A)\times B) = (x :\,\Lift_j A)\,\times\Lift_j B}
+             {\Lift_i((x : A)\times B) = (x :\,\Lift_i A)\,\times\Lift_i B}
+
+  \inferrule*[lab=unit lifting]
+             {}
+             {\Lift_i\top = \top}
 \end{mathpar}
 
 \caption{Some of the rules for lifting.}
 \label{lifting}
 \end{figure}
 
-In Figure \ref{lifting}, we include an excerpt of Sterling's rules, with a
-slight change of presentation. We lift from $i$ to $i+j+1$ levels instead of
-assuming $i < j$ and lifting to $j$. We also omit rules for naturality and
-substitution of lifting. In general, we can expect that lifting never impedes
-constructions, because it appropriately computes out of the way.
+In Figure \ref{lifting}, we include an excerpt of cETT's rules. We change
+presentation slightly from Sterling. We lift from $i$ to $i+j+1$ levels instead
+of assuming $i < j$ and lifting to $j$, and we use a $\U_{\max(i,j)}$ return
+type in functions and pairs, instead of having both $A$, $B$ types in the same
+$\Set_i$. These changed rules are all derivable from the original ones. In
+general, we can expect that lifting never impedes constructions, because it
+appropriately computes out of the way.
 
 Of special note is the \emph{term lifting rule}. It is a sort equation, an
 equation between sets of terms, expressing that lifted types have exactly the
@@ -308,7 +335,7 @@ We also need to quantify over universe levels. cETT does not support this, and
 we leave it like that. Instead, for the sake of simplicity, we quantify over
 levels in an unspecified metatheory \emph{outside} cETT. Hence, a universe
 polymorphic cETT term is understood as a $\mathbb{N}$-indexed family of
-terms. We use the $\forall$ symbol for this, e.g.\ as $\forall\,i.\,\Set_i \ra
+terms. We use the $\forall$ symbol for this, e.g.\ as $t : \forall\,i.\,\Set_i \ra
 \Set_i$. This is sufficient in this paper, because we do not need to internalize
 level-polymorphic constructions in cETT.
 
@@ -329,10 +356,10 @@ all of the following components.
 \begin{enumerate}
 \item
   A category with families (CwF), where all four underlying sets (of
-  objects, morphisms, types and terms) are in $\Set_i$. Following notation in
-  \cite{TODO}, we denote these respectively as $\Con : \Set_i$, $\Sub : \Con \ra
-  \Con \ra \Set_i$, $\Ty : \Con \ra \Set_i$ and $\Tm : (\Gamma : \Con) \ra
-  \Ty\,\Gamma \ra \Set_i$. We denote the empty context as $\emptycon : \Con$,
+  objects, morphisms, types and terms) are in $\Set_j$. Following notation in
+  \cite{TODO}, we denote these respectively as $\Con : \Set_j$, $\Sub : \Con \ra
+  \Con \ra \Set_j$, $\Ty : \Con \ra \Set_j$ and $\Tm : (\Gamma : \Con) \ra
+  \Ty\,\Gamma \ra \Set_j$. We denote the empty context as $\emptycon : \Con$,
   context extension as $\blank\ext\blank : (\Gamma : \Con)\ra \Ty\,\Gamma \ra \Con$.
   Substitution on types and terms is written as $\blank[\blank]$.
 \item
@@ -340,18 +367,18 @@ all of the following components.
   \Ty\,\Gamma$.
 \item
   Inductive function space, with $\Pii : (a : \Tm\,\Gamma\,\U) \ra
-  \Ty\,(\Gamma\,\ext\,\El\,a) \ra \Ty\,\Gamma$, application as $\appi :
-  \Tm\,\Gamma\,(\Pii\,a\,B)\ra \Tm\,(\Gamma\,\ext\,\El\,a)\,B$, and its inverse
-  $\lami$.
+  \Ty\,(\Gamma\,\ext\,\El\,a) \ra \Ty\,\Gamma$ and application as $\appi :
+  \Tm\,\Gamma\,(\Pii\,a\,B)\ra \Tm\,(\Gamma\,\ext\,\El\,a)\,B$. We do not
+  support $\lami$ here and in other function types, as they are not essential
+  for QIIT signatures.
 \item
-  External function space with $\Set_j$ domain: $\Pie : (A : \Set_j)\ra(A \ra
+  External function space with $\Set_i$ domain: $\Pie : (A : \Set_i)\ra(A \ra
   \Ty\,\Gamma)\ra \Ty\,\Gamma$, with $\appe : \Tm\,\Gamma\,(\Pie\,A\,B)\ra(x :
-  A)\ra \Tm\,\Gamma\,(B\,x)$, and likewise $\lame$ as inverse.
+  A)\ra \Tm\,\Gamma\,(B\,x)$.
 \item
-  Infinitary function space, with $\Piinf : (A : \Set_j)\ra(A \ra
+  Infinitary function space, with $\Piinf : (A : \Set_i)\ra(A \ra
   \Tm\,\Gamma\,\U)\ra \Tm\,\Gamma\,\U$, $\appinf :
-  \Tm\,\Gamma\,(\El\,(\Pie\,A\,b))\ra(x : A)\ra \Tm\,\Gamma\,(\El\,(b\,x))$, and
-  $\laminf$.
+  \Tm\,\Gamma\,(\El\,(\Pie\,A\,b))\ra(x : A)\ra \Tm\,\Gamma\,(\El\,(b\,x))$.
 \item
   An identity type $\Id : (a : \Tm\,\Gamma\,\U)\ra
   \Tm\,\Gamma\,(\El\,a)\ra\Tm\,\Gamma\,(\El\,a)\ra \Tm\,\Gamma\,\U$, with
@@ -365,7 +392,6 @@ all of the following components.
 In the above listing, we omit most CwF components and equations for substitution and
 $\beta\eta$-conversion, but these should be understood to be also part of $\ToS_{i,j}$.
 
-%% \paragraph{Notational conventions.}
 \emph{Notational conventions.} CwF components by default support de Bruijn
 indices, which are not easily readable. We use instead a nameful notation for
 binders in context extension, $\Pii$ and $\lami$, e.g.\ as $(\emptycon \ext a :
@@ -379,16 +405,14 @@ convenience:
 \end{alignat*}
 
 \begin{nidefinition}{Notion of signature.}
-A QIIT signature at level $j$ is a context in an arbitrary $M : \ToS_{i,j}$
+A QIIT signature at level $i$ is a context in an arbitrary $M : \ToS_{i,j}$
 model. We define the type of such signatures as follows:
 \[
-  \Sig_j :\equiv \forall i.\,(M : \ToS_{i,j})\ra M.Con
+  \Sig_i :\equiv \forall j.\,(M : \ToS_{i,j})\ra M.Con
 \]
 
-Note that $\Sig_j$ is defined as a universe-polymorphic type, so it does not
-have a type internally to cETT. A concrete signature $sig$ at level $j$ has type
-$\forall i.\,(M : \ToS_{i,j})\ra M.Con$, so it builds up a context from the
-components of an arbitrary $\ToS$ model.
+Note that $\Sig_i$ is defined as a universe-polymorphic type, so it does not
+have a type internally to cETT.
 
 \begin{example}
 The signature for natural
@@ -396,18 +420,18 @@ numbers is the following, where $\emptycon$, $\blank\ext\blank$, $\U$, $\El$ and
 $\Pii$ all refer to components of the $\lambda$-bound $M$:
 \begin{alignat*}{3}
   & NatSig : \Sig_0 \\
-  & NatSig :\equiv \lambda (M : \ToS_{i,0}). (\emptycon\,\ext\, N : \U \,\ext\, zero : \El\,N \ext suc : \Pii\,(n : N)\,(\El\,N))
+  & NatSig :\equiv \lambda (M : \ToS_{0,j}).\,(\emptycon\,\ext\, N : \U \,\ext\, zero : \El\,N \ext suc : \Pii\,(n : N)\,(\El\,N))
 \end{alignat*}
 \end{example}
 
-The $j$ level in $\Sig_j$ specifies the level of the external types appearing in
-a signatures, since the $\Pie$ and $\Piinf$ function spaces have domains in $\Set_j$.
+The $i$ level in $\Sig_i$ specifies the level of the external types appearing in
+a signatures, since the $\Pie$ and $\Piinf$ function spaces have domains in $\Set_i$.
 In the case of naturals numbers, no external types appear, so the level of $NatSig$
 can be chosen as $0$.
 
 With this, we are able to specify QIITs, and we can also interpret each
-signature in an arbitrary ToS model, just by applying a signature to a model.
-$\Sig_j$ can be viewed as a precursor to a Church-encoding for the theory of
+signature in an arbitrary ToS model, by applying a signature to a model.
+$\Sig_i$ can be viewed as a precursor to a Church-encoding for the theory of
 signatures, but we only need contexts encoded in this way, and not other ToS
 components. In functional programming, this encoding is sometimes called
 ``finally tagless''\cite{TODO}, and it is used for defining and interpreting
@@ -423,12 +447,13 @@ only write contexts, and assume that all ToS operations come from an arbitrary
 model.
 
 \begin{example}{Infinitary constructors}. The universe $\U$ is closed under
-the $\Piinf$ function type, which makes it possible to write such functions
-in the domains of $\Pii$ types. This allows a signature for $W$-types, given
-arbitrary $S : \Set_i$ and $P : S \ra \Set_i$ types for shapes and positions.
+the $\Piinf$ function type, which makes it possible to write such functions in
+the domains of $\Pii$ types. This allows a signature for trees branching with
+arbitrary small sets. This is a signature at level 1, since we have $\Set_0$ as
+domain type.
 \[
-WSig :\equiv
-\emptycon \ext W : \U \ext sup : \Pie\,S\,(\lambda s.\,\Pii\,(\Piinf\,(P\,s)\,\lambda \_.\,W) \,(\El\,W))
+TreeSig :\equiv
+\emptycon \ext Tree : \U \ext node : \Pie\,\Set_0\,\lambda A.\,\Pii\,(\Piinf\,A\,\lambda \_.\,Tree)\,(\El\,Tree)
 \]
 \end{example}
 
@@ -524,17 +549,62 @@ same way as one would write it down in type theory, since we have $\Ty$ and
 $\Tm$ for a primitive notion of dependent objects and morphisms. In contrast,
 dependent objects in lex categories is a derived notion, and the induction
 principles we get are what we want only up to isomorphisms. This issue is
-perhaps not very relevant to those with a purely categorical perspective, but we
-are concerned with eventually implementing QIITs in proof assistants, so we
-prefer if our semantics computes notions strictly.
+perhaps not relevant from a purely categorical perspective, but we are concerned
+with eventually implementing QIITs in proof assistants, so we prefer if our
+semantics computes strictly.
 
 
-\begin{nidefinition}{flCwF model for ToS.} For $i$ and $j$ levels, there is
-an $M : \ToS_{1+\max(i+1,j),j}$ such that $M.\Con = \flCwF_{\max(i+1,j)}$.
+\begin{nidefinition}{flCwF model for ToS.} We have for each $i$ and $j$ levels
+an $M : \ToS_{i, 1+\max(i,j+1)}$ such that $M.\Con = \flCwF_{\max(i,j+1)}$. This
+model is an extension to the CwF model of signatures in \cite{TODO}, with
+$\Sigma$-types in the semantic CwF, the new type formers in signatures, and the
+treatment of universe levels. We summarize the model below.
+\begin{itemize}
+\item As noted, $M.\Con = \flCwF_{\max(i,j+1)}$. The level $i$ marks the level of
+      all external sets in function domains, and $j$ marks the level of all inductive
+      sets in an algebra. Hence, every algebra, i.e.\ object of the flCwF, has
+      level $\max(i,j+1)$. The bump is only needed for $j$, since algebras only contain
+      \emph{elements} of $T : \Set_j$ types, while inductive sets are themselves elements
+      of $\Set_i$. For example, $NatAlg_i : \Set_{\max(0, i+1)}$.
+\item $\sigma : \Sub\,\Gamma\,\Delta$ substitutions are strictly structure-preserving flCwF
+      functors.
+    \item $A : \Ty\,\Gamma$ types are displayed flCwFs over $\Gamma$. This is an
+      flCwF where every underlying set is indexed over underlying sets in
+      $\Gamma$, and it is an extension of the displayed categories of Ahrens and
+      Lumsdaine\cite{TODO}.  It contains equivalent data to an flCwF slice
+      $\delta : \Sub\,\Delta\,\Gamma$. We prefer it to slices because it yields
+      expected notions of induction strictly.
+\item $t : \Tm\,\Gamma\,A$ terms are sections of the $A$ displayed flCwF. This can be viewed
+      as a dependent functor, which maps structure in $\Gamma$ to corresponding displayed
+      structure in $A$, e.g.\ it maps objects to displayed objects, morphisms to displayed
+      morphisms, and so on.
+\item $\emptycon : \Con$ is the terminal flCwF, whose underlying category is the terminal
+      category with one object.
+
+\item $\Gamma\,\ext\,A$ is the total flCwF of the $A$ displayed flCwF, where every underlying
+      set is given by packing up indexed underlying sets of $A$ in $\Sigma$-s.
+
+\item $\U : \Ty\,\Gamma$ is a displayed flCwF which is constantly (i.e. it does
+      not depend on $\Gamma$) the flCwF of sets in $\Set_j$, whose underlying category
+      is the usual category of sets.
+\item
+  $\Pii\,a\,B : \Ty\,\Gamma$ is a displayed flCwF where objects are
+  dependent functions from the set of objects of $a$ to the set of objects of
+  $B$. It is possible to build such flCwF because the $a : \Tm\,\Gamma\,\U$
+  domain is discrete. A general $\Pii$ type is not possible because of variance
+  issues; this is an extension of there being no $\Pii$ types in the category
+  of categories\cite{elephant}
+\item
+  $\Pie\,A\,B : \Ty\,\Gamma$ is the $A$-indexed direct product of displayed flCwFs
+  given by $B : A \ra \Ty\,\Gamma$.
+
+\end{itemize}
 
 
-\todo{flip level indices in ToS, maybe shorten cETT part, add more explanation
-      on role of i,j in ToS(i,j)}
+%%   For $i$ and $j$ levels, there is
+%% an $M : \ToS_{i, 1+\max(i,j+1)}$ such that $M.\Con = \flCwF_{\max(i,j+1)}$.
+
+
 
 
 \end{nidefinition}
