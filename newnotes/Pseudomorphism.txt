@@ -1,0 +1,164 @@
+
+# flCwF-pseudomorphisms. Trying to ascertain the minimal requirements
+
+--------------------------------------------------------------------------------
+pseudomorphism from "gluing for type theory"
+--------------------------------------------------------------------------------
+
+  Given (C, D : flCwF)
+
+  F : C.Con → D.Con
+  F : Ty Γ → Ty (F Γ)
+  F : Sub Γ Δ → Sub (F Γ) (F Δ)
+  F : Tm Γ A → Tm (F Γ) (F A)
+
+  F id = id
+  F (σ ∘ δ) = F σ ∘ F δ
+  F(A[σ]) = F A [F σ]
+  F(t[σ]) = F t [F σ]
+  F∙ : F ∙ ≈ ∙
+  F ε = F∙⁻¹ ∘ ε
+  F▶ : F (Γ ▶ A) ≈ F Γ ▶ F A
+     -- naturality is derivable from F(σ,t), Fp, Fq
+     -- F▶ ∘ F(σ↑) = (F σ)↑ ∘ F▶
+
+  F (σ, t) = F▶⁻¹ ∘ (F σ, F t)
+  F p = p∘F▶
+  F q = q[F▶]
+
+F (σ↑) = F (σ∘p, q) = F▶⁻¹ ∘ (Fσ ∘ p ∘ F▶, q[F▶]) = F▶⁻¹ ∘ (σ↑) ∘ F▶
+
+p = F p ∘ F▶⁻¹
+q = F q [F▶⁻¹]
+
+--------------------------------------------------------------------------------
+ty-isomorphism: (A B : Ty Γ)
+--------------------------------------------------------------------------------
+  A ≈ B :=   (t : Tm (Γ ▶ A) B[p]) × (u : Tm (Γ ▶ B) A[p])
+             × (t[p, u] = q) × (u[p, t] = q)
+
+
+
+--------------------------------------------------------------------------------
+Preservation of Σ,Id,K
+--------------------------------------------------------------------------------
+
+
+Goal : F (Σ A B) ≈ Σ (F A) (F B [F▶⁻¹])
+
+  -- comparison map 1
+  --------------------------------------------------------------------------------
+  t : Tm (F Γ ▶ F (Σ A B)) (Σ (F A) (F B [F▶⁻¹]))[p]
+    : Tm (F Γ ▶ F (Σ A B)) (Σ (F A [p]) (F B [F▶⁻¹ ∘ p↑]))
+
+    F▶⁻¹ : Sub (F Γ ▶ F (Σ A B)) (F (Γ ▶ Σ A B))
+
+    -- first component
+    fst q : Tm (Γ ▶ Σ A B) A[p]
+    F (fst q) : Tm (F (Γ ▶ Σ A B)) (F A [p∘F▶])
+    F (fst q) [F▶⁻¹] : Tm (F Γ ▶ F (Σ A B)) (F A [p∘F▶∘F▶⁻¹])
+    F (fst q) [F▶⁻¹] : Tm (F Γ ▶ F (Σ A B)) (F A [p])
+
+    (F (fst q)) [F▶⁻¹] : Tm (F Γ ▶ F (Σ A B)) (F A [p ∘ F▶ ∘ F▶⁻¹])
+                       : Tm (F Γ ▶ F (Σ A B)) (F A [p])
+    OK
+
+    -- second component
+    q     : Tm (Γ ▶ Σ A B) (Σ A[p] B[p↑])
+    snd q : Tm (Γ ▶ Σ A B) (B[p, fst q])
+
+    F (snd q) : Tm (F (Γ ▶ Σ A B)) (F B[F▶⁻¹ ∘ (F p, F (fst q))])
+              : Tm (F (Γ ▶ Σ A B)) (F B[F▶⁻¹ ∘ (p∘F▶, F (fst q)])
+
+    F (snd q) [F▶⁻¹] : Tm (F Γ ▶ F (Σ A B)) (F B[F▶⁻¹ ∘ (p∘F▶, F (fst q))])[F▶⁻¹]
+                     : Tm (F Γ ▶ F (Σ A B)) (F B[F▶⁻¹ ∘ (p, F (fst q)[F▶⁻¹])])
+    OK
+
+    t := (F (fst q) [F▶⁻¹] ,Σ  F (snd q) [F▶⁻¹])
+
+  -- comparison map 2
+  --------------------------------------------------------------------------------
+  u : Tm (F Γ ▶ Σ (F A) (F B [F▶⁻¹])) (F (Σ A B) [p])
+
+    (p, fst q, snd q) : Sub (F Γ ▶ Σ (F A) (F B [F▶⁻¹])) (F Γ ▶ F A ▶ F B [F▶⁻¹])
+
+
+    F▶⁻¹ ∘ F▶⁻¹↑ : Sub (F Γ ▶ F A ▶ F B[F▶⁻¹]) (F (Γ ▶ A ▶ B))
+
+    F▶⁻¹ ∘ F▶⁻¹↑ ∘ (p, fst q, snd q) : Sub (F Γ ▶ Σ (F A) (F B [F▶⁻¹])) (F (Γ ▶ A ▶ B))
+      = F▶⁻¹ ∘ F▶⁻¹↑ ∘ (p, fst q, snd q)
+      = F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)
+
+   (q[p] ,Σ q) : Tm (Γ ▶ A ▶ B) (Σ A[p²] B[p²↑])
+
+   (q[p] ,Σ q) : Tm (Γ ▶ A ▶ B) (Σ A B [p²])
+   F (q[p] ,Σ q) : Tm (F (Γ ▶ A ▶ B)) (F (Σ A B [p²]))
+                 : Tm (F (Γ ▶ A ▶ B)) (F (Σ A B) [F p²])
+                 : Tm (F (Γ ▶ A ▶ B)) (F (Σ A B) [F p ∘ F p])
+                 : Tm (F (Γ ▶ A ▶ B)) (F (Σ A B) [p ∘ F▶ ∘ p ∘ F▶])
+
+   F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)]
+     : Tm (F Γ ▶ Σ (F A) (F B [F▶⁻¹]))
+          (F (Σ A B) [p ∘ F▶ ∘ p ∘ F▶]) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)]
+     : Tm (F Γ ▶ Σ (F A) (F B [F▶⁻¹]))
+          (F (Σ A B) [p]
+     OK
+
+    u := F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)]
+
+
+  -- eq 1
+  --------------------------------------------------------------------------------
+  (F (fst q) ,Σ  F (snd q))[F▶⁻¹][p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)]] = q
+
+     F▶⁻¹ ∘ (p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)])
+
+     F▶⁻¹ ∘ (F p ∘ F▶⁻¹, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)])
+
+     F▶⁻¹ ∘ (F p ∘ F▶⁻¹, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q) ∘ F▶ ∘ F▶⁻¹])
+
+     F▶⁻¹ ∘ (F p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q) ∘ F▶]) ∘ F▶⁻¹
+
+     F▶⁻¹ ∘ (F p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹ ∘ (p, fst q) ∘ F▶, snd q [F▶])]) ∘ F▶⁻¹
+
+     F▶⁻¹ ∘ (F p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹ ∘ (p ∘ F▶, fst q [F▶]), snd q [F▶])]) ∘ F▶⁻¹
+
+     F▶⁻¹ ∘ (F p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹ ∘ (F p, fst (F q)), snd (F q))]) ∘ F▶⁻¹
+
+     ????
+
+
+  -- eq 2
+  --------------------------------------------------------------------------------
+  F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)][p, (F (fst q) ,Σ F (snd q))[F▶⁻¹]] = q
+
+     F▶⁻¹ ∘ (F▶⁻¹ ∘ (p, fst q), snd q) ∘ (p, (F (fst q) ,Σ F (snd q))[F▶⁻¹])
+     F▶⁻¹ ∘ (F▶⁻¹ ∘ (p, fst q) ∘ (p, (F (fst q) ,Σ F (snd q))[F▶⁻¹]) , snd q [p, (F (fst q) ,Σ F (snd q))[F▶⁻¹]])
+
+     F▶⁻¹ ∘ (F▶⁻¹ ∘ (p, fst q [(p, (F (fst q) ,Σ F (snd q))[F▶⁻¹])]), snd q [p, (F (fst q) ,Σ F (snd q))[F▶⁻¹]])
+
+     F▶⁻¹ ∘ (F▶⁻¹ ∘ (p, fst ((F (fst q) ,Σ F (snd q))[F▶⁻¹])), snd ((F (fst q) ,Σ F (snd q))[F▶⁻¹]))
+
+     F▶⁻¹ ∘ (F▶⁻¹ ∘ (p, fst ((F (fst q) [F▶⁻¹] ,Σ F (snd q) [F▶⁻¹]))), snd ((F (fst q) [F▶⁻¹] ,Σ F (snd q) [F▶⁻¹])))
+
+     F▶⁻¹ ∘ (F▶⁻¹ ∘ (p, F (fst q) [F▶⁻¹]), F (snd q) [F▶⁻¹])
+
+     F▶⁻¹ ∘ (F▶⁻¹ ∘ (F p ∘ F▶⁻¹, F (fst q) [F▶⁻¹]), F (snd q) [F▶⁻¹])
+
+     F▶⁻¹ ∘ (F▶⁻¹ ∘ (F p, F (fst q)) ∘ F▶⁻¹, F (snd q) [F▶⁻¹])
+
+     F▶⁻¹ ∘ (F (p, fst q) ∘ F▶⁻¹, F (snd q) [F▶⁻¹])
+
+     F▶⁻¹ ∘ (F (p, fst q), F (snd q)) ∘ F▶⁻¹
+
+     F (p, fst q, snd q) ∘ F▶⁻¹
+
+  F (q[p] ,Σ q) [F (p, fst q, snd q) ∘ F▶⁻¹] = q
+
+  F (q[p ∘ (p, fst q, snd q)] ,Σ q[(p, fst q, snd q)]) [F▶⁻¹] = q
+
+  F (fst q ,Σ snd q) [F▶⁻¹] = q
+
+  F q [F▶⁻¹] = q
+
+  OK
