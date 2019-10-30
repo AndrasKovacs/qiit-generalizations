@@ -1,0 +1,105 @@
+
+
+--------------------------------------------------------------------------------
+-- flCwF isofibration
+--------------------------------------------------------------------------------
+
+given (A : Ty Γ)
+
+coe    : Γ.iso Γ Δ → A.Con Γ → A.Con Δ
+coh    : (σ : Γ.iso Γ Δ)(Γ* : A.Con Γ) → A.iso Γ* (coe σ Γ) σ
+coe-id : coe id Γ* = Γ*
+coe-∘  : coe (σ ∘ δ) Γ* = coe σ (coe δ Γ*)
+coh-id : coh id Γ* = id
+coh-∘  : coe (σ ∘ δ) Γ* = coh σ (coe δ Γ*) ∘ coh δ Γ*
+
+
+-- displayed displayed iso
+
+coe : {A B : Γ.Ty Γ} → Γ.iso A B → A.Ty Γ* A → A.Ty Γ* B
+coh : (t : Γ.iso A B)(A* : A.Ty Γ* A) → A.iso A* (coe t A*) t
+
+given t : A ≈ B, A* : A.Ty Γ* A, goal : A.Ty Γ* B
+
+  we have (id, t) : (Γ ▶ A) ≈ (Γ ▶ B)
+    to  : (p, t)
+    fro : (p, t⁻¹)
+    to ∘ fro = id OK
+    fro ∘ to = id OK
+
+  we have
+    (Γ* ▶ A*) : A.Con (Γ ▶ A)
+    coe (id, t) (Γ* ▶ A*) : A.Con (Γ ▶ B)
+
+    coh (id, t)(Γ* ▶ A*) : A.iso (Γ* ▶ A*) (coe (id, t) (Γ* ▶ A*)) (id, t)
+
+    coh (id, t)(Γ* ▶ A*) ⁻¹ : A.iso (coe (id, t) (Γ* ▶ A*)) (Γ* ▶ A*) (id, t⁻¹)
+
+    p ∘ coh (id, t)(Γ* ▶ A*) ⁻¹ : A.Sub (coe (id, t) (Γ* ▶ A*)) Γ* p
+
+    A*[p ∘ coh (id, t)(Γ* ▶ A*) ⁻¹] : A.Ty (coe (id, t) (Γ* ▶ A*)) (A[p])
+
+  dunno how to derive...
+
+
+--------------------------------------------------------------------------------
+-- Type iso lifting
+--------------------------------------------------------------------------------
+
+question: can we get Con iso lifting from Ty iso lifting?
+
+Ty iso composition:
+(t : B ≈ C) ∘ (u : A ≈ B) : A ≈ C
+  := (t ∘ u, u⁻¹ ∘ t⁻¹, _, _)
+
+
+*definition*: displayed Ty iso
+given (A* : Ty* Γ* A) (B* : Ty* Γ* B) (t : A ≈ B)
+
+iso A* B* := (t* : Tm (Γ*˙▶ A*) B*[p] t) × (u* : Tm (Γ* ▶ B*) A*[p] u)
+           × (t*[p, u*] = q) × (u*[p, t*] = q)
+
+
+coe    : A ≈ B → A.Ty Γ* A → A.Ty Γ* B
+coh    : (t : A ≈ B)(A* : Ty Γ* A) → iso A* (coe t A*) t
+coe-id : coe id A* = A*
+coe-∘  : coe (t ∘ u) A* = coe t (coe u A*)
+coh-id : coh id A* = id
+coh-∘  : coe (t ∘ u) A* = coh t (coe u A*) ∘ coh u A*
+
+
+-- now try to get Con iso lifting...
+
+------------------------------------------------------------
+
+coe (σ : Γ ≈ Δ)(Γ* : Con Γ) : Con Δ
+
+-- goal 1: K preserves σ
+K σ : K {∙} Γ ≈ K {∙} Δ
+  t := (lam (σ ∘ app q), lam (σ⁻¹ ∘ app q), prf1, prf2)
+
+    prf1:
+      lam (σ ∘ app q)[p, lam (σ⁻¹ ∘ app q)]
+      lam (σ ∘ app q ∘ (p, lam (σ⁻¹ ∘ app q)))
+      lam (σ ∘ app (lam (σ⁻¹ ∘ app q)))
+      lam (σ ∘ σ⁻¹ ∘ app q)
+      q OK
+    prf2:
+      same
+
+
+coe (σ : Γ≈Δ)(Γ* : Con Γ) : Con Δ
+
+  K σ : K Γ ≈ K Δ
+  K {∙} Γ* : Ty ∙ (K Γ)
+
+  coe (K σ) (K Γ*) : Ty ∙ (K Δ)
+
+  ∙ ▶ coe (K σ) (K Γ*) : Con (∙ ▶ K Δ) -- not quite good
+
+  coh (K σ) (K Γ*) : iso (K Γ*) (coe (K σ) (K Γ*)) (K σ)
+
+  coh (K σ) (K Γ*)    : Tm (∙ ▶ K Γ*) ((coe (K σ) (K Γ*))[p]) (K σ)
+  coh (K σ) (K Γ*) ⁻¹ : Tm (∙ ▶ coe (K σ) (K Γ*)) (K Γ*) (K σ ⁻¹)
+
+  DOESN'T seem to work. it seems we need both Con and Ty lifts!

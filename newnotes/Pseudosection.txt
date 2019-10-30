@@ -1,0 +1,65 @@
+
+# flCwF pseudosection
+
+- Same as pseudomorphism, except returns displayed objects over the input
+- We are only concerned with vertical isos in the target flCwFᴰ, which are
+  closed under composition. Every preservation construction carries over from
+  pseudomorphisms.
+
+- Summary (not fully checked, but pretty sure)
+
+  preserves Σ, Id, K up to vertical Ty isomorphism, preserves all constructors.
+
+-- Isos in a displayed flCwF
+--------------------------------------------------------------------------------
+
+vertical Con isos:
+
+  (Γ* : Con Γ) ≈ (Δ* : Con Γ) :=
+      (σ* : Sub Γ* Δ* id) × (δ* : Sub Δ* Γ* id)
+    × (σ* ∘ δ* = id) × (δ* × σ* = id)
+
+fully vertical Ty isos (over vertical identity in the base CwF)
+
+  (A* : Ty Γ* A) ≈ (B* : Ty Γ* A) :=
+      (t* : Tm (Γ* ▶ A*) B*[p])
+    × (u* : Tm (Γ* ▶ B*) A*[p])
+    × (t[p, u] = q)
+    × (u[p, t] = q)
+
+
+--------------------------------------------------------------------------------
+Definition
+--------------------------------------------------------------------------------
+
+  Given (C : flCwF), (A : flCwF isofibration)
+
+  F : (Γ : C.Con)     → A.Con Γ
+  F : (A : C.Ty Γ)    → A.Ty (F Γ) A
+  F : (σ : C.Sub Γ Δ) → A.Sub (F Γ) (F Δ) σ
+  F : (t : C.Tm Γ A)  → A.Tm (F Γ) (F A) t
+
+  F id = id
+  F (σ ∘ δ) = F σ ∘ F δ
+  F(A[σ]) = F A [F σ]
+  F(t[σ]) = F t [F σ]
+
+  F∙ : F ∙ ≈ ∙               -- vertical Con iso
+  F ε = F∙⁻¹ ∘ ε
+  F▶ : F (Γ ▶ A) ≈ F Γ ▶ F A -- vertical Con iso
+
+  F (σ, t) = F▶⁻¹ ∘ (F σ, F t)
+  F p = p ∘ F▶
+  F q = q[F▶]
+
+
+-- Σ,Id,K preservation
+--------------------------------------------------------------------------------
+
+-- same thing works as with pseudomorphisms
+
+-- fully vertical
+Goal : F (Σ A B) ≈ Σ (F A) (F B [F▶⁻¹])
+
+  t := (F (fst q) ,Σ  F (snd q))[F▶⁻¹]
+  u := F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)]

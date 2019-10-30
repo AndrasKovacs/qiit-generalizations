@@ -1,0 +1,55 @@
+
+The motivation for having Sub := pseudomorphism is that
+  - Id : Tm Γ (El a) → Tm Γ (El a) → Tm Γ U
+  - Π̃  : (A : Setᵢ) → (A → Tm Γ U) → Tm Γ U
+don't strictly preserve CwF comprehension.
+
+Here I want to find out what is preserved and how.
+Also a question: can we define K in flCwF with a sort equation?
+
+
+------------------------------------------------------------
+-- Id
+------------------------------------------------------------
+
+Given Γ : flCwF, a : Tm Γ U, t : Tm Γ (El a), u : Tm Γ (El a)
+
+we have (Idₜᵤ : Tm Γ U), i.e. a functor Γ ⇒ Set
+
+we use the same CwF metavar notation internally and externally
+
+
+Idₜᵤ (Γ : Γ.Con) : Set
+  := (t Γ = u Γ)
+
+Idₜᵤ (A : Γ.Ty Γ) : t Γ = u Γ → Set
+  := λ e. t A =ₑ u A
+
+Idₜᵤ (σ : Γ.Sub Γ Δ) : t Γ = u Γ → t Δ = u Δ
+  t σ : a σ (t Γ) = t Δ
+  u σ : a σ (u Γ) = u Δ
+  := λ e. _
+
+Idₜᵤ (v : Γ.Tm Γ A) : (e : t Γ = u Γ) → t A =ₑ u A
+  t v : a v (t Γ) = t A
+  u v : a v (u Γ) = u A
+  := λ e. _
+
+Idₜᵤ∙ : Idₜᵤ Γ.∙ ≈ ⊤
+      : (t ∙ = u ∙) ≈ ⊤
+
+  a∙ : a ∙ ≈ ⊤
+  t ∙ : a ∙
+
+  t∙ : t ∙ ≈ (El a).∙
+
+
+  -- t : Tm Γ (El a)
+  -- t∙ : t Γ.∙ ≈ tt
+
+  -- t∙ : t Γ.∙ ≈ (El a).∙
+  -- u∙ : u Γ.∙ ≈ (El a).∙
+
+  -- to  : λ (e : t ∙ = u ∙). tt
+  -- fro : λ tt. t∙ ◾ u∙⁻¹
+  -- p   : to (fro e) = e

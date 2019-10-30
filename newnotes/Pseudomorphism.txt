@@ -1,8 +1,11 @@
 
-# flCwF-pseudomorphisms. Trying to ascertain the minimal requirements
+# flCwF-pseudomorphisms.
+
+Summary:
+  pseudomorphism weakly preserves Σ, Id, K, preserves all constructors.
 
 --------------------------------------------------------------------------------
-pseudomorphism from "gluing for type theory"
+Definition
 --------------------------------------------------------------------------------
 
   Given (C, D : flCwF)
@@ -21,22 +24,20 @@ pseudomorphism from "gluing for type theory"
   F▶ : F (Γ ▶ A) ≈ F Γ ▶ F A
      -- naturality is derivable from F(σ,t), Fp, Fq
      -- F▶ ∘ F(σ↑) = (F σ)↑ ∘ F▶
-
   F (σ, t) = F▶⁻¹ ∘ (F σ, F t)
   F p = p∘F▶
   F q = q[F▶]
 
 F (σ↑) = F (σ∘p, q) = F▶⁻¹ ∘ (Fσ ∘ p ∘ F▶, q[F▶]) = F▶⁻¹ ∘ (σ↑) ∘ F▶
 
-p = F p ∘ F▶⁻¹
-q = F q [F▶⁻¹]
+p = F p ∘ F▶⁻¹   -- only well-typed if lhs : Sub (F Γ ▶ F A)
+q = F q [F▶⁻¹]   -- only well-typed if lhs : Tm (F Γ) (F A [p])
 
 --------------------------------------------------------------------------------
 ty-isomorphism: (A B : Ty Γ)
 --------------------------------------------------------------------------------
   A ≈ B :=   (t : Tm (Γ ▶ A) B[p]) × (u : Tm (Γ ▶ B) A[p])
              × (t[p, u] = q) × (u[p, t] = q)
-
 
 
 --------------------------------------------------------------------------------
@@ -111,22 +112,28 @@ Goal : F (Σ A B) ≈ Σ (F A) (F B [F▶⁻¹])
   --------------------------------------------------------------------------------
   (F (fst q) ,Σ  F (snd q))[F▶⁻¹][p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)]] = q
 
-     F▶⁻¹ ∘ (p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)])
+    F▶⁻¹ ∘ (p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)])
+    F▶⁻¹ ∘ (p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)])
+    F▶⁻¹ ∘ (F p², F (q[p] ,Σ q)) ∘ F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)
+    F (p², (q[p] ,Σ q)) ∘ F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)
 
-     F▶⁻¹ ∘ (F p ∘ F▶⁻¹, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)])
+  (F (fst q) ,Σ  F (snd q))[F (p², (q[p] ,Σ q))][F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)]
+  (F (fst q)[F (p², (q[p] ,Σ q))] ,Σ  F (snd q)[F (p², (q[p] ,Σ q))])[F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)]
+  (F (q[p]) ,Σ F q)[F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)]
+  (q[F▶ ∘ p ∘ F▶]) ,Σ q[F▶])[F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)]
 
-     F▶⁻¹ ∘ (F p ∘ F▶⁻¹, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q) ∘ F▶ ∘ F▶⁻¹])
+    F▶ ∘ p ∘ F▶ ∘ F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)
+    F▶ ∘ p ∘ (F▶⁻¹∘(p, fst q), snd q)
+    F▶ ∘ F▶⁻¹ ∘ (p, fst q)
+    (p, fst q)
 
-     F▶⁻¹ ∘ (F p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q) ∘ F▶]) ∘ F▶⁻¹
+    F▶ ∘ F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)
+    (F▶⁻¹∘(p, fst q), snd q)
 
-     F▶⁻¹ ∘ (F p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹ ∘ (p, fst q) ∘ F▶, snd q [F▶])]) ∘ F▶⁻¹
-
-     F▶⁻¹ ∘ (F p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹ ∘ (p ∘ F▶, fst q [F▶]), snd q [F▶])]) ∘ F▶⁻¹
-
-     F▶⁻¹ ∘ (F p, F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹ ∘ (F p, fst (F q)), snd (F q))]) ∘ F▶⁻¹
-
-     ????
-
+  (fst q ,Σ q[(F▶⁻¹∘(p, fst q), snd q)])
+  (fst q ,Σ snd q)
+  q
+  OK
 
   -- eq 2
   --------------------------------------------------------------------------------
@@ -162,3 +169,230 @@ Goal : F (Σ A B) ≈ Σ (F A) (F B [F▶⁻¹])
   F q [F▶⁻¹] = q
 
   OK
+
+  -- fst
+  --------------------------------------------------------------------------------
+  t : Tm Γ (Σ A B)
+  fst t : Tm Γ A
+  F (fst t) : Tm (F Γ) (F A)
+
+  F t : Tm (F Γ) (F (Σ A B))
+  (id, F t) : Sub (F Γ) (F Γ ▶ F (Σ A B))
+  FΣ[id, F t] : Tm (F Γ) (Σ (F A) (F B [F▶⁻¹]))
+  fst (FΣ[id, F t]) : Tm (F Γ) (F A)
+
+  Goal : F (fst t) = fst (FΣ[id, F t])
+  F (fst t) = fst ((F (fst q) [F▶⁻¹] ,Σ  F (snd q) [F▶⁻¹])[id, F t])
+  F (fst t) = fst ((F (fst q) [F▶⁻¹] ,Σ  F (snd q) [F▶⁻¹])[id, F t])
+  F (fst t) = fst ((F (fst q) [F▶⁻¹][F id, F t] ,Σ  F (snd q) [F▶⁻¹][F id, F t]))
+  F (fst t) = F (fst q) [F▶⁻¹][F id, F t]
+  F (fst t) = F (fst q) (F (id, t))
+  F (fst t) = F (fst t)
+  OK
+
+  -- snd
+  --------------------------------------------------------------------------------
+  Goal : F (snd t) = snd (FΣ[id, F t])
+  F (snd t) : Tm (F Γ) (F (B[id, fst t]))
+  snd (FΣ[id, F t]) : Tm (F Γ) (F B [F▶⁻¹ ∘ (id, F (fst t))])
+                    : Tm (F Γ) (F (B[id, fst t]))
+
+  F (snd t) = F (snd q) [F▶⁻¹][F id, F t]
+  F (snd t) = F (snd t)
+  OK
+
+
+  -- _,Σ_
+  --------------------------------------------------------------------------------
+  t : Tm Γ A
+  u : Tm Γ (B[id, t])
+  F (t ,Σ u) : Tm (F Γ) (F (Σ A B))
+
+  F t : Tm (F Γ) (F A)
+  F u : Tm (F Γ) F (B[id, t])
+      : Tm (F Γ) (F B)[F▶⁻¹][id , F t]
+
+  (F t, F u) : Tm (F Γ) (Σ (F A) (F B [F▶⁻¹]))
+
+  FΣ[id, F (t, u)] = (F t, F u)
+  ((F (fst q) [F▶⁻¹] ,Σ  F (snd q) [F▶⁻¹])[id, F (t, u)]) = (F t , F u)
+  ((F (fst q) [F▶⁻¹ ∘ (id, F (t, u))] ,Σ  F (snd q) [F▶⁻¹ ∘ (id, F (t, u))])) = (F t , F u)
+  ((F (fst q) [F (id, (t , u))] ,Σ  F (snd q) [F (id, (t, u))])) = (F t , F u)
+  (F t ,Σ  F u) = (F t , F u)
+  OK
+
+
+
+-- constant families
+--------------------------------------------------------------------------------
+
+
+K : ∀ {Γ} → Con → Ty Γ
+K {Γ'} Δ [σ : Sub Γ Γ'] = K {Γ} Δ
+
+app : Tm Γ (K Δ) → Sub Γ Δ
+lam : Sub Γ Δ → Tm Γ (K Δ)
+app (lam σ) = σ
+lam (app t) = t
+app t ∘ σ = app t[σ]
+(lam σ)[δ] = lam (σ ∘ δ) --admissible
+
+-- rules for conversion into democracy, we need this in a number of places
+K {Γ} Δ = K {∙} Δ [ε]
+app {Γ} t = app {∙} q ∘ (ε, t)
+lam σ = lam id [σ]
+
+
+*K-sub-lemma* : given σ : Sub θ (F Γ), σ' : Sub θ (F Γ')
+  F (K {Γ} Δ)[σ] = F (K {Γ'} Δ)[σ']
+
+    F (K {Γ} Δ)[σ] =
+    F (K {∙} Δ [ε])[σ] =
+    F (K {∙} Δ)[F ε ∘ σ] =
+    F (K {∙} Δ)[F∙⁻¹ ∘ ε ∘ σ] =
+    F (K {∙} Δ)[F∙⁻¹ ∘ ε] =
+    F (K {∙} Δ)[F∙⁻¹ ∘ ε ∘ σ'] =
+    F (K {∙} Δ)[F ε ∘ σ'] =
+    F (K {Γ'} Δ)[σ']
+
+
+Goal : F (K {Γ} Δ) ≈ K {F Γ}(F Δ)
+
+  t : Tm (F Γ ▶ F (K Δ)) (K (F Δ){F Γ})[p]
+    : Tm (F Γ ▶ F (K Δ)) (K (F Δ){F Γ ▶ F (K Δ)})
+    q : Tm (Γ ▶ K Δ) (K Δ)
+    app q : Sub (Γ ▶ K Δ) Δ
+
+    F (app q) : Sub (F (Γ ▶ K Δ)) (F Δ)
+    F (app q) ∘ F▶⁻¹ : Sub (F Γ ▶ F (K Δ)) (F Δ)
+    lam (F (app q) ∘ F▶⁻¹) : Tm (F Γ ▶ F (K Δ)) (K (F Δ)) OK
+
+    t := lam (F (app q) ∘ F▶⁻¹)
+
+
+  u : Tm (F Γ ▶ K {F Γ} (F Δ)) (F (K {Γ} Δ))[p]
+
+    id : Sub Δ Δ
+    lam id : Tm Δ (K {Δ} Δ)
+    F (lam id) : Tm (F Δ) (F (K {Δ} Δ))
+    app q : Sub (F Γ ▶ K {F Γ} (F Δ)) (F Δ)
+    F (lam id)[app q] : Tm (F Γ ▶ K (F Δ)) (F (K {Δ} Δ))[app q]
+                      : Tm (F Γ ▶ K (F Δ)) (F (K {Γ} Δ))[p]  -- by K-sub-lemma
+
+    u := (F (lam id))[app q]
+
+
+  t[p, u] = q
+    lam (F (app q) ∘ F▶⁻¹)[p, F (lam id)[app q]] =
+    lam (F (app q) ∘ F▶⁻¹ ∘ (p, F (lam id)[app q]))
+    lam (F (app q) ∘ F▶⁻¹ ∘ (p, F (lam id)[app q]))
+    lam (F (app q) ∘ F (ε, q) ∘ F▶⁻¹ ∘ (p, F (lam id)[app q]))
+    lam (F (app q) ∘ F▶⁻¹ ∘ (F∙⁻¹ ∘ ε, q[F▶]) ∘ F▶⁻¹ ∘ (p, F (lam id)[app q]))
+    lam (F (app q) ∘ F▶⁻¹ ∘ (F∙⁻¹ ∘ ε, q[(p, F (lam id)[app q])]))
+    lam (F (app q) ∘ F▶⁻¹ ∘ (F∙⁻¹ ∘ ε, F (lam id) [app q]))
+    lam (F (app q) ∘ F▶⁻¹ ∘ (F∙⁻¹ ∘ ε, F (lam id)) ∘ app q)
+    lam (F (app q) ∘ F▶⁻¹ ∘ (F ε, F (lam id)) ∘ app q)
+    lam (F (app q) ∘ F (ε, lam id) ∘ app q)
+    lam (F (app q ∘ (ε, lam id)) ∘ app q)
+    lam (F (app lam id) ∘ app q)
+    lam (app q)
+    q
+    OK
+
+  [p, t] = q
+    F (lam id)[app q][p, lam (F (app q) ∘ F▶⁻¹)]
+    F (lam id)[app q ∘ (p, lam (F (app q) ∘ F▶⁻¹))]
+    F (lam id)[app (lam (F (app q) ∘ F▶⁻¹))]
+    F (lam id)[F (app q) ∘ F▶⁻¹]
+    F (lam id)[F (app q) ∘ F▶⁻¹]
+    F (lam (app q)) [F▶⁻¹]
+    F q [F▶⁻¹]
+    q
+    OK
+
+  -- F (app t)
+  goal : F (app t) = app (FK[id, F t])
+  F (app t) = app (lam (F (app q) ∘ F▶⁻¹)[id, F t])
+  F (app t) = app (lam (F (app q) ∘ F▶⁻¹ ∘ (id, F t)))
+  F (app t) = app (lam (F (app q) ∘ F▶⁻¹ ∘ (F id, F t)))
+  F (app t) = app (lam (F (app q) ∘ F (id, t)))
+  F (app t) = app (lam (F (app t)))
+  F (app t) = F (app t)
+
+  -- F (lam t)
+  lam t : Tm Γ (K Δ)
+  F (lam t) : Tm (F Γ) (F (K Δ))
+  F t : Sub (F Γ) (F Δ)
+  lam (F t) : Tm (F Γ) (K (F Δ))
+
+  goal : FK[id, F (lam t)] = lam (F t)
+
+  FK   : Tm (F Γ ▶ F (K Δ)) (K (F Δ))
+  FK⁻¹ : Tm (F Γ ▶ K (F Δ)) (F (K {Γ} Δ))[p]
+
+  FK⁻¹[id, lam (F t)] : Tm (F Γ) (F (K {Γ} Δ))[p][id, lam (F t)]
+                      : Tm (F Γ) (F (K {Γ} Δ))
+
+  goal : F (lam σ) = FK⁻¹[id, lam (F σ)]
+  F (lam σ) = (F (lam id))[app q][id, lam (F σ)]
+  F (lam σ) = (F (lam id))[app q ∘ (F id, lam (F σ))]
+  F (lam σ) = (F (lam id))[app {∙} q ∘ (ε, q) ∘ (F id, lam (F σ))]
+  F (lam σ) = (F (lam id))[app q ∘ (ε, lam (F σ))]
+  F (lam σ) = (F (lam id))[app q ∘ (ε, lam id [F σ])]
+  F (lam σ) = (F (lam id))[app q ∘ (ε ∘ F σ, lam id [F σ])]
+  F (lam σ) = (F (lam id))[app q ∘ (ε, lam id) ∘ F σ]
+  F (lam σ) = (F (lam id))[app (lam id) ∘ F σ]
+  F (lam σ) = (F (lam id))[F σ]
+  F (lam σ) = (F (lam σ))
+  OK
+
+-- Id
+--------------------------------------------------------------------------------
+
+Id : Tm Γ A → Tm Γ A → Ty Γ
+refl : Id t t
+UIP : (e : Id t t) → e = refl
+reflect : Id t u → t = u
+
+Goal : F (Id t u) ≈ Id (F t) (F u)
+
+  to : Tm (F Γ ▶ F (Id t u)) (Id (F t [p]) (F u [p]))
+
+    q : Tm (Γ ▶ Id t u) (Id t[p] u[p])
+
+    t[p] = u[p]
+    F t [p ∘ F▶] = F u [p ∘ F▶]
+    F t [p ∘ F▶ ∘ F▶⁻¹] = F u [p ∘ F▶ ∘ F▶⁻¹]
+    F t [p] = F u [p]
+
+    to := refl (F t [p])
+
+  fro : Tm (F Γ ▶ Id (F t) (F u)) (F (Id t u))[p]
+
+    transp : (P : Ty (Γ ▶ A)) → Tm Γ (Id t u) → Tm Γ P[id, t] → Tm Γ P[id, u]
+    q : Tm (F Γ ▶ Id (F t) (F u)) (Id (F t [p]) (F u [p]))
+
+    fro := transp (F (Id (A[p]) (u[p]) q) [F▶⁻¹∘(p², q)]) q (F(refl u)[p])
+
+    or without transp, by reflect:
+    fro := F (refl u)[p]
+
+
+  to[p, fro] = q : Tm (F Γ ▶ Id (F t) (F u)) (Id (F t [p]) (F u [p]))
+  refl (F t [p])[p, F (refl u)[p]]
+  refl (F t [p]) = q
+  OK by UIP
+
+  fro[p, to] = q : Tm (F Γ ▶ F (Id t u)) (F (Id t u))[p]
+  F (refl u)[p] = q : Tm (F Γ ▶ F (Id t u)) (F (Id t u))[p]
+  F (refl u)[p ∘ F▶] = q[F▶] : Tm (F (Γ ▶ Id t u)) (F (Id t u))[p ∘ F▶]
+  F (refl u)[F p] = F q : Tm (F (Γ ▶ Id t u)) (F (Id t u))[F p]
+  F (refl u[p]) = F q : Tm (F (Γ ▶ Id t u)) (F (Id t u))[F p]
+  by UIP and (ap F)
+  OK
+
+
+  Goal : F (refl t) = FId⁻¹[id, refl (F t)]
+         F (refl t) = F (refl t)[p][id, refl (F t)]
+         F (refl t) = F (refl t)
+	 OK
