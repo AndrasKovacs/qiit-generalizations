@@ -1,0 +1,114 @@
+
+TY : Con → Set (1 + max(i, j + 1))
+TY Γ := isofib Γ
+
+
+--------------------------------------------------------------------------------
+-- isofibᵢ : flCwFᵢ → Set (i + 1)
+--------------------------------------------------------------------------------
+
+Notation:
+  - General notation:
+    1. We note displayed stuff with *, like Γ* : Con Γ, and stuff in the base CwF normally
+    2. We note displayed stuff normally, and base stuff as ⁻, e.g. Γ : Con Γ⁻
+    3. We default to normal vars whenever it's obvious which one we mean.
+
+  Con     : Γ.Con → Set i
+  Sub     : Con Γ⁻ → Con Δ⁻ → Γ.Sub Γ Δ → Set i
+  Ty      : Con Γ⁻ → Γ.Ty Γ → Set i
+  Tm      : (Γ : Con Γ⁻) → Ty Γ A⁻ → Γ.Tm Γ A → Set i
+
+  id      : (Γ : Con Γ⁻) → Sub Γ Γ id
+  _∘_     : Sub Θ Δ σ⁻ → Sub Γ Θ δ⁻ → Sub Γ Δ (σ⁻ ∘ δ⁻)
+  ass     : (σ ∘ δ) ∘ ν = σ ∘ (δ ∘ ν)
+  idl     : id ∘ σ = σ
+  idr     : σ ∘ id = σ
+
+  _[_]    : Ty Δ A⁻ → Sub Γ Δ σ⁻ → Ty Γ (A⁻[σ⁻])
+  _[_]    : Tm Δ t⁻ → (σ : Sub Γ Δ σ⁻) → Tm Γ (t⁻[σ⁻])
+  [id]    : A [id] = A
+  [∘]     : A [σ ∘ δ] = A [σ] [δ]
+
+  ∙       : Con ∙
+  ε       : (Γ : Con) → Sub Γ ∙ ε
+  ∙η      : (σ : Sub Γ ∙ σ⁻) → σ = ε
+
+  _▶_     : (Γ : Con Γ⁻) → Ty Γ A⁻ → Con (Γ⁻ ▶ A⁻)
+  _,_     : (σ : Sub Γ Δ σ⁻) → Tm Γ (A[σ]) t⁻ → Sub Γ (Δ ▶ A) (σ⁻, t⁻)
+  ,∘      : (σ, t) ∘ δ = (σ ∘ δ, t [δ])
+  p       : Sub (Γ ▶ A) Γ p
+  q       : Tm (Γ ▶ A) A[p] q
+  pβ      : p ∘ (σ, t) = σ
+  qβ      : q[σ, t] = t
+  ,η      : (p, q) = id
+
+  Id      : Tm Γ A t⁻ → Tm Γ A u⁻ → Ty Γ (Id t⁻ u⁻)
+  Id[]    : Id t u [σ] = Id (t[σ]) (u[σ])
+  Reflect : Tm Γ (Id t u) e⁻ → t = u
+  Refl    : (t : Tm Γ A t⁻) → Tm Γ (Id t t) (Refl t⁻)
+  UIP     : (e : Tm Γ (Id t t)) → e = Refl t
+
+  K       : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
+  K[]     : K Δ [σ] = K Δ
+  appK    : Tm Γ (K Δ) t⁻ → Sub Γ Δ (appK t⁻)
+  lamK    : Sub Γ Δ σ⁻ → Tm Γ (K Δ) (lamK σ⁻)
+  appK[]  : appK t ∘ σ = appK (t[σ])
+  Kβ      : appK (lamK σ) = σ
+  Kη      : lamK (appK t) = t
+
+  Σ       : (A : Ty Γ A⁻) → Ty (Γ ▶ A) B⁻ → Ty Γ (Σ A⁻ B⁻)
+  Σ[]     : Σ A B [σ] = Σ (A[σ]) (B[σ↑])
+  _,_     : (t : Tm Γ A t⁻) → Tm Γ (B[id, t]) u⁻ → Tm Γ (Σ A B) (t⁻, u⁻)
+  ,[]     : (t, u)[σ]) = (t[σ], u[σ])
+  π₁      : Tm Γ (Σ A B) t⁻ → Tm Γ A (π₁ t⁻)
+  π₂      : (t : Tm Γ (Σ A B) t⁻) → Tm Γ (B[id, π₁ t]) (π₂ t⁻)
+  π₁β     : π₁ (t, u) = t
+  π₂β     : π₂ (t, u) = u
+  πη      : (π₁ t, π₂ t) = t
+
+--------------------------------------------------------------------------------
+-- isomorphisms, given (A : Ty Γ)
+--------------------------------------------------------------------------------
+
+We only have type isos in A displayed over homogeneous type isos in Γ. We don't
+need doubly displayed type isos.
+
+-- 1. Object isomorphisms
+A.iso (Γ : A.Con Γ⁻) (Δ : A.Con Δ⁻) (σ⁻ : Γ.iso Γ⁻ Δ⁻) :=
+  (σ : Sub Γ Δ σ⁻) × (δ : Sub Δ Γ σ⁻⁻¹) × (σ ∘ δ = id) × (δ ∘ σ = id)
+
+-- operations:
+  id  : A.iso Γ Γ id
+  _⁻¹ : A.iso Γ Δ σ⁻ → iso Δ Γ (σ⁻⁻¹)
+  _∘_ : iso Σ θ σ⁻ → iso Δ Σ δ⁻ → iso Γ Δ (σ⁻ ∘ δ⁻)
+  associative, unital, involutive for _⁻¹, etc.
+
+-- 2. (Vertical) type isomorphisms
+A.iso (A : Ty Γ A⁻)(B : Ty Γ B⁻)(t⁻ : Γ.iso A⁻ B⁻) :=
+  (t : Tm (Γ ▶ A) B[p] t⁻) × (u : Tm (Γ ▶ B) A[p] t⁻⁻¹) × (t[p, u] = q) × (u[p, t] = q)
+
+  id  : A.iso A A id
+  _⁻¹ : A.iso A B t⁻ → iso B A (t⁻⁻¹)
+  _∘_ : iso B C t⁻ → iso A B u⁻ → iso A C (t⁻ ∘ u⁻)
+  associative, unital, involutive for _⁻¹, etc.
+
+
+--------------------------------------------------------------------------------
+-- iso-cleaving, given (A : Ty Γ)
+--------------------------------------------------------------------------------
+
+NOTE: later, mark what is actually needed from here!
+
+coe    : Γ.iso Γ⁻ Δ⁻ → A.Con Γ → A.Con Δ
+coh    : (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : A.Con Γ⁻) → A.iso Γ (coe σ⁻ Γ) σ⁻
+coe-id : coe id Γ = Γ
+coe-∘  : coe (σ⁻ ∘ δ⁻) Γ = coe σ⁻ (coe δ⁻ Γ)
+coh-id : coh id Γ = id
+coh-∘  : coh (σ⁻ ∘ δ⁻) Γ = coh σ⁻ (coe δ⁻ Γ) ∘ coh δ⁻ Γ
+
+coe    : Γ.iso A⁻ B⁻ → A.Ty Γ A⁻ → A.Ty Γ B⁻
+coh    : (t⁻ : Γ.iso A⁻ B⁻)(A : Ty Γ A⁻) → A.iso A (coe t⁻ A) t⁻
+coe-id : coe id A = A
+coe-∘  : coe (t⁻ ∘ u⁻)  = coe t⁻ (coe u⁻ A)
+coh-id : coh id A = id
+coh-∘  : coe (t⁻ ∘ u⁻) A = coh t⁻ (coe u⁻ A) ∘ coh u⁻ A

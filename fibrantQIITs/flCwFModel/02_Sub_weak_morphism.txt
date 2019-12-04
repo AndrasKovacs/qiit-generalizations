@@ -1,14 +1,21 @@
 
-# flCwF-pseudomorphisms.
+SUB Γ Δ : Set (1 + max(i, j + 1))
+SUB Γ Δ := weakMorphism Γ Δ
+
+Naming cf. "Dependent right adjoints" paper
 
 Summary:
-  pseudomorphism weakly preserves Σ, Id, K, preserves all constructors.
+  - weak morphism is a functor F between flCwFs
+  - such that
+    - F preserves substitution strictly
+    - ε : Sub (F ∙) ∙ has a retraction
+    - each (F p, F q) : Sub (F (Γ ▶ A)) (F Γ ▶ F A) has an inverse.
+
+- A weak morphism preserves Σ, Id, K up to type iso.
 
 --------------------------------------------------------------------------------
 Definition
 --------------------------------------------------------------------------------
-
-  Given (C, D : flCwF)
 
   F : C.Con → D.Con
   F : Ty Γ → Ty (F Γ)
@@ -19,33 +26,67 @@ Definition
   F (σ ∘ δ) = F σ ∘ F δ
   F(A[σ]) = F A [F σ]
   F(t[σ]) = F t [F σ]
-  F∙ : F ∙ ≈ ∙
-  F ε = F∙⁻¹ ∘ ε
-  F▶ : F (Γ ▶ A) ≈ F Γ ▶ F A
-     -- naturality is derivable from F(σ,t), Fp, Fq
-     -- F▶ ∘ F(σ↑) = (F σ)↑ ∘ F▶
-  F (σ, t) = F▶⁻¹ ∘ (F σ, F t)
-  F p = p∘F▶
-  F q = q[F▶]
 
-F (σ↑) = F (σ∘p, q) = F▶⁻¹ ∘ (Fσ ∘ p ∘ F▶, q[F▶]) = F▶⁻¹ ∘ (σ↑) ∘ F▶
+  F∙⁻¹ : Sub ∙ (F ∙)
+  F∙⁻¹ ∘ ε = id
 
-p = F p ∘ F▶⁻¹   -- only well-typed if lhs : Sub (F Γ ▶ F A)
-q = F q [F▶⁻¹]   -- only well-typed if lhs : Tm (F Γ) (F A [p])
+  F▶⁻¹ : Sub (F Γ ▶ F A) (F (Γ ▶ A))
+  F▶⁻¹ ∘ (F p, F q) = id
+  (F p, F q) ∘ F▶⁻¹ = id
+
+  definitions:
+    F∙ : Sub (F ∙) ∙ := ε
+    F▶ : Sub (F (Γ ▶ A)) (F Γ ▶ F A) := (F p, F q)
+
+  derivable:
+    F∙ ∘ F∙⁻¹ = id
+    F ε = F∙⁻¹ ∘ ε
+    F p = p ∘ F▶
+    F q = q[F▶]
+    F (σ, t) = F▶⁻¹ ∘ (F σ, F t)
+    p = F p ∘ F▶⁻¹   -- only well-typed if lhs : Sub (F Γ ▶ F A) (F Γ)
+    q = F q [F▶⁻¹]   -- only well-typed if lhs : Tm (F Γ) (F A [p])
 
 --------------------------------------------------------------------------------
-ty-isomorphism: (A B : Ty Γ)
+-- Action on isos
 --------------------------------------------------------------------------------
-  A ≈ B :=   (t : Tm (Γ ▶ A) B[p]) × (u : Tm (Γ ▶ B) A[p])
-             × (t[p, u] = q) × (u[p, t] = q)
 
+F (σ : Γ.iso Γ Δ) : Δ.iso (F Γ) (F Δ)
+  := (F Σ
+
+- A weak morphism strictly preserves object and type isos.
+
+F (t : Γ.iso A B) : Δ.iso (F A) (F B)
+  := (F t [F▶⁻¹], F u [F▶⁻¹], _, _)
+    equations:
+
+       F t [F▶⁻¹][p, F u [F▶⁻¹]] = q
+       F t [F▶⁻¹ ∘ (p, F u [F▶⁻¹])]
+       F t [F▶⁻¹ ∘ (F p ∘ F▶⁻¹, F u [F▶⁻¹])]
+       F t [F (p, u) ∘ F▶⁻¹]
+       F (t[p, u]) [F▶⁻¹]
+       F (t[p, u]) [F▶⁻¹]
+       F q [F▶⁻¹]
+       q OK
+
+       symmetrically for the other equation
+
+TODO
+  F id = id
+  F (σ ∘ δ) = F σ ∘ F δ
 
 --------------------------------------------------------------------------------
 Preservation of Σ,Id,K
 --------------------------------------------------------------------------------
 
 
-Goal : F (Σ A B) ≈ Σ (F A) (F B [F▶⁻¹])
+Goal : iso (F (Σ A B)) (Σ (F A) (F B [F▶⁻¹]))
+
+F : Tm Γ A
+
+A.iso (F (Σ A B)) (Σ (F A) (F B [F▶⁻¹])) id
+
+
 
   -- comparison map 1
   --------------------------------------------------------------------------------
@@ -256,7 +297,7 @@ lam σ = lam id [σ]
     F (K {Γ'} Δ)[σ']
 
 
-Goal : F (K {Γ} Δ) ≈ K {F Γ}(F Δ)
+Goal : iso (F (K {Γ} Δ)) (K {F Γ}(F Δ))
 
   t : Tm (F Γ ▶ F (K Δ)) (K (F Δ){F Γ})[p]
     : Tm (F Γ ▶ F (K Δ)) (K (F Δ){F Γ ▶ F (K Δ)})
@@ -354,7 +395,7 @@ refl : Id t t
 UIP : (e : Id t t) → e = refl
 reflect : Id t u → t = u
 
-Goal : F (Id t u) ≈ Id (F t) (F u)
+Goal : iso (F (Id t u)) (Id (F t) (F u))
 
   to : Tm (F Γ ▶ F (Id t u)) (Id (F t [p]) (F u [p]))
 

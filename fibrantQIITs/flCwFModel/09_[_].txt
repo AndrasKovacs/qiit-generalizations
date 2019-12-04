@@ -1,0 +1,101 @@
+
+_[_] : TY Δ → SUB Γ Δ → TY Γ
+A[F] = ...
+
+--------------------------------------------------------------------------------
+-- A : TY Δ
+-- F : SUB Γ Δ
+
+  Con : Δ.Con → Set i
+  Con Γ := A.Con (F Γ)
+
+  Sub : Con Γ⁻ → Con Δ → Δ.Sub Γ Δ → Set i
+  Sub Γ Δ σ⁻ := A.Sub Γ Δ (F σ⁻)
+
+  Ty : Con Γ → Δ.Ty Γ → Set i
+  Ty Γ A⁻ := A.Ty Γ (F A⁻)
+
+  Tm : (Γ : Con Γ) → Ty Γ A → Δ.Tm Γ A → Set i
+  Tm Γ A t⁻ := A.Tm Γ A (F t⁻)
+
+  id  : (Γ : Con Γ⁻) → Sub Γ Γ id
+  id Γ := id
+
+  _∘_ : Sub Θ Δ σ⁻ → Sub Γ Θ δ⁻ → Sub Γ Δ (σ⁻ ∘ δ⁻)
+  σ ∘ δ := σ ∘ δ
+
+  -- OK
+  ass : (σ ∘ δ) ∘ ν = σ ∘ (δ ∘ ν)
+  idl : id ∘ σ = σ
+  idr : σ ∘ id = σ
+
+  _[_] : Ty Δ A⁻ → Sub Γ Δ σ⁻ → Ty Γ (A⁻[σ⁻])
+  A[σ] := A[σ]
+
+  _[_] : Tm Δ t⁻ → (σ : Sub Γ Δ σ⁻) → Tm Γ (t⁻[σ⁻])
+  t[σ] := t[σ]
+
+  -- OK
+  [id] : A [id] = A
+  [∘]  : A [σ ∘ δ] = A [σ] [δ]
+
+  ∙ : Con ∙
+    : A.Con (F ∙)
+    := coe F∙⁻¹ ∙
+
+  ε  : Sub Γ ∙ ε
+     : Sub Γ (coe F∙⁻¹ ∙) (F∙⁻¹ ∘ ε)
+     := coh F∙⁻¹ ∙ ∘ ε
+
+  ∙η : {σ : Sub Γ (coe F∙⁻¹ ∙) σ⁻} → σ = ε
+     : σ = coh F∙⁻¹ ∙ ∘ ε
+     : σ = coh F∙⁻¹ ∙ ∘ coh F∙ ∙ ∘ σ
+     : σ = σ OK
+
+  _▶_   : (Γ : Con Γ⁻) → Ty Γ A⁻ → Con (Γ⁻ ▶ A⁻)
+  Γ ▶ A : A.Con (F (Γ⁻ ▶ A⁻))
+        := coe F▶⁻¹ (Γ ▶ A)
+
+  _,_  : (σ : Sub Γ Δ σ⁻) → Tm Γ (A[σ]) t⁻ → Sub Γ (Δ ▶ A) (σ⁻, t⁻)
+  σ,t  : Sub Γ (Δ ▶ A) (F (σ⁻, t⁻))
+       : Sub Γ (Δ ▶ A) (F▶⁻¹ ∘ (F σ⁻, F t⁻))
+       :
+
+       σ , t : Sub Γ (Δ ▶ A) (F σ⁻, F t⁻)
+       (σ , t)
+
+       coh F▶⁻¹
+
+
+
+
+  ,∘      : (σ, t) ∘ δ = (σ ∘ δ, t [δ])
+  p       : Sub (Γ ▶ A) Γ p
+  q       : Tm (Γ ▶ A) A[p] q
+  pβ      : p ∘ (σ, t) = σ
+  qβ      : q[σ, t] = t
+  ,η      : (p, q) = id
+
+  Id      : Tm Γ A t⁻ → Tm Γ A u⁻ → Ty Γ (Id t⁻ u⁻)
+  Id[]    : Id t u [σ] = Id (t[σ]) (u[σ])
+  Reflect : Tm Γ (Id t u) e⁻ → t = u
+  Refl    : (t : Tm Γ A t⁻) → Tm Γ (Id t t) (Refl t⁻)
+  UIP     : (e : Tm Γ (Id t t)) → e = Refl t
+
+  K       : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
+  K[]     : K Δ [σ] = K Δ
+  appK    : Tm Γ (K Δ) t⁻ → Sub Γ Δ (appK t⁻)
+  lamK    : Sub Γ Δ σ⁻ → Tm Γ (K Δ) (lamK σ⁻)
+  appK[]  : appK t ∘ σ = appK (t[σ])
+  Kβ      : appK (lamK σ) = σ
+  Kη      : lamK (appK t) = t
+
+  Σ       : (A : Ty Γ A⁻) → Ty (Γ ▶ A) B⁻ → Ty Γ (Σ A⁻ B⁻)
+  Σ[]     : Σ A B [σ] = Σ (A[σ]) (B[σ↑])
+  _,_     : (t : Tm Γ A t⁻) → Tm Γ (B[id, t]) u⁻ → Tm Γ (Σ A B) (t⁻, u⁻)
+  ,[]     : (t, u)[σ]) = (t[σ], u[σ])
+  π₁      : Tm Γ (Σ A B) t⁻ → Tm Γ A (π₁ t⁻)
+  π₂      : (t : Tm Γ (Σ A B) t⁻) → Tm Γ (B[id, π₁ t]) (π₂ t⁻)
+  π₁β     : π₁ (t, u) = t
+  π₂β     : π₂ (t, u) = u
+  πη      : (π₁ t, π₂ t) = t

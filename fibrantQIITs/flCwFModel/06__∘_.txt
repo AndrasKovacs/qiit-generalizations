@@ -1,0 +1,61 @@
+
+_∘_ : SUB Δ Σ → SUB Γ Δ → SUB Γ Σ
+F ∘ G := H (see below)
+
+--------------------------------------------------------------------------------
+-- let us denote the composite of F and G as H.
+
+  H : Γ.Con → Σ.Con
+  H Γ := F (G Γ)
+
+  H : Ty Γ → Ty (H Γ)
+  H A := F (G A)
+
+  H : Sub Γ Δ → Sub (H Γ) (H Δ)
+  H σ := F (G σ)
+
+  H : Tm Γ A → Tm (H Γ) (H A)
+  H t := F (G t)
+
+  -- strict preservations
+  H id = id
+  H (σ ∘ δ) = H σ ∘ H δ
+  H(A[σ]) = H A [H σ]
+  H(t[σ]) = H t [H σ]
+  -- all OK
+
+  H∙⁻¹ : Sub ∙ (F (G ∙))
+  H∙⁻¹ := F G∙⁻¹ ∘ F∙⁻¹
+
+  H∙⁻¹ ∘ ε = id
+    F G∙⁻¹ ∘ F∙⁻¹ ∘ (ε : Sub (F (G ∙)) ∙)
+    F G∙⁻¹ ∘ F∙⁻¹ ∘ (ε : Sub (F ∙) ∙) ∘ F ε
+    F G∙⁻¹ ∘ F ε
+    F (G∙⁻¹ ∘ ε)
+    F id
+    id -- OK
+
+  H▶⁻¹ : Sub (F (G Γ) ▶ F (G A)) (F (G (Γ ▶ A)))
+  H▶⁻¹ := F G▶⁻¹ ∘ F▶⁻¹
+
+    F▶⁻¹   : Sub (F Γ ▶ F A) (F (Γ ▶ A))
+    (F p, F q) : Sub (F (Γ ▶ A)) (F Γ ▶ F A)
+
+    G▶⁻¹   : Sub (G Γ ▶ G A) (G (Γ ▶ A))
+    F G▶⁻¹ : Sub (F (G Γ ▶ G A)) (F (G (Γ ▶ A)))
+    F▶⁻¹   : Sub (F (G Γ) ▶ F (G A)) (F (G Γ ▶ G A))
+
+  H▶⁻¹ ∘ (H p, H q) = id
+    F G▶⁻¹ ∘ F▶⁻¹ ∘ (F (G p), F (G q))
+    F G▶⁻¹ ∘ F▶⁻¹ ∘ F▶ ∘ F▶⁻¹ ∘ (F (G p), F (G q))
+    F G▶⁻¹ ∘ F▶⁻¹ ∘ F▶ ∘ F G▶
+    F G▶⁻¹ ∘ F G▶
+    F id
+    id -- OK
+
+  (F (G p), F (G q)) ∘ F G▶⁻¹ ∘ F▶⁻¹ = id
+    (F (G p), F (G q)) ∘ F G▶⁻¹ ∘ F▶⁻¹
+    F▶ ∘ F▶⁻¹ ∘ (F (G p), F (G q)) ∘ F G▶⁻¹ ∘ F▶⁻¹
+    F▶ ∘ F G▶ ∘ F G▶⁻¹ ∘ F▶⁻¹
+    F▶ ∘ F▶⁻¹
+    id  -- OK

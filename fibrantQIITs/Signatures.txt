@@ -1,0 +1,106 @@
+
+
+--------------------------------------------------------------------------------
+Notion of model of theory of signatures (ToS) at levels i, j.
+"i" is the level of external sets, "j" is the level of Con,Ty,Sub,Tm.
+--------------------------------------------------------------------------------
+
+
+Con     : Set i
+Sub     : Con → Con → Set i
+Ty      : Con → Set i
+Tm      : (Γ : Con) → Ty Γ → Set i
+
+id      : (Γ : Con) → Sub Γ Γ
+_∘_     : Sub Θ Δ → Sub Γ Θ → Sub Γ Δ
+ass     : (σ ∘ δ) ∘ ν = σ ∘ (δ ∘ ν)
+idl     : id ∘ σ = σ
+idr     : σ ∘ id = σ
+
+_[_]    : Ty Δ → Sub Γ Δ → Ty Γ
+_[_]    : Tm Δ A → (σ : Sub Γ Δ) → Tm Γ (A [σ])
+[id]    : A [id] = A
+[∘]     : A [σ ∘ δ] = A [σ] [δ]
+
+∙       : Con
+ε       : (Γ : Con) → Sub Γ ∙
+∙η      : (σ : Sub Γ ∙) → σ = ε
+
+_▶_     : (Γ : Con) → Ty Γ → Con
+_,_     : (σ : Sub Γ Δ) → Tm Γ (A[σ]) → Sub Γ (Δ ▶ A)
+,∘      : (σ, t) ∘ δ = (σ ∘ δ, t [δ])
+p       : Sub (Γ ▶ A) Γ
+q       : Tm (Γ ▶ A) A[p]
+pβ      : p ∘ (σ, t) = σ
+qβ      : q[σ, t] = t
+,η      : (p, q) = id
+
+U       : Ty Γ
+El      : Tm Γ U → Ty Γ
+U[]     : U [σ] = U
+El[]    : (El a) [σ] = El (a[σ])
+
+Π       : (a : Tm Γ U) → Ty (Γ ▶ El a) → Ty Γ
+Π[]     : (Π a B) [σ] = Π (a [σ]) (B[σ↑])
+app     : Tm Γ (Π a B) → Tm (Γ ▶ El a) B
+app[]   : (app t) [σ↑] = app (t[σ])
+lam     : Tm (Γ ▶ El a) B → Tm Γ (Π a B)
+Πβ      : app (lam t) = t
+Πη      : lam (app t) = t
+
+Π̂       : (T : Set i) → (T → Ty Γ) → Ty Γ
+Π̂[]     : (Π̂ T B)[σ] = Π̂ T (λ α. (B α)[σ])
+app̂     : Tm Γ (Π̂ T B) → (α : T) → Tm Γ (B α)
+app̂[]   : (app̂ t α)[σ] = app̂ (t[σ]) α
+lam̂     : ((α : T) → Tm Γ (B α)) → Tm Γ (Π̂ T B)
+Π̂β      : app̂ (lam̂ f) = f
+Π̂η      : lam̂ (app̂ t) = t
+
+Π̃       : (T : Set) → (T → Tm Γ U) → Tm Γ U
+Π̃[]     : (Π̃ T b) [σ] = Π̃ T (λ α . (b α)[σ])
+app̃     : Tm Γ (El (Π̃ T b)) → (α : T) → Tm Γ (El (b α))
+app̃[]   : (app̃ t α)[σ] = app̃ (t[σ]) α
+lam̃     : ((α : T) → Tm Γ (El (b α))) → Tm Γ (El (Π̃ T b))
+Π̃β      : app̃ (lam̃ f) = f
+Π̃η      : lam̃ (app̃ t) = t
+
+Id      : (a : Tm Γ U) → Tm Γ (El a) → Tm Γ (El a) → Tm Γ U
+Id[]    : (Id a t u)[σ] = Id (a[σ]) (t[σ]) (u[σ])
+Reflect : Tm Γ (El (Id a t u)) → t = u
+Refl    : (t : Tm Γ (El a)) → Tm Γ (El (Id a t t))
+UIP     : (e : Tm Γ (El (Id a t t))) → e = Refl t
+
+
+Abbreviations:
+
+  σ ↑   = (σ ∘ p, q)
+  a ⇒ B = Π a (B[p])
+  t @ u = (app t) [id, u]
+
+Derivable:
+
+  t[id] = t
+    t[id]
+    q[id, t[id]]
+    q[(id, t) ∘ id]
+    q[id, t]
+    t
+
+  t[σ∘δ] = t[σ][δ]
+    t[σ∘δ]
+    q[σ∘δ, t[σ∘δ]]
+    q[(id, t) ∘ σ ∘ δ]
+    q[(σ, t[σ]) ∘ δ]
+    q[σ∘δ, t[σ][δ]]
+    t[σ][δ]
+
+  Refl t [σ] = Refl (t[σ]) -- by UIP
+
+  -- + substitution for all lambdas
+
+
+--------------------------------------------------------------------------------
+Notion of "bootstrap" signature at level i
+--------------------------------------------------------------------------------
+
+Sigᵢ := ∀ j → (M : ToS i j) → M.Con

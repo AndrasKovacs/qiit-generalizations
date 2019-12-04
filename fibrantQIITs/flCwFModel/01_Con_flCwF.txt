@@ -1,0 +1,93 @@
+
+CON : Set (1 + max(i, j + 1))
+CON := flCwF max(i, j+1)
+
+where we define flCwFᵢ : Set (i + 1) to contain all following components:
+
+  Con     : Set i
+  Sub     : Con → Con → Set i
+  Ty      : Con → Set i
+  Tm      : (Γ : Con) → Ty Γ → Set i
+
+  id      : (Γ : Con) → Sub Γ Γ
+  _∘_     : Sub Θ Δ → Sub Γ Θ → Sub Γ Δ
+  ass     : (σ ∘ δ) ∘ ν = σ ∘ (δ ∘ ν)
+  idl     : id ∘ σ = σ
+  idr     : σ ∘ id = σ
+
+  _[_]    : Ty Δ → Sub Γ Δ → Ty Γ
+  _[_]    : Tm Δ A → (σ : Sub Γ Δ) → Tm Γ (A [σ])
+  [id]    : A [id] = A
+  [∘]     : A [σ ∘ δ] = A [σ] [δ]
+
+  ∙       : Con
+  ε       : (Γ : Con) → Sub Γ ∙
+  ∙η      : (σ : Sub Γ ∙) → σ = ε
+
+  _▶_     : (Γ : Con) → Ty Γ → Con
+  _,_     : (σ : Sub Γ Δ) → Tm Γ (A[σ]) → Sub Γ (Δ ▶ A)
+  ,∘      : (σ, t) ∘ δ = (σ ∘ δ, t [δ])
+  p       : Sub (Γ ▶ A) Γ
+  q       : Tm (Γ ▶ A) A[p]
+  pβ      : p ∘ (σ, t) = σ
+  qβ      : q[σ, t] = t
+  ,η      : (p, q) = id
+
+  Id      : Tm Γ A → Tm Γ A → Ty Γ
+  Id[]    : Id t u [σ] = Id (t[σ]) (u[σ])
+  Reflect : Tm Γ (Id t u) → t = u
+  Refl    : (t : Tm Γ A) → Tm Γ (Id t t)
+  UIP     : (e : Tm Γ (Id t t)) → e = Refl t
+
+  K       : {Γ} → Con → Ty Γ
+  K[]     : K Δ [σ] = K Δ
+  appK    : Tm Γ (K Δ) → Sub Γ Δ
+  lamK    : Sub Γ Δ → Tm Γ (K Δ)
+  appK[]  : appK t ∘ σ = appK (t[σ])
+  Kβ      : appK (lamK σ) = σ
+  Kη      : lamK (appK t) = t
+
+  Σ       : (A : Ty Γ) → Ty (Γ ▶ A) → Ty Γ
+  Σ[]     : Σ A B [σ] = Σ (A[σ]) (B[σ↑])
+  _,_     : (t : Tm Γ A) → Tm Γ (B[id, t]) → Tm Γ (Σ A B)
+  ,[]     : (t, u)[σ]) = (t[σ], u[σ])
+  π₁      : Tm Γ (Σ A B) → Tm Γ A
+  π₂      : (t : Tm Γ (Σ A B)) → Tm Γ (B[id, π₁ t])
+  π₁β     : π₁ (t, u) = t
+  π₂β     : π₂ (t, u) = u
+  πη      : (π₁ t, π₂ t) = t
+
+Derivable:
+  t[id] = t
+  t[σ∘δ] = t[σ][δ]
+  Refl t [σ] = Refl (t[σ])
+  lamK σ [δ] = lamK (σ ∘ δ)
+  π₁ t [σ] = π₁ (t[σ])
+  π₂ t [σ] = π₂ (t[σ])
+
+
+--------------------------------------------------------------------------------
+-- isomorphisms
+--------------------------------------------------------------------------------
+
+In general, we could have object isos, and type isos which are displayed over object isos.
+However, we don't actually need the displayed type isos, so we only have type isos which
+are displayed over id.
+
+-- 1. Object isomorphisms
+Γ.iso (Γ : Γ.Con)(Δ : Γ.Con) := (σ : Sub Γ Δ) × (δ : Sub Δ Γ) × (σ ∘ δ = id) × (δ ∘ σ = id)
+
+-- operations:
+  id  : iso Γ Γ
+  _⁻¹ : iso Γ Δ → iso Δ Γ
+  _∘_ : iso Δ Σ → iso Γ Δ → iso Γ Σ
+  associative, unital, involutive for _⁻¹, etc.
+
+-- 2. (Vertical) type isomorphisms
+Γ.iso (A : Ty Γ) (B : Ty Γ) := (t : Tm (Γ ▶ A) B[p]) × (u : Tm (Γ ▶ B) A[p]) × (t[p, u] = q) × (u[p, t] = q)
+
+-- operations:
+  id  : iso A A
+  _⁻¹ : iso A B → iso B A
+  _∘_ : iso A C → iso B C → iso A B
+  associative, unital, involutive for _⁻¹, etc.

@@ -1,0 +1,64 @@
+
+TM Γ A : Set (1 + max(i, j + 1))
+TM Γ A := weakSection Γ A
+
+# flCwF weak sections
+- Same as weak morphism, except returns displayed objects over the input
+- We are only concerned with vertical isos in the target flCwF, which are
+  closed under composition. Every preservation construction carries over from
+  pseudomorphisms.
+
+- Summary (not fully checked, but pretty sure)
+
+  preserves Σ, Id, K up to vertical Ty isomorphism, preserves all constructors.
+
+--------------------------------------------------------------------------------
+Definition
+--------------------------------------------------------------------------------
+
+  Given (C : flCwF), (A : flCwF isofibration)
+
+  F : (Γ : C.Con)     → A.Con Γ
+  F : (A : C.Ty Γ)    → A.Ty (F Γ) A
+  F : (σ : C.Sub Γ Δ) → A.Sub (F Γ) (F Δ) σ
+  F : (t : C.Tm Γ A)  → A.Tm (F Γ) (F A) t
+
+  F id = id
+  F (σ ∘ δ) = F σ ∘ F δ
+  F(A[σ]) = F A [F σ]
+  F(t[σ]) = F t [F σ]
+
+  F∙⁻¹ : A.Sub ∙ (F ∙) id
+  F∙⁻¹ ∘ ε = id
+
+  F▶⁻¹ : A.Sub (F Γ ▶ F A) (F (Γ ▶ A)) id
+  F▶⁻¹ ∘ (F p, F q) = id
+  (F p, F q) ∘ F▶⁻¹ = id
+
+  definitions:
+    F∙ : Sub (F ∙) ∙ id := ε
+    F▶ : Sub (F (Γ ▶ A)) (F Γ ▶ F A) id := (F p, F q)
+
+  derivable:
+    F∙ ∘ F∙⁻¹ = id
+    F ε = F∙⁻¹ ∘ ε
+    F p = p ∘ F▶
+    F q = q[F▶]
+    F (σ, t) = F▶⁻¹ ∘ (F σ, F t)
+    p = F p ∘ F▶⁻¹   -- only well-typed if lhs : Sub (F Γ ▶ F A) (F Γ) p
+    q = F q [F▶⁻¹]   -- only well-typed if lhs : Tm (F Γ) (F A [p]) q
+
+
+-- Σ,Id,K preservation
+--------------------------------------------------------------------------------
+
+-- all of the assumed or to-be-proven isomorphisms are over id (vertical), hence closed under
+-- composition.
+
+-- everything seems to work the same way as with weak morphisms
+
+-- Example:
+Goal : A.iso (F (Σ A B)) (Σ (F A) (F B [F▶⁻¹])) id
+
+  t := (F (fst q) ,Σ  F (snd q))[F▶⁻¹]
+  u := F (q[p] ,Σ q) [F▶⁻¹ ∘ (F▶⁻¹∘(p, fst q), snd q)]

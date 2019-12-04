@@ -1,0 +1,16 @@
+
+ID : SUB Γ Γ
+ID := identity weak morphism
+
+----------------------------------------------------------------------
+
+ID is the identity function on Γ.Con, Γ.Ty, Γ.Sub and Γ.Tm,
+hence it preserves all structure strictly.
+
+ID Γ = Γ
+ID A = A
+ID σ = σ
+ID t = t
+
+ID∙⁻¹ = id
+Id▶⁻¹ = id

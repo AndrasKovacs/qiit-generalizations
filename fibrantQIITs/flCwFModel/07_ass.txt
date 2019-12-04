@@ -1,0 +1,14 @@
+
+ASS : F ∘ (G ∘ H) = (F ∘ G) ∘ H
+
+-- OK for action on Con, Ty, Sub, Tm
+
+  (F ∘ (G ∘ H))∙⁻¹ = ((F ∘ G) ∘ H)∙⁻¹
+    F (G H∙⁻¹ ∘ G∙⁻¹) ∘ F∙⁻¹ = F (G H∙⁻¹) ∘ F G∙⁻¹ ∘ F∙⁻¹
+    F (G H∙⁻¹) ∘ F G∙⁻¹ ∘ F∙⁻¹ = F (G H∙⁻¹) ∘ F G∙⁻¹ ∘ F∙⁻¹
+    OK
+
+  (F ∘ (G ∘ H))▶⁻¹ = ((F ∘ G) ∘ H)▶⁻¹
+    F (G H▶⁻¹ ∘ G▶⁻¹) ∘ F▶⁻¹ = F (G H▶⁻¹) ∘ F G▶⁻¹ ∘ F▶⁻¹
+    F G H▶⁻¹ ∘ F G▶⁻¹ ∘ F▶⁻¹ = F (G H▶⁻¹) ∘ F G▶⁻¹ ∘ F▶⁻¹
+    OK
