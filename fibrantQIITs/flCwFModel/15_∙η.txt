@@ -1,0 +1,5 @@
+
+∙η : (F : SUB Γ ∙) → F = ε
+------------------------------------------------------------
+
+-- obviously the case, since F always returns in ⊤

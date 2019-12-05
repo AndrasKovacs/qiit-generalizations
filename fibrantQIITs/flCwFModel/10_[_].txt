@@ -1,0 +1,41 @@
+
+_[_] : (T : TM Δ A)(F : SUB Γ Δ) → TM Γ (A[F])
+_[_] T F = ...
+
+--------------------------------------------------------------------------------
+
+T[F] (Γ : Γ.Con) : A[F].Con Γ
+                 : A.Con (F Γ)
+	         := T (F Γ)
+
+T[F] (A : Γ.Ty Γ) : A[F].Ty (T Γ) A
+                  : A.Ty (T Γ) (F A)
+		  := T (F A)
+
+T[F] (σ : Γ.Sub Γ Δ) : A[F].Sub (T Γ) (T Δ) σ
+                     : A.Sub (T Γ) (T Δ) (F σ)
+		     := T (F σ)
+
+T[F] (t : Γ.Tm Γ A) : A[F].Tm (T Γ) (T A) t
+                    : A.Tm (T Γ) (T A) (F t)
+		    := T (F t)
+
+-- strict preservations all ok
+T[F] id      = id
+T[F] (σ ∘ δ) = T[F] σ ∘ T[F] δ
+T[F] (A[σ])  = (T[F] A)(T[F] σ)
+T[F] (t[σ])  = (T[F] t)(T[F] σ)
+
+T[F]∙⁻¹ : A[F].Sub ∙ (T[F] ∙) id
+        : A.Sub ∙ (T[F] ∙) id
+	:= T F∙⁻¹ ∘ T∙⁻¹
+
+T[F]∙⁻¹ ∘ ε = id
+  T F∙⁻¹ ∘ T∙⁻¹ ∘ (ε : Sub (T (F ∙)) ∙)
+  T F∙⁻¹ ∘ T∙⁻¹ ∘ (ε : Sub (T ∙) ∙) ∘ T ε
+  T F∙⁻¹ ∘ T ε
+  T (F∙⁻¹ ∘ ε)
+  T id
+  id OK
+
+-- TODO rest is pretty obvious, but check

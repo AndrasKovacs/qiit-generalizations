@@ -1,0 +1,7 @@
+
+_▶_ : (Γ : CON)(A : TY Γ) → CON
+------------------------------------------------------------
+
+-- since A : TY Γ, being an isofibration, contains strictly more
+-- data then a displyed flCwF, we can take the total flCwF of Γ and A.
+-- OK

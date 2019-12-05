@@ -1,0 +1,5 @@
+
+ε : SUB Γ ∙
+------------------------------------------------------------
+
+-- ε is the obvious strict morphism, returning tt everywhere

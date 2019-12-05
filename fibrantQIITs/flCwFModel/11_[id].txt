@@ -1,0 +1,6 @@
+
+A[ID] = A
+
+-- OK
+-- by checking that every single F, coe and coh disappears from A[F] if
+-- F = id

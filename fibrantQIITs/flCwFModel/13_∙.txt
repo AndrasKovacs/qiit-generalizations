@@ -1,0 +1,12 @@
+
+∙ : CON
+
+-- terminal flCwfᵢ
+--------------------------------------------------------------------------------
+
+Con = ⊤
+Sub _ _ = ⊤
+Ty _ = ⊤
+Tm _ _ = ⊤
+
+-- every constructor and equation trivial
