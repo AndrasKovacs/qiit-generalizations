@@ -6,16 +6,16 @@ A[F] = ...
 -- A : TY Δ
 -- F : SUB Γ Δ
 
-  Con : Δ.Con → Set i
+  Con : Γ.Con → Set i
   Con Γ := A.Con (F Γ)
 
-  Sub : Con Γ⁻ → Con Δ → Δ.Sub Γ Δ → Set i
+  Sub : Con Γ⁻ → Con Δ → Γ.Sub Γ Δ → Set i
   Sub Γ Δ σ⁻ := A.Sub Γ Δ (F σ⁻)
 
-  Ty : Con Γ → Δ.Ty Γ → Set i
+  Ty : Con Γ → Γ.Ty Γ → Set i
   Ty Γ A⁻ := A.Ty Γ (F A⁻)
 
-  Tm : (Γ : Con Γ) → Ty Γ A → Δ.Tm Γ A → Set i
+  Tm : (Γ : Con Γ) → Ty Γ A → Γ.Tm Γ A → Set i
   Tm Γ A t⁻ := A.Tm Γ A (F t⁻)
 
   id  : (Γ : Con Γ⁻) → Sub Γ Γ id
@@ -47,7 +47,7 @@ A[F] = ...
      : Sub Γ (coe F∙⁻¹ ∙) (F∙⁻¹ ∘ ε)
      := coh F∙⁻¹ ∙ ∘ ε
 
-  ∙η : {σ : Sub Γ (coe F∙⁻¹ ∙) σ⁻} → σ = ε
+  ∙η : {σ : Sub Γ ∙ σ⁻} → σ = ε
      : σ = coh F∙⁻¹ ∙ ∘ ε
      : σ = coh F∙⁻¹ ∙ ∘ coh F∙ ∙ ∘ σ
      : σ = σ OK
@@ -56,46 +56,255 @@ A[F] = ...
   Γ ▶ A : A.Con (F (Γ⁻ ▶ A⁻))
         := coe F▶⁻¹ (Γ ▶ A)
 
+
   _,_  : (σ : Sub Γ Δ σ⁻) → Tm Γ (A[σ]) t⁻ → Sub Γ (Δ ▶ A) (σ⁻, t⁻)
-  σ,t  : Sub Γ (Δ ▶ A) (F (σ⁻, t⁻))
-       : Sub Γ (Δ ▶ A) (F▶⁻¹ ∘ (F σ⁻, F t⁻))
-       :
+       : (σ : A.Sub Γ Δ (F σ⁻)) → A.Tm Γ (A[σ]) (F t⁻)
+         → A.Sub Γ (coe F▶⁻¹ (Δ ▶ A)) (F▶⁻¹ ∘ (F σ⁻, F t⁻))
+  (σ, t) := coh F▶⁻¹ (Δ ▶ A) ∘ (σ, t)
 
-       σ , t : Sub Γ (Δ ▶ A) (F σ⁻, F t⁻)
-       (σ , t)
+  ,∘ : (σ, t) ∘ δ = (σ ∘ δ, t[δ])
+     : coh F▶⁻¹ (Δ ▶ A) ∘ (σ, t) ∘ δ = coh F▶⁻¹ (Δ ▶ A) ∘ (σ∘δ, t[δ])
+     : coh F▶⁻¹ (Δ ▶ A) ∘ (σ∘δ, t[δ]) = coh F▶⁻¹ (Δ ▶ A) ∘ (σ∘δ, t[δ])
+     OK
 
-       coh F▶⁻¹
+  p : Sub (Γ ▶ A) Γ p
+    : A.Sub (coe F▶⁻¹ (Γ ▶ A)) Γ (p ∘ F▶)
+    := A.p ∘ coh⁻¹ F▶⁻¹ (Γ ▶ A)
 
+  q : Tm (Γ ▶ A) A[p] q
+    : A.Tm (coe F▶⁻¹ (Γ ▶ A)) A[p ∘ coh⁻¹ F▶⁻¹ (Γ ▶ A)] (q[F▶])
+    := A.q [coh⁻¹ F▶⁻¹ (Γ ▶ A)]
 
+  pβ : p ∘ (σ, t) = σ
+     : A.p ∘ coh⁻¹ F▶⁻¹ (Γ ▶ A) ∘ coh F▶⁻¹ (Δ ▶ A) ∘ (σ, t) = σ
+     : σ = σ
+     OK
 
+  qβ : q[σ, t] = t
+     : A.q [coh⁻¹ F▶⁻¹ (Γ ▶ A)] [coh F▶⁻¹ (Δ ▶ A) ∘ (σ, t)] = t
+     : A.q [(σ, t)] = t
+     : t = t
+     OK
 
-  ,∘      : (σ, t) ∘ δ = (σ ∘ δ, t [δ])
-  p       : Sub (Γ ▶ A) Γ p
-  q       : Tm (Γ ▶ A) A[p] q
-  pβ      : p ∘ (σ, t) = σ
-  qβ      : q[σ, t] = t
-  ,η      : (p, q) = id
+  ,η : (p, q) = id
+     : coh F▶⁻¹ (Δ ▶ A) ∘ (A.p ∘ coh⁻¹ F▶⁻¹ (Γ ▶ A), A.q [coh⁻¹ F▶⁻¹ (Γ ▶ A)]) = id
+     : coh F▶⁻¹ (Δ ▶ A) ∘ (A.p, A.q) ∘ coh⁻¹ F▶⁻¹ (Γ ▶ A) = id
+     : coh F▶⁻¹ (Δ ▶ A) ∘ coh⁻¹ F▶⁻¹ (Γ ▶ A) = id
+     : id = id
+     OK
 
-  Id      : Tm Γ A t⁻ → Tm Γ A u⁻ → Ty Γ (Id t⁻ u⁻)
-  Id[]    : Id t u [σ] = Id (t[σ]) (u[σ])
+  Id : Tm Γ A t⁻ → Tm Γ A u⁻ → Ty Γ (Id t⁻ u⁻)
+     : A.Tm Γ A (F t⁻) → A.Tm Γ A (F u⁻) → A.Ty Γ (F (Id t⁻ u⁻))
+  Id t u := coe FId⁻¹ (A.Id t u)
+
+    A.Id t u : Ty Γ (Id (F t⁻) (F u⁻))
+          coe FId⁻¹ (A.Id t u) : Ty Γ (F (Id t⁻ u⁻))
+
+  Id[] : Id t u [σ] = Id (t[σ]) (u[σ])
+       : (coe FId⁻¹ (A.Id t u))[σ] = coe FId⁻¹ (A.Id t[σ] u[σ])
+       : (coe (FId⁻¹[F σ⁻]) (A.Id t[σ] u[σ]) = coe FId⁻¹ (A.Id t[σ] u[σ])
+       : (coe FId⁻¹ (A.Id t[σ] u[σ]) = coe FId⁻¹ (A.Id t[σ] u[σ])
+       -- OK by coe substitution and FId naturality
+
   Reflect : Tm Γ (Id t u) e⁻ → t = u
-  Refl    : (t : Tm Γ A t⁻) → Tm Γ (Id t t) (Refl t⁻)
-  UIP     : (e : Tm Γ (Id t t)) → e = Refl t
+          : A.Tm Γ (coe FId⁻¹ (A.Id t u)) (F e⁻) → t = u
+  Reflect e := ?
+    Γ : A.Con (F Γ⁻)
+    t : A.Tm Γ A (F t⁻)
+    u : A.Tm Γ A (F u⁻)
+    A.Id t u : A.Ty Γ (Id (F t⁻) (F u⁻))
+    coe FId⁻¹ (A.Id t u) : A.Ty Γ (F (Id t⁻ u⁻))
+    F e⁻ : Tm (F Γ⁻) (F (Id t⁻ u⁻))
+      e⁻ : Tm Γ⁻ (Id t⁻ u⁻)
+    -- hence, we know that t⁻ = u⁻
 
-  K       : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
-  K[]     : K Δ [σ] = K Δ
-  appK    : Tm Γ (K Δ) t⁻ → Sub Γ Δ (appK t⁻)
-  lamK    : Sub Γ Δ σ⁻ → Tm Γ (K Δ) (lamK σ⁻)
-  appK[]  : appK t ∘ σ = appK (t[σ])
-  Kβ      : appK (lamK σ) = σ
-  Kη      : lamK (appK t) = t
+    -- using composition of a term and a type iso:
+    e : A.Tm Γ (coe FId⁻¹ (A.Id t u)) (F e⁻)
+    coh⁻¹ FId⁻¹ (A.Id t u) : A.iso (coe FId⁻¹ (A.Id t u)) (A.Id t u) FId
+    (coh⁻¹ FId⁻¹ (A.Id t u))[id, e] : A.Tm Γ (A.Id t u) FId[id, F e⁻]
+    -- hence, by A.Reflect, t = u
+    OK
 
-  Σ       : (A : Ty Γ A⁻) → Ty (Γ ▶ A) B⁻ → Ty Γ (Σ A⁻ B⁻)
-  Σ[]     : Σ A B [σ] = Σ (A[σ]) (B[σ↑])
-  _,_     : (t : Tm Γ A t⁻) → Tm Γ (B[id, t]) u⁻ → Tm Γ (Σ A B) (t⁻, u⁻)
+  Refl : (t : Tm Γ A t⁻) → Tm Γ (Id t t) (Refl t⁻)
+       : (t : A.Tm Γ A (F t⁻)) → A.Tm Γ (coe FId⁻¹ (A.Id t t)) (F (Refl t⁻))
+
+    A.Refl t : A.Tm Γ (A.Id t t) (Refl (F t⁻))
+
+    coh FId⁻¹ (A.Id t t) : A.iso (A.Id t t) (coe FId⁻¹ (A.Id t t)) FId⁻¹
+
+    (coh FId⁻¹ (A.Id t t))[id, A.Refl t]
+      : A.Tm Γ (coe FId⁻¹ (A.Id t t)) (FId⁻¹[id, Refl(F t⁻)])
+      : A.Tm Γ (coe FId⁻¹ (A.Id t t)) (F (Refl t⁻)) OK
+
+    Refl t := (coh FId⁻¹ (A.Id t t))[id, A.Refl t]
+
+
+  UIP : (e : Tm Γ (Id t t) e⁻) → e = Refl t
+      : (e : A.Tm Γ (coe FId⁻¹ (A.Id t t)) e⁻) → e = (coh FId⁻¹ (A.Id t t))[id, A.Refl t]
+
+      coh⁻¹ FId⁻¹ (A.Id t t) : A.iso (coe FId⁻¹ (A.Id t t)) (A.Id t t) FId
+
+      -- overloaded notation for ty iso - term composition
+      coh FId⁻¹ (A.Id t t) ∘ coh⁻¹ FId⁻¹ (A.Id t t) ∘ e =
+         (coh FId⁻¹ (A.Id t t))[id, A.Refl t]
+
+      coh FId⁻¹ (A.Id t t) ∘ A.Refl t =
+         (coh FId⁻¹ (A.Id t t))[id, A.Refl t]
+
+      coh FId⁻¹ (A.Id t t)[id, A.Refl t] =
+         (coh FId⁻¹ (A.Id t t))[id, A.Refl t]
+      OK
+
+
+  K : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
+    : {Γ : A.Con (F Γ⁻)}(Δ : A.Con (F Δ⁻)) → A.Ty Γ (F (K {Γ⁻} Δ⁻))
+  K {Γ} Δ := coe FK⁻¹ (A.K {Γ} Δ)
+
+  K[] : K Δ [(σ : Sub Γ Γ' (F σ⁻))] = K {Γ} Δ
+      : (coe FK⁻¹ (A.K {Γ'} Δ))[σ] = coe FK⁻¹ (A.K {Γ} Δ)
+      : coe FK⁻¹[F σ⁻] (A.K {Γ} Δ) = coe FK⁻¹ (A.K {Γ} Δ)
+      : coe FK⁻¹ (A.K {Γ} Δ) = coe FK⁻¹ (A.K {Γ} Δ)
+      OK
+
+  appK : Tm Γ (K Δ) t⁻ → Sub Γ Δ (appK t⁻)
+       : A.Tm Γ (coe FK⁻¹ (A.K {Γ} Δ)) (F t⁻) → A.Sub Γ Δ (F (appK t⁻))
+       : (t : A.Tm Γ (coe FK⁻¹ (A.K {Γ} Δ)) (F t⁻)) → A.Sub Γ Δ (appK (FK ∘ F t⁻))
+
+    coh⁻¹ FK⁻¹ (A.K Δ) ∘ t : A.Tm Γ (A.K Δ) (FK ∘ F t⁻)
+    appK t := appK (coh⁻¹ FK⁻¹ (A.K Δ) ∘ t)
+
+  lamK : Sub Γ Δ σ⁻ → Tm Γ (K Δ) (lamK σ⁻)
+       : (σ : A.Sub Γ Δ (F σ⁻)) → A.Tm Γ (coe FK⁻¹ (A.K {Γ} Δ)) (F (lamK σ⁻))
+       : (σ : A.Sub Γ Δ (F σ⁻)) → A.Tm Γ (coe FK⁻¹ (A.K {Γ} Δ)) (FK⁻¹ ∘ lam (F σ))
+      A.lamK σ : A.Tm Γ (A.K {Γ} Δ) (lamK (F σ⁻))
+    lamK σ := A.coh FK⁻¹ (A.K Δ) ∘ A.lamK σ
+
+  appK[] : appK t ∘ σ = appK (t[σ])
+         : appK (coh⁻¹ FK⁻¹ (K Δ) ∘ t) ∘ σ = appK (coh⁻¹ FK⁻¹ (K Δ) ∘ t[σ])
+         : appK (coh⁻¹ FK⁻¹ (K Δ) ∘ t[σ]) = appK (coh⁻¹ FK⁻¹ (K Δ) ∘ t[σ])
+	 OK
+
+  Kβ : appK (lamK σ) = σ
+     : appK (coh⁻¹ FK⁻¹ (K Δ) ∘ (A.coh FK⁻¹ (K Δ) ∘ A.lamK σ)) = σ
+     : appK (A.lamK σ)) = σ
+     OK
+
+  Kη : lamK (appK t) = t
+     : A.coh FK⁻¹ (A.K Δ) ∘ A.lamK (appK (coh⁻¹ FK⁻¹ (A.K Δ) ∘ t)) = t
+     : A.coh FK⁻¹ (A.K Δ) ∘ coh⁻¹ FK⁻¹ (A.K Δ) ∘ t = t
+     : t = t
+     OK
+
+  Σ : (A : Ty Γ A⁻) → Ty (Γ ▶ A) B⁻ → Ty Γ (Σ A⁻ B⁻)
+    : (A : A.Ty Γ (F A⁻))(B : A.Ty (coe F▶⁻¹ (Γ ▶ A)) (F B⁻)) → A.Ty Γ (F (Σ A⁻ B⁻))
+
+     B[coh F▶⁻¹ (Γ ▶ A)] : Ty (Γ ▶ A) (F B⁻ [F▶⁻¹])
+     Σ A (B[coh F▶⁻¹ (Γ ▶ A)]) : Ty Γ (Σ (F A⁻) (F B⁻ [F▶⁻¹])
+     FΣ⁻¹ : iso (Σ (F A⁻) (F B⁻ [F▶⁻¹])) (F (Σ A⁻ B⁻))
+
+    Σ A B := coe FΣ⁻¹ (Σ A (B[coh F▶⁻¹ (Γ ▶ A)]))
+
+
+--------------------------------------------------------------------------------
+lemma:
+   given
+   σ : Sub Γ Δ σ⁻
+   σ↑ : Sub (Γ ▶ A[σ]) (Δ ▶ A) (σ⁻↑)
+      : Sub (coe F▶⁻¹ (Γ ▶ A[σ])) (coe F▶⁻¹ (Δ ▶ A)) (F (σ⁻↑))
+   σ↑ = (σ ∘ p, q)
+      = coh F▶⁻¹ (Δ ▶ A)
+      ∘ (σ ∘ p ∘ coh⁻¹ F▶⁻¹ (Γ ▶ A[σ]), q [coh⁻¹ F▶⁻¹ (Γ ▶ A[σ])])
+      = coh F▶⁻¹ (Δ ▶ A)
+      ∘ (σ ∘ p, q) ∘ coh⁻¹ F▶⁻¹ (Γ ▶ A[σ])
+      = coh F▶⁻¹ (Δ ▶ A) ∘ σ↑ ∘ coh⁻¹ F▶⁻¹ (Γ ▶ A[σ])
+
+--------------------------------------------------------------------------------
+
+
+  Σ[] : Σ A B [σ] = Σ (A[σ]) (B[σ↑])
+      :    (coe FΣ⁻¹ (Σ A (B[coh F▶⁻¹ (Δ ▶ A)])))[σ]
+        =  coe FΣ⁻¹ (Σ A[σ] (B[σ↑][coh F▶⁻¹ (Γ ▶ A[σ])]))
+      :    (coe FΣ⁻¹ (Σ A (B[coh F▶⁻¹ (Δ ▶ A)])))[σ]
+        =  coe FΣ⁻¹ (Σ A[σ] (B[coh F▶⁻¹ (Δ ▶ A) ∘ (σ↑)]))
+
+      :    coe FΣ⁻¹ (Σ A[σ] (B[coh F▶⁻¹ (Δ ▶ A) ∘ σ↑]))
+        =  coe FΣ⁻¹ (Σ A[σ] (B[coh F▶⁻¹ (Δ ▶ A) ∘ σ↑]))
+      OK
+
+  _,_ : (t : Tm Γ A t⁻) → Tm Γ (B[id, t]) u⁻ → Tm Γ (Σ A B) (t⁻, u⁻)
+      : (t : Tm Γ A (F t⁻))(u : Tm Γ (B[coh F▶⁻¹ (Δ ▶ A) ∘ (id, t)]) (F u⁻))
+        → Tm Γ (coe FΣ⁻¹ (Σ A (B[coh F▶⁻¹ (Γ ▶ A)]))) (F (t⁻, u⁻))
+
+        need: iso (B[coh F▶⁻¹ (Δ ▶ A)][id, t]) (B[id, t]) _
+
+	-- action of substitution on displayed type iso
+
+              enough: iso B (B[coh F▶⁻¹ (Γ ▶ A)]) _
+
+              B : Ty (coe F▶⁻¹ (Γ ▶ A)) (F B⁻)
+	      B[coh F▶⁻¹ (Γ ▶ A)] : Ty (Γ ▶ A) (F B⁻ [F▶⁻¹])
+
+              -- need: fully displayed displayed iso!
+	TODOTODO
+  TODO
   ,[]     : (t, u)[σ]) = (t[σ], u[σ])
   π₁      : Tm Γ (Σ A B) t⁻ → Tm Γ A (π₁ t⁻)
   π₂      : (t : Tm Γ (Σ A B) t⁻) → Tm Γ (B[id, π₁ t]) (π₂ t⁻)
   π₁β     : π₁ (t, u) = t
   π₂β     : π₂ (t, u) = u
   πη      : (π₁ t, π₂ t) = t
+
+
+  coe : Γ.iso Γ⁻ Δ⁻ → A.Con Γ⁻ → A.Con Δ⁻
+      : Γ.iso Γ⁻ Δ⁻ → A.Con (F Γ⁻) → A.Con (F Δ⁻)
+  coe σ⁻ Γ = A.coe (F σ⁻) Γ
+
+  coh : (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : A.Con Γ⁻) → A.iso Γ (coe σ⁻ Γ) σ⁻
+      : (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : A.Con (F Γ⁻)) → A.iso Γ (coe (F σ⁻) Γ) (F σ⁻)
+  coh σ⁻ Γ = A.coh (F σ⁻) Γ
+
+  coe-id : coe id Γ = Γ
+         : A.coe id Γ = Γ
+	 OK
+
+  coe-∘  : coe (σ⁻ ∘ δ⁻) Γ = coe σ⁻ (coe δ⁻ Γ)
+         : A.coe (F (σ⁻ ∘ δ⁻)) Γ = coe (F σ⁻) (coe (F δ⁻) Γ)
+         : A.coe (F σ⁻ ∘ F δ⁻) Γ = coe (F σ⁻) (coe (F δ⁻) Γ)
+	 OK
+
+  coh-id : coh id Γ = id
+         : A.coh id Γ = id
+	 OK
+
+  coh-∘  : coh (σ⁻ ∘ δ⁻) Γ = coh σ⁻ (coe δ⁻ Γ) ∘ coh δ⁻ Γ
+         : coh (F σ⁻ ∘ F δ⁻) Γ = coh (F σ⁻) (coe (F δ⁻) Γ) ∘ coh (F δ⁻) Γ
+	 OK
+
+  coe    : Γ.iso A⁻ B⁻ → A.Ty Γ A⁻ → A.Ty Γ B⁻
+         : Γ.iso A⁻ B⁻ → A.Ty Γ (F A⁻) → A.Ty Γ (F B⁻)
+    coe t⁻ A := coe (F t⁻) A
+
+  coe[]  : (coe t⁻ A)[σ] = coe (t⁻[σ⁻]) A[σ]
+         : (A.coe (F t⁻) A)[σ] = A.coe (F (t⁻[σ⁻])) (A[σ])
+         : A.coe (F t⁻[F σ⁻]) A[σ] = A.coe (F t⁻[F σ⁻]) A[σ]
+	 OK
+
+  coh    : (t⁻ : Γ.iso A⁻ B⁻)(A : Ty Γ A⁻) → A.iso A (coe t⁻ A) t⁻
+         : (t⁻ : Γ.iso A⁻ B⁻)(A : Ty Γ (F A⁻)) → A.iso A (coe (F t⁻) A) (F t⁻)
+    coh t⁻ A := A.coh (F t⁻) A
+
+  coe-id : coe id A = A
+         : A.coe id A = A
+	 OK
+
+  coe-∘  : coe (t⁻ ∘ u⁻) A = coe t⁻ (coe u⁻ A)
+         : A.coe (F t⁻ ∘ F u⁻) A = coe (F t⁻) (coe (F u⁻) A)
+	 OK
+
+  coh-id : coh id A = id
+         : A.coh id A = id
+	 OK
+
+  coh-∘  : coe (t⁻ ∘ u⁻) A = coh t⁻ (coe u⁻ A) ∘ coh u⁻ A
+         : A.coe (F t⁻ ∘ F u⁻) A = A.coh (F t⁻) (coe (F u⁻) A) ∘ coh (F u⁻) A
+	 OK

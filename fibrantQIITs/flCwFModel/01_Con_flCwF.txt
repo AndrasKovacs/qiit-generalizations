@@ -91,3 +91,28 @@ are displayed over id.
   _⁻¹ : iso A B → iso B A
   _∘_ : iso A C → iso B C → iso A B
   associative, unital, involutive for _⁻¹, etc.
+
+-- action of substitution on type isos
+-- comes from Dybjer & Clairambault "indexed category of Ty"
+_[_] : {A B : Ty Δ} → iso A B → Sub Γ Δ → iso (A[σ]) (B[σ])
+t[σ] :=
+   t[σ↑]   : Tm (Γ ▶ A[σ]) B[σ∘p] ,
+   t⁻¹[σ↑] : Tm (Γ ▶ B[σ]) A[σ∘p] ,
+
+   prf1 : t[σ↑][p, t⁻¹[σ↑]] = q
+        : t[σ∘p, t⁻¹[σ↑]] = q
+	  : t[p∘σ↑, t⁻¹[σ↑]] = q
+	  : t[p, t⁻¹][σ↑] = q
+	  : q[σ↑] = q
+	  : q = q OK
+
+   prf2 : symmetric OK
+
+-- composing a type iso with a term
+-- we overload _∘_ again
+
+   t : Tm Γ A
+   u : iso A A'
+
+   u ∘ t : Tm Γ A'
+   u ∘ t = u[id, t]

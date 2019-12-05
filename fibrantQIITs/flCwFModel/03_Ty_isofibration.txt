@@ -14,9 +14,9 @@ Notation:
     3. We default to normal vars whenever it's obvious which one we mean.
 
   Con     : Γ.Con → Set i
-  Sub     : Con Γ⁻ → Con Δ⁻ → Γ.Sub Γ Δ → Set i
+  Sub     : Con Γ⁻ → Con Δ⁻ → Γ.Sub Γ⁻ Δ⁻ → Set i
   Ty      : Con Γ⁻ → Γ.Ty Γ → Set i
-  Tm      : (Γ : Con Γ⁻) → Ty Γ A⁻ → Γ.Tm Γ A → Set i
+  Tm      : (Γ : Con Γ⁻) → Ty Γ A⁻ → Γ.Tm Γ⁻ A⁻ → Set i
 
   id      : (Γ : Con Γ⁻) → Sub Γ Γ id
   _∘_     : Sub Θ Δ σ⁻ → Sub Γ Θ δ⁻ → Sub Γ Δ (σ⁻ ∘ δ⁻)
@@ -46,7 +46,7 @@ Notation:
   Id[]    : Id t u [σ] = Id (t[σ]) (u[σ])
   Reflect : Tm Γ (Id t u) e⁻ → t = u
   Refl    : (t : Tm Γ A t⁻) → Tm Γ (Id t t) (Refl t⁻)
-  UIP     : (e : Tm Γ (Id t t)) → e = Refl t
+  UIP     : (e : Tm Γ (Id t t) e⁻) → e = Refl t
 
   K       : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
   K[]     : K Δ [σ] = K Δ
@@ -99,16 +99,39 @@ A.iso (A : Ty Γ A⁻)(B : Ty Γ B⁻)(t⁻ : Γ.iso A⁻ B⁻) :=
 
 NOTE: later, mark what is actually needed from here!
 
-coe    : Γ.iso Γ⁻ Δ⁻ → A.Con Γ → A.Con Δ
+-- object iso lifting
+coe    : Γ.iso Γ⁻ Δ⁻ → A.Con Γ⁻ → A.Con Δ⁻
 coh    : (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : A.Con Γ⁻) → A.iso Γ (coe σ⁻ Γ) σ⁻
 coe-id : coe id Γ = Γ
 coe-∘  : coe (σ⁻ ∘ δ⁻) Γ = coe σ⁻ (coe δ⁻ Γ)
 coh-id : coh id Γ = id
 coh-∘  : coh (σ⁻ ∘ δ⁻) Γ = coh σ⁻ (coe δ⁻ Γ) ∘ coh δ⁻ Γ
 
+-- type iso lifting
 coe    : Γ.iso A⁻ B⁻ → A.Ty Γ A⁻ → A.Ty Γ B⁻
+coe[]  : (coe t⁻ A)[σ] = coe (t⁻[σ⁻]) A[σ]
 coh    : (t⁻ : Γ.iso A⁻ B⁻)(A : Ty Γ A⁻) → A.iso A (coe t⁻ A) t⁻
 coe-id : coe id A = A
-coe-∘  : coe (t⁻ ∘ u⁻)  = coe t⁻ (coe u⁻ A)
+coe-∘  : coe (t⁻ ∘ u⁻) A  = coe t⁻ (coe u⁻ A)
 coh-id : coh id A = id
 coh-∘  : coe (t⁻ ∘ u⁻) A = coh t⁻ (coe u⁻ A) ∘ coh u⁻ A
+
+-- derived notions
+  coh⁻¹ : (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : A.Con Γ⁻) → A.iso (coe σ⁻ Γ) Γ (σ⁻⁻¹)
+  coh⁻¹ σ⁻ Γ = (coh σ⁻ Γ)⁻¹
+
+  coh⁻¹ : (t⁻ : Γ.iso A⁻ B⁻)(A : Ty Γ A⁻) → A.iso A (coe t⁻ A) (t⁻⁻¹)
+  coh⁻¹ t⁻ Γ = (coh t⁻ Γ)⁻¹
+
+-- composing a context iso with a morphism (is simple)
+   σ : Sub Γ Δ σ⁻
+   δ : iso Δ Δ' δ⁻
+   δ ∘ σ : Sub Γ Δ' (σ⁻ ∘ δ⁻)
+
+-- composing a displayed type iso with a term
+-- we (again) overload _∘_
+   t : Tm Γ A t⁻
+   u : iso A A' u⁻
+
+   u ∘ t : Tm Γ A' (u⁻ ∘ t⁻)
+   u ∘ t = u[id, t]

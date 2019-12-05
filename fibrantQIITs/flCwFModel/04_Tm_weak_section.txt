@@ -11,6 +11,7 @@ TM Γ A := weakSection Γ A
 - Summary (not fully checked, but pretty sure)
 
   preserves Σ, Id, K up to vertical Ty isomorphism, preserves all constructors.
+  all preservation isos natural analogously to the case of weak morphisms
 
 --------------------------------------------------------------------------------
 Definition

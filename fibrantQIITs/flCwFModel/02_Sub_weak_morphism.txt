@@ -12,6 +12,8 @@ Summary:
     - each (F p, F q) : Sub (F (Γ ▶ A)) (F Γ ▶ F A) has an inverse.
 
 - A weak morphism preserves Σ, Id, K up to type iso.
+- Preservation isos are natural in the sense that
+  e.g. FId[F σ] = FId, FΣ[F σ] = FΣ, etc.
 
 --------------------------------------------------------------------------------
 Definition
@@ -47,6 +49,15 @@ Definition
     p = F p ∘ F▶⁻¹   -- only well-typed if lhs : Sub (F Γ ▶ F A) (F Γ)
     q = F q [F▶⁻¹]   -- only well-typed if lhs : Tm (F Γ) (F A [p])
 
+    F▶⁻¹ ∘ (F σ)↑ = F (σ↑) ∘ F▶⁻¹
+       F▶⁻¹ ∘ (F σ)↑
+       F▶⁻¹ ∘ (F σ ∘ p, q)
+       F▶⁻¹ ∘ (F σ ∘ F p ∘ F▶⁻¹, F q [F▶⁻¹])
+       F▶⁻¹ ∘ (F (σ ∘ p), F q) ∘ F▶⁻¹
+       F (σ ∘ p) ∘ F▶⁻¹
+       F (σ↑) ∘ F▶⁻¹
+
+
 --------------------------------------------------------------------------------
 -- Action on isos
 --------------------------------------------------------------------------------
@@ -71,7 +82,7 @@ F (t : Γ.iso A B) : Δ.iso (F A) (F B)
 
        symmetrically for the other equation
 
-TODO
+TODO, for isos
   F id = id
   F (σ ∘ δ) = F σ ∘ F δ
 
@@ -262,6 +273,23 @@ A.iso (F (Σ A B)) (Σ (F A) (F B [F▶⁻¹])) id
   (F t ,Σ  F u) = (F t , F u)
   OK
 
+-- naturality
+--------------------------------------------------------------------------------
+  Goal: FΣ[F σ] = FΣ
+
+  FΣ: iso (F (Σ A B)) (Σ (F A) (F B [F▶⁻¹]))
+  FΣ[F σ] : iso (F (Σ A[σ] B[σ])) (Σ (F A[σ]) (F B [F▶⁻¹ ∘ (F σ)↑]))
+          : iso (F (Σ A[σ] B[σ])) (Σ (F A[σ]) (F B[σ↑]) [F▶⁻¹]
+
+  enough to show:
+       (F (fst q) [F▶⁻¹] ,Σ  F (snd q) [F▶⁻¹])[(F σ)↑]
+    =  (F (fst q) [F▶⁻¹] ,Σ  F (snd q) [F▶⁻¹])
+
+     (F (fst q) [F▶⁻¹] ,Σ  F (snd q) [F▶⁻¹])[(F σ)↑]
+     (F (fst q) ,Σ  F (snd q))[F▶⁻¹ ∘ (F σ)↑]
+     (F (fst q) ,Σ  F (snd q))[F (σ↑) ∘ F▶⁻¹]
+     (F (fst q[σ↑]) ,Σ  F (snd q[σ↑]))[F▶⁻¹]
+     (F (fst q) ,Σ  F (snd q))[F▶⁻¹] OK
 
 
 -- constant families
@@ -360,20 +388,6 @@ Goal : iso (F (K {Γ} Δ)) (K {F Γ}(F Δ))
   F (app t) = app (lam (F (app t)))
   F (app t) = F (app t)
 
-  -- F (lam t)
-  lam t : Tm Γ (K Δ)
-  F (lam t) : Tm (F Γ) (F (K Δ))
-  F t : Sub (F Γ) (F Δ)
-  lam (F t) : Tm (F Γ) (K (F Δ))
-
-  goal : FK[id, F (lam t)] = lam (F t)
-
-  FK   : Tm (F Γ ▶ F (K Δ)) (K (F Δ))
-  FK⁻¹ : Tm (F Γ ▶ K (F Δ)) (F (K {Γ} Δ))[p]
-
-  FK⁻¹[id, lam (F t)] : Tm (F Γ) (F (K {Γ} Δ))[p][id, lam (F t)]
-                      : Tm (F Γ) (F (K {Γ} Δ))
-
   goal : F (lam σ) = FK⁻¹[id, lam (F σ)]
   F (lam σ) = (F (lam id))[app q][id, lam (F σ)]
   F (lam σ) = (F (lam id))[app q ∘ (F id, lam (F σ))]
@@ -386,6 +400,15 @@ Goal : iso (F (K {Γ} Δ)) (K {F Γ}(F Δ))
   F (lam σ) = (F (lam id))[F σ]
   F (lam σ) = (F (lam σ))
   OK
+
+  -- naturality
+  Goal: FK[F σ] = FK
+  enough to show:
+    (lam (F (app q) ∘ F▶⁻¹))[(F σ)↑] = lam (F (app q) ∘ F▶⁻¹)
+     lam (F (app q) ∘ F▶⁻¹ ∘ (F σ)↑)
+     lam (F (app q) ∘ F (σ↑) ∘ F▶⁻¹)
+     lam (F (app q[σ↑]) ∘ F▶⁻¹)
+     lam (F (app q) ∘ F▶⁻¹) OK
 
 -- Id
 --------------------------------------------------------------------------------
@@ -437,3 +460,8 @@ Goal : iso (F (Id t u)) (Id (F t) (F u))
          F (refl t) = F (refl t)[p][id, refl (F t)]
          F (refl t) = F (refl t)
 	 OK
+
+  -- naturality
+  Goal FId[F σ] = F id
+    (refl (F t [p]))[(F σ)↑] = refl (F t [p])
+    -- OK by UIP
