@@ -25,12 +25,12 @@ Notation:
   idr     : σ ∘ id = σ
 
   _[_]    : Ty Δ A⁻ → Sub Γ Δ σ⁻ → Ty Γ (A⁻[σ⁻])
-  _[_]    : Tm Δ t⁻ → (σ : Sub Γ Δ σ⁻) → Tm Γ (t⁻[σ⁻])
+  _[_]    : Tm Δ A t⁻ → (σ : Sub Γ Δ σ⁻) → Tm Γ (A[σ]) (t⁻[σ⁻])
   [id]    : A [id] = A
   [∘]     : A [σ ∘ δ] = A [σ] [δ]
 
   ∙       : Con ∙
-  ε       : (Γ : Con) → Sub Γ ∙ ε
+  ε       : (Γ : Con Γ⁻) → Sub Γ ∙ ε
   ∙η      : (σ : Sub Γ ∙ σ⁻) → σ = ε
 
   _▶_     : (Γ : Con Γ⁻) → Ty Γ A⁻ → Con (Γ⁻ ▶ A⁻)
@@ -93,6 +93,26 @@ A.iso (A : Ty Γ A⁻)(B : Ty Γ B⁻)(t⁻ : Γ.iso A⁻ B⁻) :=
   associative, unital, involutive for _⁻¹, etc.
 
 
+-- general isos
+
+-- type iso
+Γ.iso (A : Ty Γ) (B : Ty Δ)(σ : iso Γ Δ) : Set
+  (t   : Tm (Γ ▶ A) B[σ∘p]) ×
+  (t⁻¹ : Tm (Δ ▶ B) A[σ∘p]) ×
+  (t ∘ t⁻¹ = id) ×
+  (t⁻¹ ∘ t = id)
+
+-- displayed type iso
+A.iso (A : Ty Γ A⁻) (B : Ty Δ B⁻)(σ : iso Γ Δ σ⁻)(t⁻ : iso A⁻ B⁻ σ⁻) : Set
+  (t   : Tm (Γ ▶ A) B[σ∘p] t⁻) ×
+  (t⁻¹ : Tm (Δ ▶ B) A[σ⁻¹∘p] t⁻⁻¹) ×
+  (t[p, t⁻¹] = q) ×
+  (t⁻¹[p, t] = q)
+
+-- lifting a displayed Con iso to type iso
+
+
+
 --------------------------------------------------------------------------------
 -- iso-cleaving, given (A : Ty Γ)
 --------------------------------------------------------------------------------
@@ -109,8 +129,9 @@ coh-∘  : coh (σ⁻ ∘ δ⁻) Γ = coh σ⁻ (coe δ⁻ Γ) ∘ coh δ⁻ Γ
 
 -- type iso lifting
 coe    : Γ.iso A⁻ B⁻ → A.Ty Γ A⁻ → A.Ty Γ B⁻
-coe[]  : (coe t⁻ A)[σ] = coe (t⁻[σ⁻]) A[σ]
+coe[]  : (coe t⁻ A)[σ] = coe (t⁻[σ⁻]) (A[σ])
 coh    : (t⁻ : Γ.iso A⁻ B⁻)(A : Ty Γ A⁻) → A.iso A (coe t⁻ A) t⁻
+coh[]  : (coh t⁻ A)[σ] = coh (t⁻[σ⁻]) (A[σ])
 coe-id : coe id A = A
 coe-∘  : coe (t⁻ ∘ u⁻) A  = coe t⁻ (coe u⁻ A)
 coh-id : coh id A = id

@@ -1,0 +1,109 @@
+
+El : (T : TM Γ U) → Ty Γ
+
+discrete displayed flCwF from a weak morphism into U
+------------------------------------------------------------
+
+-- shorthands
+  - instead of T.Con Γ⁻, T Γ⁻
+  - instead of T.Ty A⁻ Γ, T A⁻ Γ
+  - instead of T.Sub σ⁻ Γ, σ⁻ Γ
+  - instead of T.Tm t⁻ Γ, t⁻ Γ
+
+-- Sub, Tm equations all trivial
+
+Con : Γ.Con → Set j
+Con Γ⁻ := T Γ⁻
+
+Sub : T.Con Γ⁻ → T.Con Δ⁻ → Γ.Sub Γ⁻ Δ⁻ → Set j
+Sub Γ Δ σ⁻ := σ⁻ Γ = Δ
+
+Ty : T.Con Γ⁻ → Γ.Ty Γ → Set j
+Ty Γ A⁻ := T A⁻ Γ
+
+Tm : (Γ : T.Con Γ⁻) → T.Ty A⁻ Γ → Γ.Tm Γ⁻ A⁻ → Set j
+Tm Γ A t⁻ := t⁻ Γ = A
+
+id : (Γ : Con Γ⁻) → Sub Γ Γ id
+   : id Γ = Γ
+   OK
+
+_[_] : T A⁻ Δ → σ⁻ Γ = Δ → T (A⁻[σ⁻]) Γ
+     : T A⁻ Δ → σ⁻ Γ = Δ → T A⁻ (σ⁻ Γ)
+A[σ] := A
+
+
+_[_] : Tm Δ A t⁻ → (σ : Sub Γ Δ σ⁻) → Tm Γ (A[σ]) (t⁻[σ⁻])
+     : t⁻ Δ = A → σ⁻ Γ = Δ → t⁻ (σ⁻ Γ) = A
+     OK
+
+[id] : A [id] = A
+  OK
+
+[∘] : A [σ ∘ δ] = A [σ] [δ]
+  OK
+
+∙ : T ∙
+  := T∙⁻¹ tt
+
+ε : (Γ : Con Γ⁻) → Sub Γ ∙ ε
+  : (Γ : Con Γ⁻) → T ε Γ = ∙
+  : (Γ : Con Γ⁻) → T∙⁻¹ (U.ε Γ) = ∙
+  : (Γ : Con Γ⁻) → T∙⁻¹ tt = ∙
+  OK
+
+_▶_   : (Γ : Con Γ⁻) → Ty Γ A⁻ → Con (Γ⁻ ▶ A⁻)
+      : (Γ : T Γ⁻) → T A⁻ Γ → T (Γ⁻ ▶ A⁻)
+(Γ ▶ A) := T▶⁻¹ (Γ, A)
+
+_,_  : (σ : Sub Γ Δ σ⁻) → Tm Γ (A[σ]) t⁻ → Sub Γ (Δ ▶ A) (σ⁻, t⁻)
+     : (σ : σ⁻ Γ = Δ)(t : t⁻ Γ = A) → T (σ⁻, t⁻) Γ = T▶⁻¹ (Δ, A)
+     : (σ : σ⁻ Γ = Δ)(t : t⁻ Γ = A) → (F▶⁻¹ ∘ (T σ⁻, T t⁻)) Γ = T▶⁻¹ (Δ, A)
+     : (σ : σ⁻ Γ = Δ)(t : t⁻ Γ = A) → F▶⁻¹ (σ⁻ Γ, t⁻ Γ) = T▶⁻¹ (Δ, A)
+     OK
+
+p : Sub (Γ ▶ A) Γ p
+  : T p (Γ▶⁻¹ (Γ, A)) = Γ
+  : U.p ∘ F▶ (Γ▶⁻¹ (Γ, A)) = Γ
+  : U.p ∘ (Γ, A) = Γ
+  : Γ = Γ
+  OK
+
+q : Tm (Γ ▶ A) A[p] q
+  : T q (T▶⁻¹ (Γ, A)) = A
+  : U.q (Γ, A) = A
+  OK
+
+Id   : Tm Γ A t⁻ → Tm Γ A u⁻ → Ty Γ (Id t⁻ u⁻)
+     : t⁻ Γ = A → u⁻ Γ = A → T (Id t⁻ u⁻) Γ         -- need Id-preservation for weak sections!
+Id t u := TId⁻¹ _ -- proof-irrelevant
+
+   TId⁻¹ : Tm (Γ⁻ ▶ Id (T t⁻) (T u⁻)) (T (Id t⁻ u⁻))[p]
+         : (Γ : Γ⁻) → t⁻ Γ = u⁻ Γ → T (Id t⁻ u⁻) Γ
+   TId⁻¹ : Id (T t⁻) (T u⁻) => T (Id t⁻ u⁻)
+     T (Id t⁻ u⁻) ≈ Id (T t⁻) (T u⁻)
+
+
+Id[] : Id t u [σ] = Id (t[σ]) (u[σ])
+     : TId⁻¹ _ = TId⁻¹ _
+     OK
+
+Refl : (t : Tm Γ A t⁻) → Tm Γ (Id t t) (Refl t⁻)
+     : T t⁻ Γ = A → T (Refl t⁻) Γ = TId⁻¹ _
+     : T t⁻ Γ = A → (TId⁻¹ ∘ Refl (T t⁻)) Γ = TId⁻¹ _
+                    TId⁻¹ (refl _) = TId⁻¹ _
+     OK
+
+
+K   : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
+K[] : K Δ [σ] = K Δ
+
+appK : Tm Γ (K Δ) t⁻ → Sub Γ Δ (appK t⁻)
+lamK : Sub Γ Δ σ⁻ → Tm Γ (K Δ) (lamK σ⁻)
+
+Σ       : (A : Ty Γ A⁻) → Ty (Γ ▶ A) B⁻ → Ty Γ (Σ A⁻ B⁻)
+Σ[]     : Σ A B [σ] = Σ (A[σ]) (B[σ↑])
+_,_     : (t : Tm Γ A t⁻) → Tm Γ (B[id, t]) u⁻ → Tm Γ (Σ A B) (t⁻, u⁻)
+
+π₁      : Tm Γ (Σ A B) t⁻ → Tm Γ A (π₁ t⁻)
+π₂      : (t : Tm Γ (Σ A B) t⁻) → Tm Γ (B[id, π₁ t]) (π₂ t⁻)

@@ -1,0 +1,6 @@
+
+q : TM (Γ ▶ A) A[p]
+
+------------------------------------------------------------
+The second projection section is a strict morphism.
+OK

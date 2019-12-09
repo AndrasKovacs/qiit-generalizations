@@ -3,10 +3,10 @@ We fix levels i,j.
 
 We have M : ToS i (1 + max(i, j + 1)) model, such that M.Con = flCwF max(i, j + 1)
 
-"i" marks the level of external sets, "i" marks the level of internal sorts.
+"i" marks the level of external sets, "j" marks the level of internal sorts.
 The bump is only needed for j, since algebras only contain elements of T : Setⱼ
 sets, but internal sets are themselves elements of Setᵢ.
 
-E.g. Nat-algebras are at level i are
+E.g. Nat-algebras at level j are
 
-  (N : Setᵢ)×(zero : N)×(suc : N → N) : Set max(0,i+1)
+  (N : Setⱼ)×(zero : N)×(suc : N → N) : Set max(0,j+1)

@@ -1,0 +1,49 @@
+
+_,_ : (F : SUB C D)(T : Tm C A[F]) → SUB C (D ▶ A)
+
+------------------------------------------------------------
+
+(F,T) (Γ : C.Con) : (D ▶ A).Con
+  := (F Γ, T Γ)
+
+(F,T) (A : C.Ty Γ) : (D ▶ A).Ty ((F, T) Γ)
+  := (F A, T A)
+
+(F,T) (σ : C.Sub Γ Δ) : (D ▶ A).Sub ((F, T) Γ) ((F, T) Δ)
+  := (F σ, T σ)
+
+(F,T) (t : C.Tm Γ A) : (D ▶ A).Tm ((F, T) Γ) ((F, T) A)
+  := (F t, T t)
+
+(F,T) id = id
+  (id, id) = id
+  OK
+
+(F,T) (σ ∘ δ) = (F,T) σ ∘ (F,T) δ
+  (F (σ ∘ δ), T (σ ∘ δ)) = (F,T) σ ∘ (F,T) δ
+  OK
+
+(F,T)(A[σ]) = (F,T) A [(F,T) σ]
+  (F(A[σ]),T(A[σ])) = (F,T) A [(F,T) σ]
+  (F A [F σ],T A[T σ]) = (F A , T A) [(F σ, T σ)]
+  (F A [F σ],T A[T σ]) = (F A [F σ],T A[T σ])
+  OK
+
+(F,T)(t[σ]) = (F,T) t [(F,T) σ]
+  OK
+
+(F,T)∙⁻¹ : Sub ∙ ((F,T) ∙)
+         : Sub ∙ (F ∙, T ∙)
+  := (F∙⁻¹, T∙⁻¹)
+
+(F,T)∙⁻¹ ∘ ε = id
+  (F∙⁻¹, T∙⁻¹) ∘ (ε, ε) = (id, id)
+  (F∙⁻¹ ∘ ε , T∙⁻¹ ∘ ε) = (id, id)
+  OK
+
+(F,T)▶⁻¹ : Sub ((F,T) Γ ▶ (F,T) A) ((F,T) (Γ ▶ A))
+         := (F▶⁻¹, T▶⁻¹)
+
+(F,T)▶⁻¹ ∘ ((F,T) p, (F,T) q) = id
+((F,T) p, (F,T) q) ∘ F▶⁻¹ = id
+OK

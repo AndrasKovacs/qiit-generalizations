@@ -1,3 +1,1 @@
 
-09_[_].txt : Σ constructors and equations
-10_[_].txt : check rest

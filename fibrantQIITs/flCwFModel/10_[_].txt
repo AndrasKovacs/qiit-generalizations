@@ -2,6 +2,8 @@
 _[_] : (T : TM Δ A)(F : SUB Γ Δ) → TM Γ (A[F])
 _[_] T F = ...
 
+-- the same as _∘_, but with TM on one side.
+
 --------------------------------------------------------------------------------
 
 T[F] (Γ : Γ.Con) : A[F].Con Γ
@@ -31,11 +33,11 @@ T[F]∙⁻¹ : A[F].Sub ∙ (T[F] ∙) id
 	:= T F∙⁻¹ ∘ T∙⁻¹
 
 T[F]∙⁻¹ ∘ ε = id
-  T F∙⁻¹ ∘ T∙⁻¹ ∘ (ε : Sub (T (F ∙)) ∙)
-  T F∙⁻¹ ∘ T∙⁻¹ ∘ (ε : Sub (T ∙) ∙) ∘ T ε
+  T F∙⁻¹ ∘ T∙⁻¹ ∘ (ε : Sub (T (F ∙)) ∙ id)
+  T F∙⁻¹ ∘ T∙⁻¹ ∘ (ε : Sub (T ∙) ∙ id) ∘ T ε
   T F∙⁻¹ ∘ T ε
   T (F∙⁻¹ ∘ ε)
   T id
   id OK
 
--- TODO rest is pretty obvious, but check
+-- TODO rest is pretty obvious

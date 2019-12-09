@@ -6,10 +6,10 @@ Notion of model of theory of signatures (ToS) at levels i, j.
 --------------------------------------------------------------------------------
 
 
-Con     : Set i
-Sub     : Con → Con → Set i
-Ty      : Con → Set i
-Tm      : (Γ : Con) → Ty Γ → Set i
+Con     : Set j
+Sub     : Con → Con → Set j
+Ty      : Con → Set j
+Tm      : (Γ : Con) → Ty Γ → Set j
 
 id      : (Γ : Con) → Sub Γ Γ
 _∘_     : Sub Θ Δ → Sub Γ Θ → Sub Γ Δ
@@ -56,7 +56,7 @@ lam̂     : ((α : T) → Tm Γ (B α)) → Tm Γ (Π̂ T B)
 Π̂β      : app̂ (lam̂ f) = f
 Π̂η      : lam̂ (app̂ t) = t
 
-Π̃       : (T : Set) → (T → Tm Γ U) → Tm Γ U
+Π̃       : (T : Set i) → (T → Tm Γ U) → Tm Γ U
 Π̃[]     : (Π̃ T b) [σ] = Π̃ T (λ α . (b α)[σ])
 app̃     : Tm Γ (El (Π̃ T b)) → (α : T) → Tm Γ (El (b α))
 app̃[]   : (app̃ t α)[σ] = app̃ (t[σ]) α

@@ -1,0 +1,7 @@
+
+p : SUB (Γ ▶ A) Γ
+------------------------------------------------------------
+
+The first projection map is a strict morphism (by AKK QIIT paper), so it is
+also a weak morphism.
+OK

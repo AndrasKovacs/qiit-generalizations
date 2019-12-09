@@ -181,6 +181,8 @@ A[F] = ...
 
   appK[] : appK t ∘ σ = appK (t[σ])
          : appK (coh⁻¹ FK⁻¹ (K Δ) ∘ t) ∘ σ = appK (coh⁻¹ FK⁻¹ (K Δ) ∘ t[σ])
+         : appK ((coh⁻¹ FK⁻¹ (K Δ))[σ] ∘ t[σ]) = appK (coh⁻¹ FK⁻¹ (K Δ) ∘ t[σ])
+         : appK (coh⁻¹ FK⁻¹[F σ⁻] (K Δ) ∘ t[σ]) = appK (coh⁻¹ FK⁻¹ (K Δ) ∘ t[σ])
          : appK (coh⁻¹ FK⁻¹ (K Δ) ∘ t[σ]) = appK (coh⁻¹ FK⁻¹ (K Δ) ∘ t[σ])
 	 OK
 
@@ -235,25 +237,47 @@ lemma:
       : (t : Tm Γ A (F t⁻))(u : Tm Γ (B[coh F▶⁻¹ (Δ ▶ A) ∘ (id, t)]) (F u⁻))
         → Tm Γ (coe FΣ⁻¹ (Σ A (B[coh F▶⁻¹ (Γ ▶ A)]))) (F (t⁻, u⁻))
 
-        need: iso (B[coh F▶⁻¹ (Δ ▶ A)][id, t]) (B[id, t]) _
+    (t, u) : Tm Γ (Σ A B[coh F▶⁻¹ (Γ ▶ A)]) (F t⁻, F u⁻)
 
-	-- action of substitution on displayed type iso
+    coh FΣ⁻¹ (Σ A (B[coh F▶⁻¹ (Γ ▶ A)])) ∘ (t, u) :
+      Tm Γ (coe FΣ⁻¹ (Σ A (B[coh F▶⁻¹ (Γ ▶ A)]))) (FΣ⁻¹ ∘ (F t⁻, F u⁻))
+      Tm Γ (coe FΣ⁻¹ (Σ A (B[coh F▶⁻¹ (Γ ▶ A)]))) (F (t⁻, u⁻))
 
-              enough: iso B (B[coh F▶⁻¹ (Γ ▶ A)]) _
+    (t, u) := coh FΣ⁻¹ _ ∘ (t, u)
 
-              B : Ty (coe F▶⁻¹ (Γ ▶ A)) (F B⁻)
-	      B[coh F▶⁻¹ (Γ ▶ A)] : Ty (Γ ▶ A) (F B⁻ [F▶⁻¹])
+  ,[] : (t, u)[σ] = (t[σ], u[σ])
+        (coh FΣ⁻¹ _ ∘ (t, u))[σ] = coh FΣ⁻¹ _ ∘ (t[σ], u[σ])
+        coh FΣ⁻¹[σ] _ ∘ (t[σ], u[σ]) = coh FΣ⁻¹ _ ∘ (t[σ], u[σ])
+        coh FΣ⁻¹ _ ∘ (t[σ], u[σ]) = coh FΣ⁻¹ _ ∘ (t[σ], u[σ])
+	OK
 
-              -- need: fully displayed displayed iso!
-	TODOTODO
-  TODO
-  ,[]     : (t, u)[σ]) = (t[σ], u[σ])
-  π₁      : Tm Γ (Σ A B) t⁻ → Tm Γ A (π₁ t⁻)
-  π₂      : (t : Tm Γ (Σ A B) t⁻) → Tm Γ (B[id, π₁ t]) (π₂ t⁻)
-  π₁β     : π₁ (t, u) = t
-  π₂β     : π₂ (t, u) = u
-  πη      : (π₁ t, π₂ t) = t
+  π₁ : Tm Γ (Σ A B) t⁻ → Tm Γ A (π₁ t⁻)
+     : (t : Tm Γ (coe FΣ⁻¹ (Σ A (B[coh F▶⁻¹ (Γ ▶ A)]))) (F t⁻)) → Tm Γ A (F (π₁ t⁻))
+    π₁ (coh⁻¹ FΣ⁻¹ _ ∘ t) : Tm Γ (Σ A B[coh F▶⁻¹ _]) (π₁ (FΣ ∘ F t⁻))
+                          : Tm Γ (Σ A B[coh F▶⁻¹ _]) (F (π₁ t⁻))
 
+    π₁ t := π₁ (coh⁻¹ FΣ⁻¹ _ ∘ t)
+
+  π₂ : (t : Tm Γ (Σ A B) t⁻) → Tm Γ (B[id, π₁ t]) (π₂ t⁻)
+     : (t : Tm Γ (coe FΣ⁻¹ (Σ A (B[coh F▶⁻¹ (Γ ▶ A)]))) (F t⁻))
+       → Tm Γ (F (π₂ t⁻)) (B[coh F▶⁻¹ _ ∘ (id, π₁ (coh⁻¹ FΣ⁻¹ _ ∘ t))]) (F (π₂ t⁻))
+
+    coh⁻¹ FΣ⁻¹ _ ∘ t : Tm Γ (Σ A (B[coh F▶⁻¹ (Γ ▶ A)])) (FΣ ∘ F t⁻)
+    π₂ (coh⁻¹ FΣ⁻¹ _ ∘ t) : Tm Γ (Σ A (B[coh F▶⁻¹ (Γ ▶ A)])) (F (π₂ t⁻))
+    π₂ t := π₂ (coh⁻¹ FΣ⁻¹ _ ∘ t)
+
+  π₁β : π₁ (t, u) = t
+      : π₁ (coh⁻¹ FΣ⁻¹ _ ∘ coh FΣ⁻¹ _ ∘ (t, u)) = t
+      OK
+
+  π₂β : π₂ (t, u) = u
+      : π₂ (coh⁻¹ FΣ⁻¹ _ ∘ coh FΣ⁻¹ _ ∘ (t, u)) = t
+      OK
+
+  πη : (π₁ t, π₂ t) = t
+     : coh FΣ⁻¹ _ ∘ (π₁ (coh⁻¹ FΣ⁻¹ _ ∘ t), π₂ (coh⁻¹ FΣ⁻¹ _ ∘ t)) = t
+     : coh FΣ⁻¹ _ ∘ coh⁻¹ FΣ⁻¹ _ ∘ t = t
+     OK
 
   coe : Γ.iso Γ⁻ Δ⁻ → A.Con Γ⁻ → A.Con Δ⁻
       : Γ.iso Γ⁻ Δ⁻ → A.Con (F Γ⁻) → A.Con (F Δ⁻)
@@ -292,6 +316,11 @@ lemma:
   coh    : (t⁻ : Γ.iso A⁻ B⁻)(A : Ty Γ A⁻) → A.iso A (coe t⁻ A) t⁻
          : (t⁻ : Γ.iso A⁻ B⁻)(A : Ty Γ (F A⁻)) → A.iso A (coe (F t⁻) A) (F t⁻)
     coh t⁻ A := A.coh (F t⁻) A
+
+  coh[]  : (coh t⁻ A)[σ] = coh (t⁻[σ⁻]) (A[σ])
+         : (coh (F t⁻) A)[σ] = coh (F t⁻[F σ⁻]) (A[σ])
+	 : coh (F t⁻ [F σ⁻]) A[σ] = coh (F t⁻[F σ⁻]) (A[σ])
+	 OK
 
   coe-id : coe id A = A
          : A.coe id A = A

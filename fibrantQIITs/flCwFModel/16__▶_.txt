@@ -3,5 +3,12 @@ _▶_ : (Γ : CON)(A : TY Γ) → CON
 ------------------------------------------------------------
 
 -- since A : TY Γ, being an isofibration, contains strictly more
--- data then a displyed flCwF, we can take the total flCwF of Γ and A.
+-- data than a displyed flCwF, we can take the total flCwF of Γ and A.
 -- OK
+
+(Γ ▶ A).Con := Σ Γ.Con A.Con
+(Γ ▶ A).Sub (Γ⁻, Γ) (Δ⁻, Δ) := Σ (Γ.Sub Γ⁻ Δ⁻) (A.Sub Γ Δ)
+(Γ ▶ A).Ty (Γ⁻, Γ) := Σ (Γ.Ty Γ⁻) (A.Ty Γ)
+(Γ ▶ A).Tm (Γ⁻, Γ) (A⁻, A) := Σ (Γ.Tm Γ⁻ A⁻) (A.Tm Γ A)
+
+...

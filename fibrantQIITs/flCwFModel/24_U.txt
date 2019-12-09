@@ -1,0 +1,13 @@
+
+U : TY Γ
+U := constant displ. flCwf of sets at lvl j
+
+------------------------------------------------------------
+
+Con _     := Setⱼ
+Sub Γ Δ _ := Γ → Δ          -- implicit lvl lift
+Ty Γ _    := Γ → Setⱼ
+Tm Γ A _  := (γ : Γ) → A γ  -- implicit lvl lift
+
+-- etc.
+-- lifting is trivial because of constancy
