@@ -55,10 +55,7 @@ Definition
 
 -- all of the assumed or to-be-proven isomorphisms are over id (vertical), hence closed under
 -- composition.
-
 -- everything seems to work the same way as with weak morphisms
-
--- (probably we DON'T need to use these preservations anywhere)
 
 -- Example:
 Goal : A.iso (F (Σ A B)) (Σ (F A) (F B [F▶⁻¹])) id

@@ -14,3 +14,16 @@ ID t = t
 
 ID∙⁻¹ = id
 Id▶⁻¹ = id
+
+-- also:
+IDΣ  = id
+  (ID (fst q) ,Σ  ID (snd q))[id] = q
+  OK
+
+IDK  = id
+  lam (ID (app q) ∘ id) = id
+  q = q
+  OK
+
+IDId = id
+  OK by UIP

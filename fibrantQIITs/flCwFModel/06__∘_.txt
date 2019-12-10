@@ -59,3 +59,42 @@ F ∘ G := H (see below)
     F▶ ∘ F G▶ ∘ F G▶⁻¹ ∘ F▶⁻¹
     F▶ ∘ F▶⁻¹
     id  -- OK
+
+------------------------------------------------------------
+-- we also need for derived type former isomorphisms:
+
+(F∘G)Σ = FΣ ∘ F GΣ
+
+  (F (G (fst q)) ,Σ  F (G (snd q))) [F G▶⁻¹ ∘ F▶⁻¹]
+  =
+  (F (fst q) ,Σ  F (snd q))[F▶⁻¹][p, (F (G (fst q) ,Σ  G (snd q))[G▶⁻¹]) [F▶⁻¹]]
+
+  (F (fst q) ,Σ  F (snd q))[F▶⁻¹][p, (F (G (fst q) [G▶⁻¹] ,Σ  G (snd q) [G▶⁻¹])) [F▶⁻¹]]
+  (F (fst q) ,Σ  F (snd q))[F▶⁻¹][F p ∘ F▶⁻¹, (F (G (fst q) [G▶⁻¹] ,Σ  G (snd q) [G▶⁻¹])) [F▶⁻¹]]
+  (F (fst q) ,Σ  F (snd q))[F▶⁻¹][F p, F (G (fst q) [G▶⁻¹] ,Σ  G (snd q) [G▶⁻¹])][F▶⁻¹]
+  (F (fst q) ,Σ  F (snd q))[F (p, G (fst q) [G▶⁻¹] ,Σ  G (snd q) [G▶⁻¹]) ∘ F▶⁻¹]
+  (F (fst q) ,Σ  F (snd q))[F (p, G (fst q) [G▶⁻¹] ,Σ  G (snd q) [G▶⁻¹]) ∘ F▶⁻¹]
+  (F (G (fst q) [G▶⁻¹]) ,Σ F (G (snd q) [G▶⁻¹]))[F▶⁻¹]
+  (F (G (fst q)) [F G▶⁻¹]) ,Σ F (G (snd q)) [F G▶⁻¹]))[F▶⁻¹]
+  (F (G (fst q)) ,Σ  F (G (snd q))) [F G▶⁻¹ ∘ F▶⁻¹]
+  OK
+
+
+(F∘G)K = FK ∘ F GK
+
+  lam (F (G (app q)) ∘ F G▶⁻¹ ∘ F▶⁻¹)
+  =
+  lam (F (app q) ∘ F▶⁻¹)[p, F (lam (G (app q) ∘ G▶⁻¹)) [F▶⁻¹]]
+
+  lam (F (app q) ∘ F▶⁻¹)[p, F (lam (G (app q) ∘ G▶⁻¹)) [F▶⁻¹]]
+  lam (F (app q) ∘ F▶⁻¹ ∘ (p, F (lam (G (app q) ∘ G▶⁻¹)) [F▶⁻¹])
+  lam (F (app q) ∘ F▶⁻¹ ∘ (F p ∘ F▶⁻¹, F (lam (G (app q) ∘ G▶⁻¹)) [F▶⁻¹])
+  lam (F (app q) ∘ F▶⁻¹ ∘ (F p, F (lam (G (app q) ∘ G▶⁻¹))) ∘ F▶⁻¹)
+  lam (F (app q) ∘ F (p, lam (G (app q) ∘ G▶⁻¹)) ∘ F▶⁻¹)
+  lam (F (app (lam (G (app q) ∘ G▶⁻¹))) ∘ F▶⁻¹)
+  lam (F (G (app q) ∘ G▶⁻¹) ∘ F▶⁻¹)
+  lam (F (G (app q)) ∘ F G▶⁻¹ ∘ F▶⁻¹)
+  OK
+
+(F∘G)Id = FId ∘ F GId
+  OK by UIP

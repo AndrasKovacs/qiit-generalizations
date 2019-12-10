@@ -88,8 +88,15 @@ are displayed over id.
 
 -- operations:
   id  : iso A A
+  id := (q, q, _, _)
+
   _⁻¹ : iso A B → iso B A
-  _∘_ : iso A C → iso B C → iso A B
+  (t, t⁻¹, _, _) = (t⁻¹, t, _, _)
+
+  _∘_ : iso B C → iso A B → iso A C
+  (t, t⁻¹, _, _) ∘ (u, u⁻¹, _, _) :=
+    (t[p, u], t⁻¹[p, u⁻¹], _, _)
+
   associative, unital, involutive for _⁻¹, etc.
 
 -- action of substitution on type isos

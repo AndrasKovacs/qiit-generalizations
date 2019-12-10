@@ -56,11 +56,10 @@ A[F] = ...
   Γ ▶ A : A.Con (F (Γ⁻ ▶ A⁻))
         := coe F▶⁻¹ (Γ ▶ A)
 
-
   _,_  : (σ : Sub Γ Δ σ⁻) → Tm Γ (A[σ]) t⁻ → Sub Γ (Δ ▶ A) (σ⁻, t⁻)
        : (σ : A.Sub Γ Δ (F σ⁻)) → A.Tm Γ (A[σ]) (F t⁻)
          → A.Sub Γ (coe F▶⁻¹ (Δ ▶ A)) (F▶⁻¹ ∘ (F σ⁻, F t⁻))
-  (σ, t) := coh F▶⁻¹ (Δ ▶ A) ∘ (σ, t)
+  (σ, t) := coh F▶⁻¹ (Δ ▶ A) ∘ (σ, t)e
 
   ,∘ : (σ, t) ∘ δ = (σ ∘ δ, t[δ])
      : coh F▶⁻¹ (Δ ▶ A) ∘ (σ, t) ∘ δ = coh F▶⁻¹ (Δ ▶ A) ∘ (σ∘δ, t[δ])
@@ -137,6 +136,7 @@ A[F] = ...
       : A.Tm Γ (coe FId⁻¹ (A.Id t t)) (F (Refl t⁻)) OK
 
     Refl t := (coh FId⁻¹ (A.Id t t))[id, A.Refl t]
+           -- coh FId⁻¹ (A.Id t t) ∘ A.Refl t
 
 
   UIP : (e : Tm Γ (Id t t) e⁻) → e = Refl t

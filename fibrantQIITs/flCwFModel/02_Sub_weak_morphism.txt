@@ -15,6 +15,17 @@ Summary:
 - Preservation isos are natural in the sense that
   e.g. FId[F σ] = FId, FΣ[F σ] = FΣ, etc.
 
+- Also, see 05_id and 06_∘_:
+  - When F = id, preservation isos are all identity:
+      idΣ  = id
+      idK  = id
+      idId = id
+
+  - When F = F ∘ G, preservation isos are
+      -- (F∘G)Σ = FΣ ∘ F GΣ
+      (F∘G)K = FK ∘ F GK
+      (F∘G)Id = FId ∘ F GId
+
 --------------------------------------------------------------------------------
 Definition
 --------------------------------------------------------------------------------
@@ -82,7 +93,7 @@ F (t : Γ.iso A B) : Δ.iso (F A) (F B)
 
        symmetrically for the other equation
 
-TODO, for isos
+Also:
   F id = id
   F (σ ∘ δ) = F σ ∘ F δ
 
@@ -128,8 +139,10 @@ A.iso (F (Σ A B)) (Σ (F A) (F B [F▶⁻¹])) id
     OK
 
     t := (F (fst q) [F▶⁻¹] ,Σ  F (snd q) [F▶⁻¹])
+      -- (F (fst q) ,Σ  F (snd q))[F▶⁻¹]
 
-  -- comparison map 2
+
+-- comparison map 2
   --------------------------------------------------------------------------------
   u : Tm (F Γ ▶ Σ (F A) (F B [F▶⁻¹])) (F (Σ A B) [p])
 
@@ -277,7 +290,6 @@ A.iso (F (Σ A B)) (Σ (F A) (F B [F▶⁻¹])) id
   F(t, u) =  FΣ⁻¹ ∘ (F t, F u)
 
 -- naturality
---------------------------------------------------------------------------------
   Goal: FΣ[F σ] = FΣ
 
   FΣ: iso (F (Σ A B)) (Σ (F A) (F B [F▶⁻¹]))
@@ -293,7 +305,6 @@ A.iso (F (Σ A B)) (Σ (F A) (F B [F▶⁻¹])) id
      (F (fst q) ,Σ  F (snd q))[F (σ↑) ∘ F▶⁻¹]
      (F (fst q[σ↑]) ,Σ  F (snd q[σ↑]))[F▶⁻¹]
      (F (fst q) ,Σ  F (snd q))[F▶⁻¹] OK
-
 
 -- constant families
 --------------------------------------------------------------------------------

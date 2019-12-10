@@ -135,7 +135,7 @@ coh[]  : (coh t⁻ A)[σ] = coh (t⁻[σ⁻]) (A[σ])
 coe-id : coe id A = A
 coe-∘  : coe (t⁻ ∘ u⁻) A  = coe t⁻ (coe u⁻ A)
 coh-id : coh id A = id
-coh-∘  : coe (t⁻ ∘ u⁻) A = coh t⁻ (coe u⁻ A) ∘ coh u⁻ A
+coh-∘  : coh (t⁻ ∘ u⁻) A = coh t⁻ (coe u⁻ A) ∘ coh u⁻ A
 
 -- derived notions
   coh⁻¹ : (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : A.Con Γ⁻) → A.iso (coe σ⁻ Γ) Γ (σ⁻⁻¹)
