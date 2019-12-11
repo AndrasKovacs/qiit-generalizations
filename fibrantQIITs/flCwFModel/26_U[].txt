@@ -1,0 +1,4 @@
+
+U[] : U[F] = U
+
+-- OK since U is a constant type

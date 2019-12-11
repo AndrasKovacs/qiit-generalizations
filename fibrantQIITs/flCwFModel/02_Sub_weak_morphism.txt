@@ -73,11 +73,14 @@ Definition
 -- Action on isos
 --------------------------------------------------------------------------------
 
+-- on Con isos
 F (σ : Γ.iso Γ Δ) : Δ.iso (F Γ) (F Δ)
-  := (F Σ
+  := (F σ, F σ⁻¹, _, _)
 
-- A weak morphism strictly preserves object and type isos.
+F id = id
+F (σ ∘ δ) = F σ ∘ F δ
 
+-- on type isos
 F (t : Γ.iso A B) : Δ.iso (F A) (F B)
   := (F t [F▶⁻¹], F u [F▶⁻¹], _, _)
     equations:
@@ -90,12 +93,21 @@ F (t : Γ.iso A B) : Δ.iso (F A) (F B)
        F (t[p, u]) [F▶⁻¹]
        F q [F▶⁻¹]
        q OK
-
        symmetrically for the other equation
 
-Also:
-  F id = id
-  F (σ ∘ δ) = F σ ∘ F δ
+F id = id
+  F q [F▶⁻¹] = q
+  OK
+
+F (t ∘ u) = F t ∘ F u
+  F (t[p, u][F▶⁻¹]) = (F t [F▶⁻¹])[p, F u [F▶⁻¹]]
+    (F t [F▶⁻¹])[p, F u [F▶⁻¹]]
+    (F t [F▶⁻¹])[F p ∘ F▶⁻¹, F u [F▶⁻¹]]
+    (F t [F▶⁻¹])[F p, F u][F▶⁻¹]
+    (F t) [F▶⁻¹ ∘ (F p, F u) ∘ F▶⁻¹]
+    (F t) [F (p, u) ∘ F▶⁻¹]
+    F (t[p, u]) [F▶⁻¹]
+    OK
 
 --------------------------------------------------------------------------------
 Preservation of Σ,Id,K

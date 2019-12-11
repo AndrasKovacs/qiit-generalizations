@@ -11,3 +11,13 @@ Tm Γ A _  := (γ : Γ) → A γ  -- implicit lvl lift
 
 -- etc.
 -- lifting is trivial because of constancy
+
+
+K : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
+K {Γ} Δ := λ _. Δ
+
+appK : Tm Γ (K Δ) t⁻ → Sub Γ Δ (appK t⁻)
+appK t = t
+
+lamK : Sub Γ Δ σ⁻ → Tm Γ (K Δ) (lamK σ⁻)
+lamK t = t

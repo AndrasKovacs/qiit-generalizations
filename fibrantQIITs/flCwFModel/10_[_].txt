@@ -40,4 +40,14 @@ T[F]∙⁻¹ ∘ ε = id
   T id
   id OK
 
--- TODO rest is pretty obvious
+T[F]▶⁻¹ : Sub (T (G Γ) ▶ T (G A)) (T (G (Γ ▶ A))) id
+T[F]▶⁻¹ := T F▶⁻¹ ∘ T▶⁻¹
+
+
+-- TODO (copypaste from Sub _∘_ )
+▶⁻¹ equations
+(T[F])K  = TK ∘ T FK
+(T[F])Σ  = TΣ ∘ T FΣ
+
+(T[F])Id = TId ∘ F FId
+  OK by UIP

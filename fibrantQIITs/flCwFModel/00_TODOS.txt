@@ -1,7 +1,5 @@
 
+- Check fl-preservation for weak sections
 - Add docs on indexed type categories in cwf, disp cwf, define isos in terms of these
-
-- Indexed category of types
-- type morphisms
-- type isos defined with type morphisms
-- composing a type iso with a term
+- Action of weak morphism on isos
+- Action of weak section on isos

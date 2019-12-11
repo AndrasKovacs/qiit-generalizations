@@ -75,7 +75,7 @@ q : Tm (Γ ▶ A) A[p] q
   OK
 
 Id   : Tm Γ A t⁻ → Tm Γ A u⁻ → Ty Γ (Id t⁻ u⁻)
-     : t⁻ Γ = A → u⁻ Γ = A → T (Id t⁻ u⁻) Γ         -- need Id-preservation for weak sections!
+     : t⁻ Γ = A → u⁻ Γ = A → T (Id t⁻ u⁻) Γ     -- need Id-preservation for weak sections!
 Id t u := TId⁻¹ _ -- proof-irrelevant
 
    TId⁻¹ : Tm (Γ⁻ ▶ Id (T t⁻) (T u⁻)) (T (Id t⁻ u⁻))[p]
@@ -94,16 +94,144 @@ Refl : (t : Tm Γ A t⁻) → Tm Γ (Id t t) (Refl t⁻)
                     TId⁻¹ (refl _) = TId⁻¹ _
      OK
 
+K : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
+  : {Γ : T Γ⁻}(Δ : T Δ⁻) → T (K Δ⁻) Γ
+K {Γ} Δ := TK⁻¹ (Γ, Δ)
 
-K   : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
+  TK⁻¹ : K (T Δ⁻) ≈ T (K Δ⁻)
+       : ∀ Γ → K (T Δ⁻) Γ → T (K Δ⁻) Γ
+       : ∀ Γ → T Δ⁻ → T (K Δ⁻) Γ
+
 K[] : K Δ [σ] = K Δ
+    : TK⁻¹ (_, Δ) = TK⁻¹ (_, Δ)
+    OK
 
 appK : Tm Γ (K Δ) t⁻ → Sub Γ Δ (appK t⁻)
+     : (t : Tm Γ (K Δ) t⁻) → Sub Γ Δ (appK t⁻)
+     : (t : T t⁻ Γ = TK⁻¹ (_, Δ)) → T (appK t⁻) Γ = Δ
+     : (t : T t⁻ Γ = TK⁻¹ (_, Δ)) → T (appK t⁻) Γ = Δ
+     : (t : T t⁻ Γ = TK⁻¹ (_, Δ)) → (appK (TK ∘ T t⁻)) Γ = Δ
+     : (t : T t⁻ Γ = TK⁻¹ (_, Δ)) → TK _ (T t⁻ Γ) = Δ
+     OK
+
 lamK : Sub Γ Δ σ⁻ → Tm Γ (K Δ) (lamK σ⁻)
+     : T σ⁻ Γ = Δ → T (lamK σ⁻) Γ = TK⁻¹ (_, Δ)
+     : T σ⁻ Γ = Δ → (TK⁻¹ ∘ lamK (T σ⁻)) Γ = TK⁻¹ (_, Δ)
+     : T σ⁻ Γ = Δ → TK⁻¹ (_, (T σ⁻ Γ)) = TK⁻¹ (_, Δ)
+     OK
 
-Σ       : (A : Ty Γ A⁻) → Ty (Γ ▶ A) B⁻ → Ty Γ (Σ A⁻ B⁻)
-Σ[]     : Σ A B [σ] = Σ (A[σ]) (B[σ↑])
-_,_     : (t : Tm Γ A t⁻) → Tm Γ (B[id, t]) u⁻ → Tm Γ (Σ A B) (t⁻, u⁻)
+Σ  : (A : Ty Γ A⁻) → Ty (Γ ▶ A) B⁻ → Ty Γ (Σ A⁻ B⁻)
+   : (A : T A⁻ Γ)(B : T B⁻ (T▶⁻¹ (Γ, A))) → T (Σ A⁻ B⁻) Γ
+Σ A B := TΣ⁻¹ (_, (A, B))
 
-π₁      : Tm Γ (Σ A B) t⁻ → Tm Γ A (π₁ t⁻)
-π₂      : (t : Tm Γ (Σ A B) t⁻) → Tm Γ (B[id, π₁ t]) (π₂ t⁻)
+   TΣ : T (Σ A⁻ B⁻)) ≈ Σ (T A⁻) (T B⁻ [T▶⁻¹])
+   TΣ⁻¹ : ∀ Γ → (A : T A⁻) × T B⁻ (T▶⁻¹ (Γ, A)) → T (Σ A⁻ B⁻) Γ
+
+
+Σ[] : Σ A B [σ] = Σ (A[σ]) (B[σ↑])
+    OK
+
+_,_  : (t : Tm Γ A t⁻) → Tm Γ (B[id, t]) u⁻ → Tm Γ (Σ A B) (t⁻, u⁻)
+     : T t⁻ Γ = A → T u⁻ Γ = B → T (t⁻, u⁻) Γ = TΣ⁻¹ (_, (A, B))
+     : T t⁻ Γ = A → T u⁻ Γ = B → (TΣ⁻¹ ∘ (T t⁻, T u⁻)) Γ = TΣ⁻¹ (Γ, (A, B))
+     : T t⁻ Γ = A → T u⁻ Γ = B → TΣ⁻¹ (Γ, (T t⁻ Γ, T u⁻ Γ)) = TΣ⁻¹ (Γ, (A, B))
+     OK
+
+π₁   : Tm Γ (Σ A B) t⁻ → Tm Γ A (π₁ t⁻)
+     : T t⁻ Γ = TΣ⁻¹ (_, (A, B)) → T (π₁ t⁻) Γ = A
+     : T t⁻ Γ = TΣ⁻¹ (_, (A, B)) → (π₁ (TΣ ∘ T t⁻)) Γ = A
+     : T t⁻ Γ = TΣ⁻¹ (_, (A, B)) → π₂ (TΣ (_, T t⁻ Γ)) = A
+       π₂ (TΣ (_, TΣ⁻¹ (_, (A, B)))) = A
+       π₂ (A, B) = A
+       OK
+
+π₂ : (t : Tm Γ (Σ A B) t⁻) → Tm Γ (B[id, π₁ t]) (π₂ t⁻)
+   OK
+
+coe : Γ.iso Γ⁻ Δ⁻ → (El T).Con Γ⁻ → (EL T).Con Δ⁻
+    : (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : T Γ⁻) → T Δ⁻
+  coe σ⁻ Γ := T σ⁻ Γ
+
+coh : (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : T Γ⁻) → (EL T).iso Γ (coe σ⁻ Γ) σ⁻
+      (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : T Γ⁻) → T σ⁻ Γ = coe σ⁻ Γ
+      (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : T Γ⁻) → T σ⁻ Γ = T σ⁻ Γ
+  coh σ⁻ Γ = (refl, refl, _, _)
+
+coe-id : coe id Γ = Γ
+ OK
+
+coe-∘  : coe (σ⁻ ∘ δ⁻) Γ = coe σ⁻ (coe δ⁻ Γ)
+ OK
+
+coh-id : coh id Γ = id
+ OK
+
+coh-∘  : coh (σ⁻ ∘ δ⁻) Γ = coh σ⁻ (coe δ⁻ Γ) ∘ coh δ⁻ Γ
+ OK
+
+
+type morphism in (EL T)
+t   : Tm (Γ ▶ A) B[p] t⁻
+    : T t⁻ (T▶⁻¹ (Γ, A)) = B
+t⁻¹ : Tm (Γ ▶ B) A[p] t⁻⁻¹
+    : T t⁻ (T▶⁻¹ (Γ, B)) = A
+
+-- type iso lifting
+coe : (t⁻ : Γ.iso A⁻ B⁻)(A : T A⁻ Γ) → T B⁻ Γ
+  coe t⁻ A := T t⁻ (F▶⁻¹ (Γ, A))
+
+   -- action on iso
+   T t⁻ = (T t⁻ [T▶⁻¹], T t⁻⁻¹ [T▶⁻¹], _, _)
+        = (T t⁻ ∘ T▶⁻¹, T t⁻⁻¹ ∘ T▶⁻¹, _, _)
+
+   t⁻ : Tm (Γ⁻ ▶ A⁻) B⁻[p]
+   T t⁻ : U.Tm (T (Γ⁻ ▶ A⁻)) (T B⁻ [T p])
+        : (x : T (Γ⁻ ▶ A⁻)) → T B⁻ (π₁ (F▶ x))
+   T t⁻ ∘ F▶⁻¹ : (x : Σ (T Γ⁻) (T A⁻)) → T B⁻ (π₁ x)
+
+coe[] : (coe t⁻ A)[σ] = coe (t⁻[σ⁻]) (A[σ])
+      : coe t⁻ A = coe t⁻ A
+      OK
+
+coh : (t⁻ : Γ.iso A⁻ B⁻)(A : Ty Γ A⁻) → (EL T).iso A (coe t⁻ A) t⁻
+    : (t⁻ : Γ.iso A⁻ B⁻)(A : T A⁻ Γ) → (EL T).iso A (T t⁻ A) t⁻
+
+    : (EL T).iso A (T t⁻ A) t⁻
+    : Tm (Γ ▶ A) (T t⁻ A) t⁻ × Tm (Γ ▶ T t⁻ A) A t⁻⁻¹
+    :   (T t⁻ (T▶⁻¹ (Γ, A)) = T t⁻ (T▶⁻¹ (Γ, A))
+      × (T t⁻⁻¹ (T▶⁻¹ (Γ, T t⁻ (T▶⁻¹ (Γ, A)))) = A)
+
+    (T t⁻ (T▶⁻¹ (Γ, A)) = T t⁻ (T▶⁻¹ (Γ, A))
+    OK
+
+    T t⁻⁻¹ (T▶⁻¹ (Γ, T t⁻ (T▶⁻¹ (Γ, A)))) = A
+    OK -- by iso preservation of T
+
+      (T t⁻⁻¹ ∘ T▶⁻¹) [p, T t⁻ ∘ T▶⁻¹] = π₂
+      (T t⁻⁻¹ ∘ T▶⁻¹ ∘ (π₁, T t⁻ ∘ T▶⁻¹)) (Γ, A) = π₂ (Γ, A)
+      T t⁻⁻¹ (T▶⁻¹ (Γ, T t⁻ (T▶⁻¹ (Γ, A)))) = A
+
+coh[]  : (coh t⁻ A)[σ] = coh (t⁻[σ⁻]) (A[σ])
+  OK
+
+coe-id : coe id A = A
+       : T q (T▶⁻¹ (Γ, A)) = A
+       : q (T▶ (T▶⁻¹ (Γ, A))) = A
+       : A = A
+       OK
+
+coe-∘  : coe (t⁻ ∘ u⁻) A  = coe t⁻ (coe u⁻ A)
+       : (T (t⁻[p, u⁻])) (T▶⁻¹(Γ, A)) = T t⁻ (T▶⁻¹ (Γ, T u⁻ (T▶⁻¹ (Γ, A))))
+
+         (T (t⁻[p, u⁻])) (T▶⁻¹(Γ, A))
+	 (T t⁻ [T(p, u⁻)]) (T▶⁻¹(Γ, A))
+	 (T t⁻ [T▶⁻¹ ∘ (T p, T u⁻)]) (T▶⁻¹(Γ, A))
+	 (T t⁻ [T▶⁻¹ ∘ (p ∘ T▶, T u⁻)]) (T▶⁻¹(Γ, A))
+	 (T t⁻ ∘ T▶⁻¹ ∘ (p ∘ T▶, T u⁻)) (T▶⁻¹(Γ, A))
+	 T t⁻ (T▶⁻¹ (Γ, T u⁻ (T▶⁻¹(Γ, A))))
+	 OK
+
+coh-id : coh id A = id
+  OK
+coh-∘  : coh (t⁻ ∘ u⁻) A = coh t⁻ (coe u⁻ A) ∘ coh u⁻ A
+  OK

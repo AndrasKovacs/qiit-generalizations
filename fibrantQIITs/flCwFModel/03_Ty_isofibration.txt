@@ -15,11 +15,11 @@ Notation:
 
   Con     : Γ.Con → Set i
   Sub     : Con Γ⁻ → Con Δ⁻ → Γ.Sub Γ⁻ Δ⁻ → Set i
-  Ty      : Con Γ⁻ → Γ.Ty Γ → Set i
+  Ty      : Con Γ⁻ → Γ.Ty Γ⁻ → Set i
   Tm      : (Γ : Con Γ⁻) → Ty Γ A⁻ → Γ.Tm Γ⁻ A⁻ → Set i
 
   id      : (Γ : Con Γ⁻) → Sub Γ Γ id
-  _∘_     : Sub Θ Δ σ⁻ → Sub Γ Θ δ⁻ → Sub Γ Δ (σ⁻ ∘ δ⁻)
+  _∘_     : Sub Δ Σ σ⁻ → Sub Γ Δ δ⁻ → Sub Γ Σ (σ⁻ ∘ δ⁻)
   ass     : (σ ∘ δ) ∘ ν = σ ∘ (δ ∘ ν)
   idl     : id ∘ σ = σ
   idr     : σ ∘ id = σ

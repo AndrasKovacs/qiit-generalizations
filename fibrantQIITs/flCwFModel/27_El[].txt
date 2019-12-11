@@ -1,0 +1,133 @@
+
+EL[] : (EL T)[F] = EL (T[F])
+
+------------------------------------------------------------
+
+-- pasta-ing El here
+-- TODO: cleanup
+
+Con : Γ.Con → Set j
+Con Γ⁻ := T Γ⁻
+  T (F Γ⁻) = T (F Γ⁻)
+  OK
+
+Sub : T.Con Γ⁻ → T.Con Δ⁻ → Γ.Sub Γ⁻ Δ⁻ → Set j
+Sub Γ Δ σ⁻ := σ⁻ Γ = Δ
+
+  El (T[F]).Sub Γ Δ σ⁻ = (T[F]) σ⁻ Γ = Δ
+                       = T (F σ⁻) Γ = Δ
+
+  (El T)[F].Sub Γ Δ σ⁻ = (El T).Sub Γ Δ (F σ⁻)
+                       = T (F σ⁻) Γ = Δ
+  OK
+
+Ty : T.Con Γ⁻ → Γ.Ty Γ → Set j
+Ty Γ A⁻ := T A⁻ Γ
+  T (F A⁻) Γ = T (F A⁻) Γ
+  OK
+
+Tm : (Γ : T.Con Γ⁻) → T.Ty A⁻ Γ → Γ.Tm Γ⁻ A⁻ → Set j
+Tm Γ A t⁻ := t⁻ Γ = A
+  (T (F t⁻) Γ = A) = (T (F t⁻) Γ = A)
+  OK
+
+_[_] : T A⁻ Δ → σ⁻ Γ = Δ → T (A⁻[σ⁻]) Γ
+     : T A⁻ Δ → σ⁻ Γ = Δ → T A⁻ (σ⁻ Γ)
+A[σ] := A
+  OK
+
+∙ : T ∙
+  := T∙⁻¹ tt
+
+  (EL T)[F].∙
+  (EL T).coe F∙⁻¹ (EL T).∙
+  T F∙⁻¹ (T∙⁻¹ tt)
+
+  El (T[F]).∙
+  (T[F])∙⁻¹ tt
+  (T F∙⁻¹ ∘ T∙⁻¹) tt
+  T F∙⁻¹ (T∙⁻¹ tt)
+  OK
+
+_▶_   : (Γ : Con Γ⁻) → Ty Γ A⁻ → Con (Γ⁻ ▶ A⁻)
+      : (Γ : T Γ⁻) → T A⁻ Γ → T (Γ⁻ ▶ A⁻)
+(Γ ▶ A) := T▶⁻¹ (Γ, A)
+
+   (EL T)[F]._▶_ Γ A
+   (EL T).coe F▶⁻¹ (T▶⁻¹ (Γ, A))
+   T F▶⁻¹ (T▶⁻¹ (Γ, A))
+
+   (EL T[F])._▶_ Γ A
+   T[F]▶⁻¹ (Γ, A)
+   T F▶⁻¹ (T▶⁻¹ (Γ, A))
+   OK
+
+Id   : Tm Γ A t⁻ → Tm Γ A u⁻ → Ty Γ (Id t⁻ u⁻)
+     : t⁻ Γ = A → u⁻ Γ = A → T (Id t⁻ u⁻) Γ
+Id t u := TId⁻¹ Γ _
+
+   (EL T[F]).Id : Tm Γ A t⁻ → Tm Γ A u⁻ →  Ty Γ (Id t⁻ u⁻)
+                : (T[F]) t⁻ Γ = A → (T[F]) u⁻ Γ = A → (T[F]) (Id t⁻ u⁻) Γ
+		: T (F t⁻) Γ = A → T (F u⁻) Γ = A → T (F (Id t⁻ u⁻)) Γ
+
+   OK, because T (F (Id t⁻ u⁻)) Γ is proof irrelevant, it's isomorphic
+       to Id (T (F t⁻)) (T (F u⁻)) Γ
+
+
+K : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
+  : {Γ : T Γ⁻}(Δ : T Δ⁻) → T (K Δ⁻) Γ
+K {Γ} Δ := TK⁻¹ (Γ, Δ)
+
+   (EL T)[F].K Δ
+   (EL T).coe FK⁻¹ ((EL T).K Δ)
+   (EL T).coe FK⁻¹ (TK⁻¹ Γ Δ)
+   T FK⁻¹ (F▶⁻¹ (Γ, TK⁻¹ (Γ, Δ)))
+
+   (EL T[F]).K Δ
+   (T[F])K⁻¹ Γ Δ
+   (T FK⁻¹ ∘ TK⁻¹) (Γ, Δ)
+   ((T FK⁻¹ [T▶⁻¹]) [p, TK⁻¹]) (Γ, Δ)
+   ((T FK⁻¹ [T▶⁻¹])(Γ, TK⁻¹(Γ, Δ))
+   T FK⁻¹ (T▶⁻¹ (Γ, TK⁻¹(Γ, Δ)))
+   OK
+
+
+Σ  : (A : Ty Γ A⁻) → Ty (Γ ▶ A) B⁻ → Ty Γ (Σ A⁻ B⁻)
+   : (A : T A⁻ Γ)(B : T B⁻ (T▶⁻¹ (Γ, A))) → T (Σ A⁻ B⁻) Γ
+Σ A B := TΣ⁻¹ (Γ, (A, B))
+
+   (EL T)[F].Σ A B
+   (EL T).coe FΣ⁻¹ ((EL T).Σ A (B[(EL T).coh F▶⁻¹ (Γ ▶ A)]))
+   (EL T).coe FΣ⁻¹ ((EL T).Σ A B)
+   T FΣ⁻¹ (T▶⁻¹ (Γ, (TΣ⁻¹ (Γ, (A, B)))))
+
+   (EL T[F]).Σ A B
+   (T[F])Σ⁻¹ (Γ, (A, B))
+   (T FΣ⁻¹ ∘ TΣ⁻¹) (Γ, (A, B))
+   ((T FΣ⁻¹ [T▶⁻¹])[p, TΣ⁻¹]) (Γ, (A, B))
+   ((T FΣ⁻¹ [T▶⁻¹])(Γ, (TΣ⁻¹ (Γ, (A, B))))
+   T FΣ⁻¹ (T▶⁻¹ (Γ, (TΣ⁻¹ (Γ, (A, B)))))
+   OK
+
+coe : Γ.iso Γ⁻ Δ⁻ → (El T).Con Γ⁻ → (EL T).Con Δ⁻
+    : (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : T Γ⁻) → T Δ⁻
+  coe σ⁻ Γ := T σ⁻ Γ
+
+  (EL T)[F].coe σ⁻ Γ
+  (EL T).coe (F σ⁻) Γ
+  T (F σ⁻) Γ
+
+  (EL T[F]).coe σ⁻ Γ
+  T (F σ⁻) Γ
+  OK
+
+coe : (t⁻ : Γ.iso A⁻ B⁻)(A : T A⁻ Γ) → T B⁻ Γ
+  coe t⁻ A := T t⁻ (F▶⁻¹ (Γ, A))
+
+  (EL T)[F].coe t⁻ A
+  (EL T).coe (F t⁻) A
+  T (F t⁻) (F▶⁻¹ (Γ, A))
+
+  (EL T[F]).coe t⁻ A
+  T (F t⁻) (F▶⁻¹ (Γ, A))
+  OK
