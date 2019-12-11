@@ -2,9 +2,6 @@
 Π : (A : TM Γ U)(B : TY (Γ ▶ EL A)) → TY Γ
 ------------------------------------------------------------
 
--- if we want to keep it simple
-
-
 Con : Γ.Con → Set i
 Con Γ⁻ := (a : A.Con Γ⁻) → B.Con (Γ⁻, a)
 
@@ -121,9 +118,11 @@ Id t u : Ty Γ (Id t⁻ u⁻)
        : {a}(aa : A.Ty (Id t⁻ u⁻) a) → B.Ty (Γ a) (Id t⁻ u⁻, aa)
   := λ {a} aa. Id (t a) (u a)
 
-    t a : Tm (Γ A) (A (A.Tm t⁻ a)) (t⁻, _)
-    u a : Tm (Γ A) (A (A.Tm u⁻ a)) (u⁻, _)
-    Id (t a) (u a) : Ty (Γ A) (Id t⁻ u⁻, _)
+    t a : Tm (Γ a) (A (A.Tm t⁻ a)) (t⁻, _)
+    u a : Tm (Γ a) (A (A.Tm u⁻ a)) (u⁻, _)
+    Id (t a) (u a) : Ty (Γ A) (Id t⁻ u⁻, TId⁻¹ _)
+    -- the TId⁻¹ _ is OK because of proof irrelevance of
+    -- A.Ty (Id t⁻ u⁻) a
 
 Id[] : (Id t u [σ]) aa = (Id (t[σ]) (u[σ])) aa
      : ((Id t u) aa [σ a]) = Id (t[σ]) (u[σ]) aa
@@ -145,7 +144,23 @@ Refl : (t : Tm Γ A t⁻) → Tm Γ (Id t t) (Refl t⁻)
 UIP  : (e : Tm Γ (Id t t) e⁻) → e = Refl t
   OK by funext, UIP
 
-K       : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
+K : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
+K {Γ} Δ : {a : A.Con Γ⁻}(aa : A.Ty (K Δ⁻) a) → Ty (Γ a) (K Δ⁻, aa)
+  AK aa : A.Con Δ⁻
+  Γ a : B.Con (Γ⁻, a)
+  Δ (AK aa) : B.Con (Δ⁻, AK aa)
+
+  K {Γ a}(Δ (AK⁻¹ aa)) : Ty (Γ a) (K {Γ⁻, a} (Δ⁻, AK⁻¹ aa))
+                       : Ty (Γ a) (K {Γ⁻} Δ⁻, AK⁻¹ (AK aa))
+		       : Ty (Γ a) (K {Γ⁻} Δ⁻, aa)
+
+       AK⁻¹ : {a : A.Con Γ⁻}×(aa : A.Con Δ⁻) → A.Ty (K Δ⁻) Γ
+       AK   : {a : A.Con Γ⁻}×(aa : A.Ty (K Δ⁻) a) → A.Con Δ⁻
+
+  K {Γ} Δ := λ {a} aa. K {Γ a}(Δ (AK⁻¹ aa))
+  -- pattern matching maybe???
+
+
 K[]     : K Δ [σ] = K Δ
 appK    : Tm Γ (K Δ) t⁻ → Sub Γ Δ (appK t⁻)
 lamK    : Sub Γ Δ σ⁻ → Tm Γ (K Δ) (lamK σ⁻)

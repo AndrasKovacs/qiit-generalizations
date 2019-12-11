@@ -80,7 +80,7 @@ Id t u := TId⁻¹ _ -- proof-irrelevant
 
    TId⁻¹ : Tm (Γ⁻ ▶ Id (T t⁻) (T u⁻)) (T (Id t⁻ u⁻))[p]
          : (Γ : Γ⁻) → t⁻ Γ = u⁻ Γ → T (Id t⁻ u⁻) Γ
-   TId⁻¹ : Id (T t⁻) (T u⁻) => T (Id t⁻ u⁻)
+   TId⁻¹ : Id (T t⁻) (T u⁻) Γ → T (Id t⁻ u⁻) Γ
      T (Id t⁻ u⁻) ≈ Id (T t⁻) (T u⁻)
 
 
