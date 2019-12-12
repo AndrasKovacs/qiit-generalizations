@@ -150,26 +150,96 @@ K {Γ} Δ : {a : A.Con Γ⁻}(aa : A.Ty (K Δ⁻) a) → Ty (Γ a) (K Δ⁻, aa)
   Γ a : B.Con (Γ⁻, a)
   Δ (AK aa) : B.Con (Δ⁻, AK aa)
 
-  K {Γ a}(Δ (AK⁻¹ aa)) : Ty (Γ a) (K {Γ⁻, a} (Δ⁻, AK⁻¹ aa))
-                       : Ty (Γ a) (K {Γ⁻} Δ⁻, AK⁻¹ (AK aa))
-		       : Ty (Γ a) (K {Γ⁻} Δ⁻, aa)
+  K {Γ a}(Δ (AK aa)) : Ty (Γ a) (K {Γ⁻, a} (Δ⁻, AK aa))
+                     : Ty (Γ a) (K {Γ⁻} Δ⁻, AK⁻¹ (AK aa))
+		     : Ty (Γ a) (K {Γ⁻} Δ⁻, aa)
 
        AK⁻¹ : {a : A.Con Γ⁻}×(aa : A.Con Δ⁻) → A.Ty (K Δ⁻) Γ
        AK   : {a : A.Con Γ⁻}×(aa : A.Ty (K Δ⁻) a) → A.Con Δ⁻
 
-  K {Γ} Δ := λ {a} aa. K {Γ a}(Δ (AK⁻¹ aa))
+  K {Γ} Δ := λ {a} aa. K {Γ a}(Δ (AK aa))
   -- pattern matching maybe???
 
+K[] : K Δ [σ] = K Δ
+      K Δ (AK aa) = K Δ (AK aa)
+      OK
 
-K[]     : K Δ [σ] = K Δ
-appK    : Tm Γ (K Δ) t⁻ → Sub Γ Δ (appK t⁻)
-lamK    : Sub Γ Δ σ⁻ → Tm Γ (K Δ) (lamK σ⁻)
-appK[]  : appK t ∘ σ = appK (t[σ])
-Kβ      : appK (lamK σ) = σ
-Kη      : lamK (appK t) = t
+appK : Tm Γ (K Δ) t⁻ → Sub Γ Δ (appK t⁻)
+appK t (a : A.Con Γ⁻)
+  : B.Sub (Γ a) (Δ (A.Sub (appK t⁻) a)) (appK t⁻, _)
+  : B.Sub (Γ a) (Δ (AK (A.Tm t⁻ a))) (appK t⁻, _)
 
-Σ       : (A : Ty Γ A⁻) → Ty (Γ ▶ A) B⁻ → Ty Γ (Σ A⁻ B⁻)
-Σ[]     : Σ A B [σ] = Σ (A[σ]) (B[σ↑])
+  t⁻ : Tm Γ⁻ (K Δ⁻)
+  A.Tm t⁻ : Tm (A Γ⁻) (A (K Δ⁻))
+            (a : A.Con Γ⁻) → A.Ty (K Δ⁻) a
+
+   t a : Tm (Γ a) (K Δ (A.Tm t⁻ a)) (t⁻, _)
+       : Tm (Γ a) (K (AK (A.Tm t⁻ a))) (t⁻, _)
+
+   appK (t a) : Sub (Γ a) (AK (A.Tm t⁻ a)) (appK (t⁻, _))
+              : Sub (Γ a) (AK (A.Tm t⁻ a)) (appK t⁻, _)
+
+  appK t a := appK (t a)
+
+
+lamK : Sub Γ Δ σ⁻ → Tm Γ (K Δ) (lamK σ⁻)
+lamK σ (a : A.Con Γ⁻)
+  : B.Tm (Γ a) (K Δ (A.Tm t⁻ a)) (lamK σ⁻, _)
+  : B.Tm (Γ a) (K (Δ (AK (A.Tm t⁻ a)))) (lamK σ⁻, _)
+  σ a : Sub (Γ a) (Δ (A.Sub σ⁻ a)) (σ⁻, _)
+
+  lamK σ a := lamK (σ a)
+
+appK[] : appK t ∘ σ = appK (t[σ])
+       : (appK t) (A.Sub σ⁻ a) ∘ σ a = appK (t[σ]) a
+       : appK (t (A.Sub σ⁻ a)) ∘ σ a = appK ((t[σ]) a)
+       : appK (t (A.Sub σ⁻ a) ∘ σ a) = appK (t (A.Sub σ⁻ a) ∘ σ a)
+       OK
+
+Kβ : appK (lamK σ) a = σ a
+   : appK ((lamK σ) a) = σ a
+   : appK (lamK (σ a)) = σ a
+   OK
+
+Kη : lamK (appK t) = t
+   OK
+
+-- again, we use pattern matching notation  AΣ⁻¹(aa, bb)
+Σ : (A : Ty Γ A⁻) → Ty (Γ ▶ A) B⁻ → Ty Γ (Σ A⁻ B⁻)
+Σ A B {a : A.Con Γ⁻}(aabb : A.Ty (Σ A⁻ B⁻) a) : B.Ty (Γ a) (Σ A⁻ B⁻, aabb)
+
+  AΣ aabb : (aa : A.Ty A⁻ a) × (A.Ty B⁻ (A▶⁻¹(a, aa)))
+
+  A : {a : A.Con Γ⁻}(aa : A.Ty A⁻ a) → B.Ty (Γ a) (A⁻, aa)
+  A (π₁ (AΣ aabb)) : B.Ty (Γ a) (A⁻, (π₁ (AΣ aabb)))
+
+  B : {a : A.Con (Γ⁻ ▶ A⁻)}(aa : A.Ty B⁻ a) → B.Ty ((Γ ▶ A) a) (B⁻, aa)
+    : {a : A.Con (Γ⁻ ▶ A⁻)}(aa : A.Ty B⁻ a)
+      → B.Ty (Γ (π₁ (A▶ a)) ▶ A (π₂ (A▶ a))) (B⁻, aa)
+
+  B {A▶⁻¹(a, π₁ (AΣ aabb))}(π₂ (AΣ aabb))
+    : B.Ty (Γ a ▶ A (π₁ (AΣ aabb))) (B⁻, π₂ (AΣ aabb))
+
+  Σ (A (π₁ (AΣ aabb))) (B (π₂ (AΣ aabb)))
+    : B.Ty (Γ a) (Σ (A⁻, (π₁ (AΣ aabb))) (B⁻, π₂ (AΣ aabb)))
+    : B.Ty (Γ a) (Σ A⁻ B⁻, TΣ⁻¹(π₁ (AΣ aabb), π₂ (AΣ aabb)))
+    : B.Ty (Γ a) (Σ A⁻ B⁻, aabb)
+
+  Σ A B (AΣ⁻¹(aa, bb)) := Σ (A aa) (B bb)
+
+Σ[] : (Σ A B [σ]) (FΣ⁻¹(aa, bb)) = (Σ (A[σ]) (B[σ↑])) (FΣ⁻¹(aa, bb))
+
+      (Σ A B [σ]) (FΣ⁻¹(aa, bb))
+      (Σ A B) (FΣ⁻¹(aa, bb)) [σ a]
+      (Σ (A aa) (B bb)) [σ a]
+      Σ (A aa [σ a]) (B bb [σ a ∘ p, q])
+
+      (Σ (A[σ]) (B[σ↑])) (FΣ⁻¹(aa, bb))
+      Σ (A[σ] aa) (B[σ↑] bb)
+      Σ (A aa [σ a]) (B[σ∘p, q] bb)
+      Σ (A aa [σ a]) (B bb [(σ∘p, q) (A▶⁻¹(a, aa))])
+      TODO chekkkkk
+
 _,_     : (t : Tm Γ A t⁻) → Tm Γ (B[id, t]) u⁻ → Tm Γ (Σ A B) (t⁻, u⁻)
 ,[]     : (t, u)[σ]) = (t[σ], u[σ])
 π₁      : Tm Γ (Σ A B) t⁻ → Tm Γ A (π₁ t⁻)

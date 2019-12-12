@@ -405,7 +405,7 @@ Goal : iso (F (K {Γ} Δ)) (K {F Γ}(F Δ))
     q
     OK
 
-  -- F (app t)
+  -- F (app t) = app (FK ∘ F t)
   goal : F (app t) = app (FK[id, F t])
   F (app t) = app (lam (F (app q) ∘ F▶⁻¹)[id, F t])
   F (app t) = app (lam (F (app q) ∘ F▶⁻¹ ∘ (id, F t)))

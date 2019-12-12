@@ -2,5 +2,6 @@
 q : TM (Γ ▶ A) A[p]
 
 ------------------------------------------------------------
-The second projection section is a strict morphism.
+The second projection section is a strict morphism,
+so it's also a weak one.
 OK
