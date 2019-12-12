@@ -226,21 +226,62 @@ Kη : lamK (appK t) = t
     : B.Ty (Γ a) (Σ A⁻ B⁻, aabb)
 
   Σ A B (AΣ⁻¹(aa, bb)) := Σ (A aa) (B bb)
+  -- Σ A B aabb := Σ (A (π₁ (FΣ aabb))) (B (π₂ (FΣ aabb)))
 
-Σ[] : (Σ A B [σ]) (FΣ⁻¹(aa, bb)) = (Σ (A[σ]) (B[σ↑])) (FΣ⁻¹(aa, bb))
+record
+  constructor mkT
+  unT : A
 
-      (Σ A B [σ]) (FΣ⁻¹(aa, bb))
-      (Σ A B) (FΣ⁻¹(aa, bb)) [σ a]
-      (Σ (A aa) (B bb)) [σ a]
-      Σ (A aa [σ a]) (B bb [σ a ∘ p, q])
 
-      (Σ (A[σ]) (B[σ↑])) (FΣ⁻¹(aa, bb))
-      Σ (A[σ] aa) (B[σ↑] bb)
-      Σ (A aa [σ a]) (B[σ∘p, q] bb)
-      Σ (A aa [σ a]) (B bb [(σ∘p, q) (A▶⁻¹(a, aa))])
-      TODO chekkkkk
+Σ[] : (Σ A B [σ]) (FΣ⁻¹(aa, bb)) = Σ (A[σ]) (B[σ↑]) (FΣ⁻¹(aa, bb))
 
-_,_     : (t : Tm Γ A t⁻) → Tm Γ (B[id, t]) u⁻ → Tm Γ (Σ A B) (t⁻, u⁻)
+   OK
+
+   -- (Σ A B [σ]) {a}(FΣ⁻¹(aa, bb)) = (Σ (A[σ]) (B[σ↑])) {a}(FΣ⁻¹(aa, bb))
+
+   -- A : Ty Γ A⁻
+   -- B : Ty (Γ ▶ A) B⁻
+   -- σ : Sub Σ Γ σ⁻
+   -- a : A.Con Σ⁻
+   -- FΣ⁻¹(aa, bb) : A.Ty (Σ A⁻ B⁻) (A.Sub σ⁻ a)
+
+   -- (aa, bb) :  (aa : A.Ty A⁻ (A.Sub σ⁻ a))
+   --           × (bb : A.Ty B⁻ (F▶⁻¹ (A.Sub σ⁻ a, aa)))
+   -- aa : A.Ty A⁻ (A.Sub σ⁻ a)
+   -- bb : A.Ty B⁻ (A▶⁻¹ (A.Sub σ⁻ a, aa))
+   --    : A.Ty B⁻ (A.Sub (σ⁻↑) (A▶⁻¹(a, aa)))  TODO!
+
+   -- σ a    : Sub (Σ a) (Γ (A.Sub σ⁻ a)) (σ⁻, _)
+   -- A aa : Ty (Γ (A.Sub σ⁻ a)) (A⁻, aa)
+
+   -- (σ a)↑ : Sub (Σ a ▶
+
+   -- B bb : Ty (Γ (A.Sub σ⁻ a) ▶ A aa)) (B⁻, bb)
+
+   -- (Σ A B [σ]) {a} (FΣ⁻¹(aa, bb))
+   -- (Σ A B) {A.Sub σ⁻ a} (FΣ⁻¹(aa, bb)) [σ a]
+   -- Σ (A aa) (B bb) [σ a]
+   -- Σ (A aa [σ a]) (B bb [σ a ∘ p, q])
+
+   -- (Σ (A[σ]) (B[σ↑])) {a} (FΣ⁻¹(aa, bb))
+   -- Σ ((A[σ]) aa) ((B[σ↑]) bb)
+   -- Σ (A aa [σ a]) (B bb [σ↑ (A▶⁻¹(a, aa))])
+                      B bb [(σ a ∘ p, q
+   --   σ↑ (A▶⁻¹(a, aa))
+
+
+
+_,_ : (t : Tm Γ A t⁻) → Tm Γ (B[id, t]) u⁻ → Tm Γ (Σ A B) (t⁻, u⁻)
+t,u (a : A.Con Γ⁻) : Tm (Γ a) ((Σ A B) (A.Tm (t⁻, u⁻) a)) ((t⁻, u⁻), _)
+  t a : Tm (Γ a) (A (A.Tm t⁻ a)) (t⁻, _)
+
+  u a : Tm (Γ a) (B[id, t] (A.Tm u⁻ a)) (u⁻, _)
+      : Tm (Γ a) (B (A.Tm u⁻ a)[id, t] (A.Tm u⁻ a)) (u⁻, _)
+
+
+
+
+
 ,[]     : (t, u)[σ]) = (t[σ], u[σ])
 π₁      : Tm Γ (Σ A B) t⁻ → Tm Γ A (π₁ t⁻)
 π₂      : (t : Tm Γ (Σ A B) t⁻) → Tm Γ (B[id, π₁ t]) (π₂ t⁻)
