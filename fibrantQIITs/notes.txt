@@ -1,0 +1,3 @@
+
+Investigate: what happens if we index types in signatures by fibrancy,
+can we then combine sort equalities with everything?
