@@ -3,3 +3,5 @@
 - Add docs on indexed type categories in cwf, disp cwf, define isos in terms of these
 - Action of weak morphism on isos
 - Action of weak section on isos
+
+Π : check type coe/coh laws (low priority)

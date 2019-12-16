@@ -292,3 +292,96 @@ t,u (a : A.Con Γ⁻)
 
 πη   : (π₁ t, π₂ t) = t
      OK
+
+
+------------------------------------------------------------
+-- iso lifting by comprehension with coh
+
+Γ : CON
+A : TY Γ
+
+(σ⁻ : Γ.iso Γ⁻ Δ⁻)(a : A.Con Δ⁻)
+(σ⁻, A.coh⁻¹ σ⁻⁻¹ a) : (Γ ▶ A).iso (Γ⁻, A.coe σ⁻⁻¹ a) (Δ⁻, a)
+
+(t⁻ : Γ.iso A⁻ B⁻)(a : A.Ty Δ B⁻)
+(t⁻, A.coh⁻¹ t⁻⁻¹ a) : (Γ ▶ A).iso (A⁻, A.coe t⁻⁻¹ a) (B⁻, a)
+------------------------------------------------------------
+
+
+coe : Γ.iso Γ⁻ Δ⁻ → (Π A B).Con Γ⁻ → (Π A B).Con Δ⁻
+    : Γ.iso Γ⁻ Δ⁻ → ((a : A Γ­) → B.Con(Γ⁻, a)) → ((a : A Δ⁻) → B.Con(Δ⁻, a))
+  coe σ⁻ Γ := λ a. B.coe (σ⁻, _) (Γ (A (σ⁻⁻¹) a))
+  -- note (σ⁻, _) iso comprehension
+  -- coe in EL is just application
+
+coh : (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : (Π A B).Con Γ⁻) → (Π A B).iso Γ (coe σ⁻ Γ) σ⁻
+  (coh σ⁻ Γ) (a : A.Con Γ⁻)
+     : Sub (Γ a) (coe σ⁻ Γ (A.Sub σ⁻ a)) (σ⁻, _)
+     : Sub (Γ a) (coe (σ⁻, _) (Γ ((A.Sub σ⁻⁻¹ (A.Sub σ⁻ a)))) (σ⁻, _)
+     : Sub (Γ a) (coe (σ⁻, _) (Γ a) (σ⁻, _)
+  -- symmetrically for other morphism
+
+  (coh σ⁻ Γ)   a := B.coh (σ⁻, _) (Γ a)
+  (coh σ⁻ Γ)⁻¹ a := B.coh⁻¹ (σ⁻, _) (Γ (A σ⁻⁻¹ a))
+  eqs OK
+
+
+-- OK
+coe-id : coe id Γ = Γ
+coe-∘  : coe (σ⁻ ∘ δ⁻) Γ = coe σ⁻ (coe δ⁻ Γ)
+coh-id : coh id Γ = id
+coh-∘  : coh (σ⁻ ∘ δ⁻) Γ = coh σ⁻ (coe δ⁻ Γ) ∘ coh δ⁻ Γ
+
+coe : Γ.iso A⁻ B⁻ → (Π A B).Ty Γ A⁻ → (Π A B).Ty Γ B⁻
+coe t⁻ A : {a : A.Con Γ⁻}(aa : A.Ty B⁻ a) → B.Ty (Γ a) (B⁻, aa)
+  coe t⁻ A := λ {a} aa.
+    A.Tm t⁻ : ∀ a. U.iso (A A⁻ a) (A B⁻ a)
+
+    A.Tm t⁻⁻¹ aa : A.Ty A⁻ a
+    A (A.Tm t⁻⁻¹ aa) : B.Ty (Γ a) (A⁻, A.Tm t⁻⁻¹ aa)
+    B.coe (t⁻, ?) (A (A.Tm t⁻⁻¹ aa)) : B.Ty (Γ a) (B⁻, aa)
+
+    ? : (EL A).iso (A.Tm t⁻⁻¹ aa) aa t⁻
+      : A.Tm t⁻ (A.Tm t⁻⁻¹ aa) = aa
+        OK
+
+  coe t⁻ A {a} aa := B.coe (t⁻, _) (A (A.Tm t⁻⁻¹ aa))
+
+coe[] :
+  (coe t⁻ A)[σ] aa = coe (t⁻[σ⁻]) (A[σ]) aa
+
+  (coe t⁻ A)[σ] aa
+  (coe t⁻ A) aa [σ a]
+  B.coe (t⁻, _) (A (A.Tm t⁻⁻¹ aa)) [σ a]
+
+  coe (t⁻[σ⁻]) (A[σ]) aa
+  coe (t⁻[σ⁻], _) ((A[σ]) (A.Tm (t⁻[σ⁻])⁻¹ aa))
+  coe (t⁻[σ⁻], _) ((A[σ]) (A.Tm (t⁻⁻¹[σ⁻↑]) aa))
+  coe (t⁻[σ⁻], _) ((A[σ]) (A.Tm (t⁻⁻¹ (A.Sub (σ⁻↑) aa))))
+  coe (t⁻[σ⁻], _) ((A[σ]) (A.Tm t⁻⁻¹ aa))
+  coe (t⁻[σ⁻], _) (A (A.Tm t⁻⁻¹ aa) [σ a])
+  coe (t⁻, _) (A (A.Tm t⁻⁻¹ aa)) [σ a]
+  OK
+
+coh : (t⁻ : Γ.iso A⁻ B⁻)(A : (Π A B).Ty Γ A⁻) → (Π A B).iso A (coe t⁻ A) t⁻
+  (coh t A) {a}   aa := B.coh (t⁻, _) (A aa)
+  (coh t A)⁻¹ {a} aa := B.coh⁻¹ (t⁻, _) (A (A.Tm t⁻⁻¹ aa))
+  eqs OK
+
+coh[]  : (coh t⁻ A)[σ] = coh (t⁻[σ⁻]) (A[σ])
+  (coh t⁻ A)[σ] aa
+  coh t⁻ A aa [σ a]
+  coh t⁻ A aa [σ a]
+  coh (t⁻, _) (A aa) [σ a]
+
+  coh (t⁻[σ⁻]) (A[σ]) aa
+  coh (t⁻[σ⁻], _) (A[σ] aa)
+  coh (t⁻[σ⁻], _) (A aa [σ a])
+  coh (t⁻, _) (A aa) [σ a]
+  OK
+
+-- TODO (but OK)
+coe-id : coe id A = A
+coe-∘  : coe (t⁻ ∘ u⁻) A  = coe t⁻ (coe u⁻ A)
+coh-id : coh id A = id
+coh-∘  : coh (t⁻ ∘ u⁻) A = coh t⁻ (coe u⁻ A) ∘ coh u⁻ A

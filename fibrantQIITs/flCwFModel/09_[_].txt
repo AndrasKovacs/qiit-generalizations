@@ -7,15 +7,15 @@ A[F] = ...
 -- F : SUB Γ Δ
 
   Con : Γ.Con → Set i
-  Con Γ := A.Con (F Γ)
+  Con Γ⁻ := A.Con (F Γ⁻)
 
-  Sub : Con Γ⁻ → Con Δ → Γ.Sub Γ Δ → Set i
+  Sub : Con Γ⁻ → Con Δ⁻ → Γ.Sub Γ⁻ Δ⁻ → Set i
   Sub Γ Δ σ⁻ := A.Sub Γ Δ (F σ⁻)
 
   Ty : Con Γ → Γ.Ty Γ → Set i
   Ty Γ A⁻ := A.Ty Γ (F A⁻)
 
-  Tm : (Γ : Con Γ) → Ty Γ A → Γ.Tm Γ A → Set i
+  Tm : (Γ : Con Γ⁻) → Ty Γ A⁻ → Γ.Tm Γ⁻ A⁻ → Set i
   Tm Γ A t⁻ := A.Tm Γ A (F t⁻)
 
   id  : (Γ : Con Γ⁻) → Sub Γ Γ id
@@ -59,7 +59,7 @@ A[F] = ...
   _,_  : (σ : Sub Γ Δ σ⁻) → Tm Γ (A[σ]) t⁻ → Sub Γ (Δ ▶ A) (σ⁻, t⁻)
        : (σ : A.Sub Γ Δ (F σ⁻)) → A.Tm Γ (A[σ]) (F t⁻)
          → A.Sub Γ (coe F▶⁻¹ (Δ ▶ A)) (F▶⁻¹ ∘ (F σ⁻, F t⁻))
-  (σ, t) := coh F▶⁻¹ (Δ ▶ A) ∘ (σ, t)e
+  (σ, t) := coh F▶⁻¹ (Δ ▶ A) ∘ (σ, t)
 
   ,∘ : (σ, t) ∘ δ = (σ ∘ δ, t[δ])
      : coh F▶⁻¹ (Δ ▶ A) ∘ (σ, t) ∘ δ = coh F▶⁻¹ (Δ ▶ A) ∘ (σ∘δ, t[δ])

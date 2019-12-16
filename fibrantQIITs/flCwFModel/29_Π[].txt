@@ -1,6 +1,6 @@
 
 
-Π[] : (Π A B)[F] = Π (A[F]) (B[F∘p, q])
+Π[] : (Π A B)[F] = Π (A[F]) (B[F↑])
 
 A : TY Δ
 B : TY (Δ ▶ A)
@@ -26,111 +26,118 @@ Con Γ⁻ := (a : A.Con Γ⁻) → B.Con (Γ⁻, a)
 
 Sub : Con Γ⁻ → Con Δ⁻ → Γ.Sub Γ⁻ Δ⁻ → Set i
 Sub Γ Δ σ⁻ := (a : A.Con Γ⁻) → B.Sub (Γ a) (Δ (A.Sub σ⁻ a)) (σ⁻, _)
-  -- _ = refl (A σ⁻ a)
+
+  (Π A B)[F].Sub Γ Δ σ⁻
+  (Π A B).Sub Γ Δ (F σ⁻)
+  (a : A.Con (F Γ⁻)) → B.Sub (Γ a) (Δ (A.Sub (F σ⁻) a)) (F σ⁻, _)
+
+  (Π (A[F]) (B[F↑])).Sub Γ Δ σ⁻
+  (a : A[F].Con Γ⁻) → B[F↑].Sub (Γ a) (Δ (A[F].Sub σ⁻ a)) (σ⁻, _)
+  (a : A.Con (F Γ⁻)) → B.Sub (Γ a) (Δ (A.Sub (F σ⁻) a)) (F σ⁻, _)
+  OK
 
 Ty : Con Γ⁻ → Γ.Ty Γ⁻ → Set i
 Ty Γ A⁻ := {a : A.Con Γ⁻}(aa : A.Ty A⁻ a) → B.Ty (Γ a) (A⁻, aa)
+  OK
 
 Tm : (Γ : Con Γ⁻) → Ty Γ A⁻ → Γ.Tm Γ⁻ A⁻ → Set i
 Tm Γ A t⁻ := (a : A.Con Γ⁻) → B.Tm (Γ a) (A (A.Tm t⁻ a)) (t⁻, _)
+  OK
 
 id : (Γ : Con Γ⁻) → Sub Γ Γ id
 id Γ := λ a. B.id
+  OK
 
 _∘_ : Sub Δ Σ σ⁻ → Sub Γ Δ δ⁻ → Sub Γ Σ (σ⁻ ∘ δ⁻)
 (σ ∘ δ) := λ a. (σ (A.Sub δ⁻ a) ∘ δ a)
+  OK
 
-ass : (σ ∘ δ) ∘ ν = σ ∘ (δ ∘ ν)
-    : ((σ ∘ δ) ∘ ν) a = (σ ∘ (δ ∘ ν)) a
-    : σ (A.Sub (δ⁻ ∘ ν⁻) a) ∘ δ (A.Sub ν⁻ a) ∘ ν a
-      =
-      σ (A.Sub (δ⁻ ∘ ν⁻) a) ∘ δ (A.Sub ν⁻ a) ∘ ν a
-    OK
-
-idl : id ∘ σ = σ
-    OK
-
-idr : σ ∘ id = σ
-    OK
 
 _[_] : Ty Δ A⁻ → Sub Γ Δ σ⁻ → Ty Γ (A⁻[σ⁻])
 A[σ] : {a : A.Con Γ⁻}(aa : A.Ty A⁻ (A.Sub σ⁻ a)) → B.Ty (Γ a) (A⁻[σ⁻], aa)
      := λ {a} aa. A {A.Sub σ⁻ a} aa [σ a]
+  OK
 
 _[_] : Tm Δ A t⁻ → (σ : Sub Γ Δ σ⁻) → Tm Γ (A[σ]) (t⁻[σ⁻])
 t[σ] := λ a. t (A.Sub σ⁻ a) [σ a]
+  OK
 
-[id] : A [id] = A
-     : A [id] aa = A aa
-     : A aa [B.id] = A aa
-     OK
-
-[∘] : A [σ ∘ δ] = A [σ] [δ]
-    : (A [σ ∘ δ]) aa = (A[σ][δ]) aa
-    : A aa [σ (A.Sub δ⁻ a) ∘ δ a] = (A[σ]){A.Sub δ⁻ a} aa [δ a]
-    : A aa [σ (A.Sub δ⁻ a) ∘ δ a] = A aa [σ (A.Sub δ⁻ a)][δ a]
-    OK
 
 ∙ : Con ∙
   : (a : A.Con ∙) → B.Con (∙, a)   -- A.Con ∙ is proof-irrelevant
   := λ _. B.∙
 
+  (Π A B)[F].∙
+  (Π A B).coe F∙⁻¹ (Π A B).∙
+  (Π A B).coe F∙⁻¹ (λ _. ∙)
+  (λ _. B.coe (F∙⁻¹, _) ∙)
+
+  (Π A[F] B[F↑]).∙
+  (λ _. B[F↑].∙)
+  (λ _. B.coe (F∙⁻¹, _) ∙)
+  OK
+
 ε : (Γ : Con Γ⁻) → Sub Γ ∙ ε
   : (Γ : Con Γ⁻) → (a : A.Con Γ⁻) → B.Sub (Γ a) ∙ (ε, _)
   := λ a. B.ε
+  OK
 
-∙η : (σ : Sub Γ ∙ σ⁻) → σ = ε
-   : σ a = ε
-   OK
-
--- we use pattern matching notation on A.Con (Γ⁻ ▶ A⁻),
--- like λ (A▶⁻¹(a, aa)). ...
 
 _▶_  : (Γ : Con Γ⁻) → Ty Γ A⁻ → Con (Γ⁻ ▶ A⁻)
 (Γ ▶ A) : (a : A.Con (Γ⁻ ▶ A⁻)) → B.Con (Γ⁻ ▶ A⁻, a)
         := λ (A▶⁻¹(a, aa)). ((Γ a) ▶ A aa)
 
-      Γ a : B.Con (Γ⁻, a)
-      A aa : B.Ty (Γ a) (A⁻, aa)
-      Γ a ▶ A aa : B.Con ((Γ⁻ , a) ▶ (A⁻, aa))
-                 : B.Con ((Γ⁻ ▶ A⁻), A▶⁻¹(a, aa))
+  (Π A B)[F].(Γ ▶ A)
+  (Π A B).coe F▶⁻¹ (Γ (Π A B).▶ A)
+  (Π A B).coe F▶⁻¹ (λ (A▶⁻¹(a, aa)). Γ a ▶ A aa)
+  λ aa. B.coe (F▶⁻¹, _) (((λ (A▶⁻¹(a, aa)). Γ a ▶ A aa)) (A.Tm F▶ aa))
+  λ aa. B.coe (F▶⁻¹, _) (((λ (A▶⁻¹(a, aa)). Γ a ▶ A aa)) (A.Tm F▶ aa))
+  λ aa. B.coe (F▶⁻¹, _) (Γ (π₁ (A▶ (A.Tm F▶ aa))) (A ((π₂ (A▶ (A.Tm F▶ aa))))))
+
+  (Π A[F] B[F↑]).(Γ ▶ A)
+  (λ ((A[F]▶)⁻¹(a, aa)). Γ a (B[F↑].▶) A aa)
+  (λ ((A[F]▶)⁻¹(a, aa)). B.coe (F▶⁻¹, _) (Γ a ▶ A aa))
+  (λ aa. B.coe (F▶⁻¹, _) (Γ (π₁ (A[F]▶ aa) ▶ A (π₂ (A[F]▶ aa)))))
+  OK
 
 _,_ : (σ : Sub Γ Δ σ⁻) → Tm Γ (A[σ]) t⁻ → Sub Γ (Δ ▶ A) (σ⁻, t⁻)
 (σ,t) : (a : A.Con Γ⁻) → B.Sub (Γ a) ((Δ ▶ A)(A.Sub (σ⁻, t⁻) a)) ((σ⁻, t⁻), _)
       : (a : A.Con Γ⁻) → B.Sub (Γ a) (Δ (A.Sub σ⁻ a) ▶ A (A.Tm t⁻ a)) ((σ⁻, t⁻), _)
       := λ a. (σ a, t a)
 
-,∘ : (σ, t) ∘ δ = (σ ∘ δ, t [δ])
+  (Π A B)[F].(σ, t)
+  ((Π A B).coh F▶⁻¹ (Δ ▶ A)) ∘ (σ, t)
+  λ a. ((Π A B).coh F▶⁻¹ (Δ ▶ A)) (A.Sub (σ⁻, t⁻) a) ∘ (σ a, t a)
+  λ a. ((Π A B).coh F▶⁻¹ (Δ ▶ A)) (A.Sub (σ⁻, t⁻) a) ∘ (σ a, t a)
+  λ a. B.coh (F▶⁻¹, _) ((Δ ▶ A) (A.Sub (σ⁻, t⁻) a)) ∘ (σ a, t a)
+  λ a. B.coh (F▶⁻¹, _) ((Δ ▶ A) (A▶⁻¹(A.Sub σ⁻ a, A.Tm t⁻ a))) ∘ (σ a, t a)
+  λ a. B.coh (F▶⁻¹, _) (Δ (A.Sub σ⁻ a) ▶ A (A.Tm t⁻ a)) ∘ (σ a, t a)
 
-   ((σ, t) ∘ δ) a
-   (σ, t) (A.Sub δ⁻ a) ∘ δ a
-   (σ (A.Sub δ⁻ a), t (A.Sub δ⁻ a)) ∘ δ a
-   (σ (A.Sub δ⁻ a) ∘ δ a, t (A.Sub δ⁻ a) [δ a])
-
-   (σ ∘ δ, t [δ]) a
-   ((σ ∘ δ) a, (t[δ]) a)
-   (σ (A.Sub δ⁻ a) ∘ δ a, t (A.Sub δ⁻ a) [δ a])
-   OK
+  (Π A[F] B[F↑]).(σ, t)
+  λ a. (σ a  B[F↑]., t a)
+  λ a. B.coh (F▶⁻¹, _) (Δ (A.Sub σ⁻ a) ▶ A (A.Tm t⁻ a)) ∘ (σ a , t a)
+  OK
 
 p : Sub (Γ ▶ A) Γ p
   : (a : A.Con (Γ⁻ ▶ A⁻)) → Sub ((Γ ▶ A) a) (Γ (A.Sub p a)) (p, _)
   : (A▶⁻¹(a, aa) : A.Con (Γ⁻ ▶ A⁻)) → Sub (Γ a ▶ A aa) (Γ a) (p, _)
   := λ a. p
 
+  (Π A B)[F].p
+  (Π A B).p ∘ (Π A B).coh⁻¹ F▶⁻¹ (Γ ▶ A)
+  λ a. ((Π A B).p ∘ (Π A B).coh⁻¹ F▶⁻¹ (Γ ▶ A)) a
+  λ a. B.p ∘ B.coh⁻¹ (F▶⁻¹, _) (Γ (π₁ (A F▶ a)) ▶ A (π₂ (A F▶ a)))
+
+  (Π A[F] B[F↑]).p
+  λ a. B[F↑].p
+  λ a. B.p ∘ B.coh⁻¹ (F↑)▶⁻¹ (Γ _ ▶ A _)
+  λ a. B.p ∘ B.coh⁻¹ (F▶⁻¹, _) (Γ _ ▶ A _)
+  OK
+
+
 q : Tm (Γ ▶ A) A[p] q
   := λ a. q
 
-pβ : p ∘ (σ, t) = σ
-   : (p ∘ (σ, t)) a = σ a
-   : p (A.Sub (σ⁻, t⁻) a) ∘ (σ a, t a) = σ a
-   : σ a = σ a
-   OK
-
-qβ : q[σ, t] = t
-   OK
-
-,η : (p, q) = id
-   OK
 
 Id : Tm Γ A t⁻ → Tm Γ A u⁻ → Ty Γ (Id t⁻ u⁻)
 Id t u : Ty Γ (Id t⁻ u⁻)
@@ -143,25 +150,11 @@ Id t u : Ty Γ (Id t⁻ u⁻)
     -- the TId⁻¹ _ is OK because of proof irrelevance of
     -- A.Ty (Id t⁻ u⁻) a
 
-Id[] : (Id t u [σ]) aa = (Id (t[σ]) (u[σ])) aa
-     : ((Id t u) aa [σ a]) = Id (t[σ]) (u[σ]) aa
-     :   Id (t (A.Sub σ⁻ a)) (u (A.Sub σ⁻ a)) [σ a])
-       = Id (t (A.Sub σ⁻ a)) (u (A.Sub σ⁻ a)) [σ a])
-     OK
-
-Reflect : (e : Tm Γ (Id t u) e⁻) → t = u
-  e : (a : A.Con Γ⁻) → Tm (Γ a) ((Id t u) (A.Tm e⁻ a)) (e⁻, _)
-    : (a : A.Con Γ⁻) → Tm (Γ a) (Id (t a) (u a)) (e⁻, _)
-  by funext, goal : t a = u a
-  Reflect (e a) : t a = u a
-  OK
 
 Refl : (t : Tm Γ A t⁻) → Tm Γ (Id t t) (Refl t⁻)
   Refl t : (a : A.Con Γ⁻) → Tm (Γ a) (Id (t a) (t a)) (Refl t⁻, _)
          := λ a. Refl
 
-UIP  : (e : Tm Γ (Id t t) e⁻) → e = Refl t
-  OK by funext, UIP
 
 K : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)
 K {Γ} Δ : {a : A.Con Γ⁻}(aa : A.Ty (K Δ⁻) a) → Ty (Γ a) (K Δ⁻, aa)
@@ -179,9 +172,6 @@ K {Γ} Δ : {a : A.Con Γ⁻}(aa : A.Ty (K Δ⁻) a) → Ty (Γ a) (K Δ⁻, aa)
   K {Γ} Δ := λ {a} aa. K {Γ a}(Δ (AK aa))
   -- pattern matching maybe???
 
-K[] : K Δ [σ] = K Δ
-      K Δ (AK aa) = K Δ (AK aa)
-      OK
 
 appK : Tm Γ (K Δ) t⁻ → Sub Γ Δ (appK t⁻)
 appK t (a : A.Con Γ⁻)
@@ -209,19 +199,6 @@ lamK σ (a : A.Con Γ⁻)
 
   lamK σ a := lamK (σ a)
 
-appK[] : appK t ∘ σ = appK (t[σ])
-       : (appK t) (A.Sub σ⁻ a) ∘ σ a = appK (t[σ]) a
-       : appK (t (A.Sub σ⁻ a)) ∘ σ a = appK ((t[σ]) a)
-       : appK (t (A.Sub σ⁻ a) ∘ σ a) = appK (t (A.Sub σ⁻ a) ∘ σ a)
-       OK
-
-Kβ : appK (lamK σ) a = σ a
-   : appK ((lamK σ) a) = σ a
-   : appK (lamK (σ a)) = σ a
-   OK
-
-Kη : lamK (appK t) = t
-   OK
 
 -- again, we use pattern matching notation  AΣ⁻¹(aa, bb)
 Σ : (A : Ty Γ A⁻) → Ty (Γ ▶ A) B⁻ → Ty Γ (Σ A⁻ B⁻)
@@ -247,24 +224,6 @@ Kη : lamK (appK t) = t
   Σ A B (AΣ⁻¹(aa, bb)) := Σ (A aa) (B bb)
   -- Σ A B aabb := Σ (A (π₁ (FΣ aabb))) (B (π₂ (FΣ aabb)))
 
-record
-  constructor mkT
-  unT : A
-
-
-Σ[] : (Σ A B [σ]) (FΣ⁻¹(aa, bb)) = Σ (A[σ]) (B[σ↑]) (FΣ⁻¹(aa, bb))
-
-   (Σ A B [σ]) {a} (FΣ⁻¹(aa, bb))
-   (Σ A B) {A.Sub σ⁻ a} (FΣ⁻¹(aa, bb)) [σ a]
-   Σ (A aa) (B bb) [σ a]
-   Σ (A aa [σ a]) (B bb [σ a ∘ p, q])
-
-   (Σ (A[σ]) (B[σ↑])) {a} (FΣ⁻¹(aa, bb))
-   Σ ((A[σ]) aa) ((B[σ↑]) bb)
-   Σ (A aa [σ a]) (B bb [σ↑ (A▶⁻¹(a, aa))])
-   Σ (A aa [σ a]) (B bb [(σ ∘ p, q) (A▶⁻¹(a, aa))])
-   Σ (A aa [σ a]) (B bb [(σ ∘ p) A▶⁻¹(a, aa), q A▶⁻¹(a, aa)])
-   Σ (A aa [σ a]) (B bb [σ a ∘ p, q])
 
 _,_ : (t : Tm Γ A t⁻) → Tm Γ (B[id, t]) u⁻ → Tm Γ (Σ A B) (t⁻, u⁻)
 t,u (a : A.Con Γ⁻)
@@ -283,12 +242,6 @@ t,u (a : A.Con Γ⁻)
 
   (t, u) a := (t a, u a)
 
-,[] : ((t, u)[σ]) a = ((t[σ], u[σ])) a
-    : ((t, u) (A.Sub σ⁻ a)) [σ a]  = (t[σ] a, u[σ] a)
-    : ((t, u) (A.Sub σ⁻ a)) [σ a]  = (t[σ] a, u[σ] a)
-    : (t (A.Sub σ⁻ a), u (A.Sub σ⁻ a)) = (t (A.Sub σ⁻ a), u (A.Sub σ⁻ a))
-    OK
-
 π₁ (t : Tm Γ (Σ A B) t⁻)
   : Tm Γ A (π₁ t⁻)
   : (a : A.Con Γ⁻) → Tm (Γ a) (A (A.Tm (π₁ t⁻) a)) (π₁ t⁻, _)
@@ -303,11 +256,42 @@ t,u (a : A.Con Γ⁻)
 π₂ : (t : Tm Γ (Σ A B) t⁻) → Tm Γ (B[id, π₁ t]) (π₂ t⁻)
   (π₂ t) a = π₂ (t a)
 
-π₁β  : π₁ (t, u) = t
-     OK
 
-π₂β  : π₂ (t, u) = u
-     OK
+coe : Γ.iso Γ⁻ Δ⁻ → (Π A B).Con Γ⁻ → (Π A B).Con Δ⁻
+    : Γ.iso Γ⁻ Δ⁻ → ((a : A Γ­) → B.Con(Γ⁻, a)) → ((a : A Δ⁻) → B.Con(Δ⁻, a))
+  coe σ⁻ Γ := λ a. B.coe (σ⁻, _) (Γ (A (σ⁻⁻¹) a))
+  -- note (σ⁻, _) iso comprehension
+  -- coe in EL is just application
 
-πη   : (π₁ t, π₂ t) = t
-     OK
+coh : (σ⁻ : Γ.iso Γ⁻ Δ⁻)(Γ : (Π A B).Con Γ⁻) → (Π A B).iso Γ (coe σ⁻ Γ) σ⁻
+  (coh σ⁻ Γ) (a : A.Con Γ⁻)
+     : Sub (Γ a) (coe σ⁻ Γ (A.Sub σ⁻ a)) (σ⁻, _)
+     : Sub (Γ a) (coe (σ⁻, _) (Γ ((A.Sub σ⁻⁻¹ (A.Sub σ⁻ a)))) (σ⁻, _)
+     : Sub (Γ a) (coe (σ⁻, _) (Γ a) (σ⁻, _)
+  -- symmetrically for other morphism
+
+  (coh σ⁻ Γ)   a := B.coh (σ⁻, _) (Γ a)
+  (coh σ⁻ Γ)⁻¹ a := B.coh⁻¹ (σ⁻, _) (Γ (A σ⁻⁻¹ a))
+  eqs OK
+
+
+coe : Γ.iso A⁻ B⁻ → (Π A B).Ty Γ A⁻ → (Π A B).Ty Γ B⁻
+coe t⁻ A : {a : A.Con Γ⁻}(aa : A.Ty B⁻ a) → B.Ty (Γ a) (B⁻, aa)
+  coe t⁻ A := λ {a} aa.
+    A.Tm t⁻ : ∀ a. U.iso (A A⁻ a) (A B⁻ a)
+
+    A.Tm t⁻⁻¹ aa : A.Ty A⁻ a
+    A (A.Tm t⁻⁻¹ aa) : B.Ty (Γ a) (A⁻, A.Tm t⁻⁻¹ aa)
+    B.coe (t⁻, ?) (A (A.Tm t⁻⁻¹ aa)) : B.Ty (Γ a) (B⁻, aa)
+
+    ? : (EL A).iso (A.Tm t⁻⁻¹ aa) aa t⁻
+      : A.Tm t⁻ (A.Tm t⁻⁻¹ aa) = aa
+        OK
+
+  coe t⁻ A {a} aa := B.coe (t⁻, _) (A (A.Tm t⁻⁻¹ aa))
+
+
+coh : (t⁻ : Γ.iso A⁻ B⁻)(A : (Π A B).Ty Γ A⁻) → (Π A B).iso A (coe t⁻ A) t⁻
+  (coh t A) {a}   aa := B.coh (t⁻, _) (A aa)
+  (coh t A)⁻¹ {a} aa := B.coh⁻¹ (t⁻, _) (A (A.Tm t⁻⁻¹ aa))
+  eqs OK
