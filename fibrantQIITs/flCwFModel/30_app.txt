@@ -1,0 +1,45 @@
+
+APP : TM Γ (Π A B) → TM (Γ ▶ EL A) B
+
+A : TM Γ U
+B : TY (Γ ▶ EL A)
+T : TM Γ (Π A B)
+
+------------------------------------------------------------
+
+APPT (Γ⁻, Γ) : B.Con (Γ⁻, Γ)
+
+  T.Con Γ⁻ : (ΠAB).Con Γ⁻
+           : (Γ : A.Con Γ⁻) → B.Con (Γ⁻, Γ)
+  APPT (Γ⁻, Γ) := T.Con Γ⁻ Γ
+
+APPT (A⁻, A) : B.Ty (T.Con Γ⁻ Γ) (A⁻, A)
+
+  A⁻ : Γ.Ty Γ⁻
+  A  : (El A).Ty Γ A⁻
+     : A.Ty A⁻ Γ
+
+  T.Ty A⁻ : (ΠAB).Ty (T.Con Γ⁻) A⁻
+          : ∀{Γ}(A : A.Ty A⁻ Γ) → B.Ty (T.Con Γ⁻ Γ) (A⁻, A)
+
+  T.Ty A⁻ {Γ} A : B.Ty (T.Con Γ⁻ Γ) (A⁻, A)
+
+  APPT (A⁻, A) := T.Ty A⁻ A
+
+APPT (σ⁻, σ) : B.Sub (APPT (Γ⁻, Γ)) (APPT (Δ⁻, Δ)) (σ⁻, σ)
+             : B.Sub (T.Con Γ⁻ Γ) (T.Con Δ⁻ Δ) (σ⁻, σ)
+
+   σ : (EL A).Sub Γ Δ σ⁻
+     : A.Sub σ⁻ Γ = Δ
+
+   T.Sub σ⁻ : ΠAB.Sub (T.Con Γ⁻) (T.Con Δ⁻) σ⁻
+            : (Γ : A.Con Γ⁻) → B.Sub (T.Con Γ⁻ Γ) (T.Con Δ⁻ (A.Sub σ⁻ Γ)) (σ⁻, _)
+	    : (Γ : A.Con Γ⁻) → B.Sub (T.Con Γ⁻ Γ) (T.Con Δ⁻ Δ) (σ⁻, _)
+
+   APPT (σ⁻, (_ : A.Sub σ⁻ Γ ≡ Δ)) := T.Sub σ⁻ Γ
+
+APPT (t⁻, t) : B.Tm (APPT (Γ⁻, Γ)) (APPT (A⁻, A)) (t⁻, t)
+
+  t : A.Tm t⁻ Γ = A
+
+  APPT (t⁻, (t : A.Tm t⁻ Γ = A)) := T.Tm t⁻ Γ

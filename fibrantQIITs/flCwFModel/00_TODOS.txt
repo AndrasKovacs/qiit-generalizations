@@ -5,3 +5,6 @@
 - Action of weak section on isos
 
 Π : check type coe/coh laws (low priority)
+
+check 29.Π[].K
+finish 29.Π[]
