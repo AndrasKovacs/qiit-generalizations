@@ -1,0 +1,65 @@
+
+(APP T)[F↑] = APP (T[F])
+
+T : TM Δ (Π A B)
+F : SUB Γ Δ
+
+T[F] : Tm Γ (Π A[F] B[F↑])
+
+------------------------------------------------------------
+
+
+(APP T)[F↑] (Γ⁻, Γ) = APP (T[F])(Γ⁻, Γ)
+  OK
+
+(APP T)[F↑] (A⁻, A) = APP (T[F])(A⁻, A)
+  OK
+
+(APP T)[F↑] (σ⁻, _) = APP (T[F])(σ⁻, _)
+  T (F σ⁻, Γ) = T (F σ⁻, Γ)
+  OK
+
+(APP T)[F↑] (t⁻, _) = APP (T[F])(t⁻, _)
+  OK -- likewise
+
+
+(APP T)[F↑]∙⁻¹ = APP (T[F])∙⁻¹
+
+    A ∙ is prop
+
+    T∙⁻¹ : Π.Sub ∙ (T ∙) id
+         : (Γ : A ∙) → Sub ∙ (T ∙ Γ) id
+
+    T∙⁻¹ has prop input
+
+    F∙⁻¹ : Δ.Sub ∙ (F ∙)
+    T F∙⁻¹ : Π.Sub (T ∙) (T (F ∙)) F∙⁻¹
+           : (Γ : A ∙) → Sub (T ∙ Γ) (T (F ∙) (A F∙⁻¹ Γ) (F∙⁻¹, _)
+
+    T F∙⁻¹ has prop input
+
+  (APP T) (F∘p, q)∙⁻¹ ∘ T∙⁻¹ _
+  (APP T) (F p∙⁻¹ ∘ F∙⁻¹, q∙⁻¹) ∘ T∙⁻¹ _
+  (APP T) (F∙⁻¹, _) ∘ T∙⁻¹ _
+  T F∙⁻¹ _ ∘ T∙⁻¹ _
+
+  APP (T[F])∙⁻¹
+  T[F]∙⁻¹ (A[F]∙⁻¹ tt)
+  (T F∙⁻¹ ∘ T∙⁻¹) (A[F]∙⁻¹ tt)
+  T F∙⁻¹ _ ∘ T∙⁻¹ _
+  OK
+
+(APP T)[F↑]▶⁻¹ = (APP (T[F]))▶⁻¹
+
+  (APP T)[F↑]▶⁻¹
+  (APP T) F↑▶⁻¹ ∘ (APP T)▶⁻¹
+  (APP T) (F▶⁻¹, _) ∘ T▶⁻¹ (A▶⁻¹ (Γ, A))
+  T F▶⁻¹ _ ∘ T▶⁻¹ (A▶⁻¹ (Γ, A))
+
+  (APP (T[F]))▶⁻¹
+
+  T[F]▶⁻¹ (A[F]▶⁻¹ (Γ, A))
+  (T F▶⁻¹ ∘ T▶⁻¹) _
+  T F▶⁻¹ _ ∘ T▶⁻¹ _
+
+  OK

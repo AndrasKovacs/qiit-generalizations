@@ -1,0 +1,28 @@
+
+APP (LAM T) = T
+
+T : TM (Γ ▶ EL A) B
+------------------------------------------------------------
+
+(APP (LAM T)) (Γ⁻, Γ) = T (Γ⁻, Γ)
+  OK
+
+(APP (LAM T)) (A⁻, A) = T (A⁻, A)
+  OK
+
+(APP (LAM T)) (σ⁻, _) = T (σ⁻, _)
+  OK
+
+(APP (LAM T)) (t⁻, _) = T (t⁻, _)
+  OK
+
+(APP (LAM T))∙⁻¹ = T∙⁻¹
+  (APP (LAM T))∙⁻¹
+  (LAM T)∙⁻¹ (A∙⁻¹ tt)
+  T∙⁻¹
+  OK
+
+(APP (LAM T))▶⁻¹ = T▶⁻¹
+  (LAM T)▶⁻¹ (A▶⁻¹ (Γ, A))
+  T▶⁻¹
+  OK

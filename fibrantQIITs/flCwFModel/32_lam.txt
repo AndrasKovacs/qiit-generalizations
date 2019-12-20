@@ -1,0 +1,97 @@
+
+LAM (T : TM (Γ ▶ EL A) B) : TM Γ (Π A B)
+
+------------------------------------------------------------
+
+LAMT Γ⁻ : (Π A B).Con Γ⁻
+        : (Γ : A Γ⁻) → B.Con (Γ⁻, Γ)
+  LAMT Γ⁻ := λ Γ. T (Γ⁻, Γ)
+
+LAMT A⁻ : (Π A B).Ty (LAMT Γ⁻) A⁻
+        : {Γ : A Γ⁻}(A : A A⁻) → B.Ty (LAMT Γ⁻ Γ) (A⁻, A)
+        : {Γ : A Γ⁻}(A : A A⁻) → B.Ty (T (Γ⁻, Γ)) (A⁻, A)
+
+  LAMT A⁻ := λ {Γ} A. T (A⁻, A)
+
+LAMT σ⁻ : (Π A B).Sub (LAMT Γ⁻) (LAMT Δ⁻) σ⁻
+        : (Γ : A Γ⁻) → B.Sub (T (Γ⁻, Γ)) (LAMT Δ⁻ (A σ⁻ Γ)) (σ⁻, _)
+        : (Γ : A Γ⁻) → B.Sub (T (Γ⁻, Γ)) (T (Δ⁻, A σ⁻ Γ)) (σ⁻, _)
+
+   T.Sub
+     : (σ⁻ : Γ.Sub Γ⁻ Δ⁻)×(σ : (EL A).Sub Γ Δ σ⁻) → B.Sub (T (Γ⁻, Γ)) (T (Δ⁻, Δ)) (σ⁻, σ)
+     : (σ⁻ : Γ.Sub Γ⁻ Δ⁻)×(σ : A σ⁻ Γ = Δ) → B.Sub (T (Γ⁻, Γ)) (T (Δ⁻, Δ)) (σ⁻, σ)
+
+   T (σ⁻, (refl : A σ⁻ Γ = A σ⁻ Γ)) : B.Sub (T (Γ⁻, Γ)) (T (Δ⁻, A σ⁻ Γ)) (σ⁻, _)
+
+   LAMT σ⁻ := λ Γ. T (σ⁻, _)
+
+
+LAMT t⁻ : (Π A B).Tm (LAMT Γ⁻) (LAMT A⁻) t⁻
+        : (Γ : A Γ⁻) → B.Sub (T (Γ⁻, Γ)) (T (A⁻, A t⁻ A)) (t⁻, _)
+
+  LAMT t⁻ := λ Γ. T (t⁻, _)
+
+
+LAMT id Γ = id Γ
+  T (id, _) = id
+  T id = id
+  OK
+
+LAMT (σ⁻ ∘ δ⁻) Γ = (LAMT σ⁻ ∘ LAMT δ⁻) Γ
+  T (σ⁻ ∘ δ⁻, _) = T (σ⁻, _) ∘ T (δ⁻, _)
+  OK
+
+LAMT(A⁻[σ⁻]) A = (LAMT A⁻ [LAMT σ⁻]) A
+
+  LAMT(A⁻[σ⁻]) A
+  T (A⁻[σ⁻], A)
+
+  (LAMT A⁻ [LAMT σ⁻]) A
+  LAMT A⁻ A [LAMT σ⁻ A⁻]
+  T (A⁻, A) [T (σ⁻, _)]
+  T (A[σ⁻], A)
+  OK
+
+LAMT(t⁻[σ⁻]) Γ = LAMT t⁻ [LAMT σ⁻] Γ
+
+  T(t⁻[σ⁻], _)
+
+  LAMT t⁻ [LAMT σ⁻] Γ
+  LAMT t⁻ (A σ⁻ Γ) [LAMT σ⁻ Γ]
+  T(t⁻, _) [T (σ⁻, _)]
+  T(t⁻[σ⁻], _)
+  OK
+
+LAMT∙⁻¹ : ΠAB.Sub ∙ (LAMT ∙) id
+        : (Γ : A ∙) → B.Sub ∙ (T (∙, Γ)) id
+
+  LAMT∙⁻¹ := λ _. T∙⁻¹
+
+(LAMT∙⁻¹ ∘ ε) Γ = id
+   T∙⁻¹ ∘ ε = id
+   OK
+
+LAMT▶⁻¹ : (Π A B).Sub (LAMT Γ⁻ ▶ LAMT A⁻) (LAMT (Γ⁻ ▶ A⁻)) id
+        : (A▶⁻¹(Γ, A) : A (Γ⁻ ▶ A⁻))
+	   → Sub (LAMT Γ⁻ Γ ▶ LAMT A⁻ A) (LAMT (Γ⁻ ▶ A⁻) A▶⁻¹(Γ, A)) id
+        : (A▶⁻¹(Γ, A) : A (Γ⁻ ▶ A⁻))
+	   → Sub (T (Γ⁻, Γ) ▶ T (A⁻, A)) (T (Γ⁻ ▶ A⁻, A▶⁻¹(Γ, A))) id
+
+  T▶⁻¹ : ∀{Γ A}. B.Sub (T Γ ▶ T A) (T (Γ ▶ A)) id
+
+  T▶⁻¹ : Sub (T (Γ⁻, Γ) ▶ T (A⁻, A)) (T ((Γ⁻, Γ) ▶ (A⁻, A))) id
+       : Sub (T (Γ⁻, Γ) ▶ T (A⁻, A)) (T (Γ⁻ ▶ Γ, A▶⁻¹(A⁻, A))) id
+
+  LAMT▶⁻¹ := λ _. T▶⁻¹
+
+
+(LAMT▶⁻¹ ∘ (LAMT p, LAMT q)) Γ = id
+  T▶⁻¹ ∘ (LAMT p, LAMT q) Γ = id
+  T▶⁻¹ ∘ (LAMT p Γ, LAMT q Γ) = id
+  T▶⁻¹ ∘ (T(p, _), T(q, _)) = id
+  OK
+
+((LAMT p, LAMT q) ∘ LAMT▶⁻¹) Γ = id
+  ((LAMT p, LAMT q) ∘ LAMT▶⁻¹) Γ
+  (T (p, _), T (q, _)) ∘ T▶⁻¹ = id
+  OK

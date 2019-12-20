@@ -1,5 +1,5 @@
 
-APP : TM Γ (Π A B) → TM (Γ ▶ EL A) B
+APP : (T : TM Γ (Π A B)) → TM (Γ ▶ EL A) B
 
 A : TM Γ U
 B : TY (Γ ▶ EL A)
@@ -36,10 +36,96 @@ APPT (σ⁻, σ) : B.Sub (APPT (Γ⁻, Γ)) (APPT (Δ⁻, Δ)) (σ⁻, σ)
             : (Γ : A.Con Γ⁻) → B.Sub (T.Con Γ⁻ Γ) (T.Con Δ⁻ (A.Sub σ⁻ Γ)) (σ⁻, _)
 	    : (Γ : A.Con Γ⁻) → B.Sub (T.Con Γ⁻ Γ) (T.Con Δ⁻ Δ) (σ⁻, _)
 
-   APPT (σ⁻, (_ : A.Sub σ⁻ Γ ≡ Δ)) := T.Sub σ⁻ Γ
+   APPT (σ⁻, (σ : A.Sub σ⁻ Γ ≡ Δ)) := T.Sub σ⁻ Γ
 
 APPT (t⁻, t) : B.Tm (APPT (Γ⁻, Γ)) (APPT (A⁻, A)) (t⁻, t)
 
   t : A.Tm t⁻ Γ = A
 
   APPT (t⁻, (t : A.Tm t⁻ Γ = A)) := T.Tm t⁻ Γ
+
+
+APPT id = id
+  APPT(id, id)
+  T.Sub id Γ
+  id    -- by T.id
+  OK
+
+APPT (σ⁻ ∘ δ⁻, _) = APPT (σ⁻, _) ∘ APPT (δ⁻, _)
+
+  APPT (σ⁻ ∘ δ⁻, _)
+  T.Sub (σ⁻ ∘ δ⁻) Γ
+  (T.Sub σ⁻ ∘ T.Sub δ⁻) Γ
+  T.Sub σ⁻ (A.Sub δ⁻ Γ) ∘ T.Sub δ⁻ Γ
+
+  APPT (σ⁻, _) ∘ APPT (δ⁻, _)
+  T.Sub σ⁻ (A.Sub δ⁻ Γ) ∘ T.Sub δ⁻ Γ
+  OK
+
+APPT(A[σ]) = APPT A [APPT σ]
+
+  APPT(A⁻[σ⁻], A)    -- substitution disappears in EL
+  T.Ty (A⁻[σ⁻]) A
+  (T A⁻ [T σ⁻]) A
+  T A⁻ A [T σ⁻ _]
+
+  APPT (A⁻, A) [APPT (σ⁻, σ)]
+  T A⁻ A [T σ⁻ _]
+  OK
+
+APPT(t[σ]) = APPT t [APPT σ]
+
+  APPT(t⁻[σ⁻], _)
+  T.Tm t⁻[σ⁻] _
+  (T t⁻ [T σ⁻]) _
+  T t⁻ _ [T σ⁻ _]
+
+  (APPT (t⁻, _)) [APPT (σ⁻, _)]
+  T t⁻ _ [T σ⁻ _]
+  OK
+
+APPT∙⁻¹ : B.Sub ∙ (APPT (Γ.∙, (EL A).∙)) id
+        : B.Sub ∙ (T ∙ (A∙⁻¹ tt)) id
+
+   T : TM Γ (Π A B)
+   T∙⁻¹ : (Π A B).Sub (λ _. ∙) (T ∙) id
+         : ∀ Γ → B.Sub ∙ (T ∙ (A.Tm id Γ)) (id, _)
+   T∙⁻¹ (A∙⁻¹ tt) : B.Sub ∙ (T ∙ (A∙⁻¹ tt)) id
+
+  APPT∙⁻¹ := T∙⁻¹ (A∙⁻¹ tt)
+
+APPT∙⁻¹ ∘ B.ε = B.id
+
+  from T:
+    ∀ Γ. (T∙⁻¹ ∘ ε) Γ = id
+    ∀ Γ. T∙⁻¹ (A.Sub ε⁻ Γ) ∘ ε = id
+    T∙⁻¹ (A.Sub ε⁻ ∙) ∘ ε = id
+  goal : T∙⁻¹ (A∙⁻¹ tt) ∘ ε = id
+  OK  -- because A ∙ is propositional, hence A.Sub ε⁻ ∙ = A∙⁻¹ tt
+
+APPT▶⁻¹ : B.Sub (APPT Γ ▶ APPT A) (APPT (Γ ▶ A)) id
+        : B.Sub (APPT (Γ, Γ⁻) ▶ APPT (A, A⁻)) (APPT (Γ⁻ ▶ A⁻, A▶⁻¹(Γ, A))) id
+        : B.Sub (APPT (Γ, Γ⁻) ▶ APPT (A, A⁻)) (APPT (Γ⁻ ▶ A⁻, A▶⁻¹(Γ, A))) id
+	: Sub (T Γ Γ⁻ ▶ T A A⁻) (T (Γ⁻ ▶ A⁻) (A▶⁻¹(Γ, A))) id
+
+  T▶⁻¹ : (ΠAB).Sub (T Γ⁻ ▶ T A⁻) (T (Γ⁻ ▶ A⁻)) id
+       : ∀ Γ. B.Sub ((T Γ⁻ ▶ T A⁻) Γ) (T (Γ⁻ ▶ A⁻) Γ) id
+  T▶⁻¹ (A▶⁻¹ (Γ, A))
+       :  Sub (T Γ Γ⁻ ▶ T A A⁻) (T (Γ⁻ ▶ A⁻) (A▶⁻¹(Γ, A))) id
+  APPT▶⁻¹ := T▶⁻¹ (A▶⁻¹ (Γ, A))
+
+APPT▶⁻¹ ∘ (APPT p, APPT q) = id
+  APPT▶⁻¹ ∘ (APPT (p, _), APPT (q, _))
+  T▶⁻¹ (A▶⁻¹(Γ, A)) ∘ (T p _, T q _)
+
+  from T:
+    ∀ Γ.
+      (T▶⁻¹ ∘ (T p, T q)) Γ = id
+      T▶⁻¹ (A.Sub (p, q) Γ) ∘ (T p, T q) Γ = id
+      T▶⁻¹ Γ ∘ (T p Γ, T q Γ) = id
+
+  OK
+
+(APPT p, APPT q) ∘ APPT▶⁻¹ = id
+  (T p _, T q _) ∘ T▶⁻¹ (A▶⁻¹(Γ, A))
+  OK likewise

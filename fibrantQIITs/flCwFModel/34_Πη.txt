@@ -1,0 +1,28 @@
+
+LAM (APP T) = T
+
+T : TM Γ (Π A B)
+------------------------------------------------------------
+
+(LAM (APP T)) Γ⁻ Γ = T Γ⁻ Γ
+  OK
+
+(LAM (APP T)) A⁻ A = T A⁻ A
+  OK
+
+(LAM (APP T)) σ⁻ _ = T σ⁻ _
+  OK
+
+(LAM (APP T)) t⁻ _ = T t⁻ _
+  OK
+
+(LAM (APP T))∙⁻¹ Γ = T∙⁻¹ Γ
+  (APP T)∙⁻¹ = T∙⁻¹ Γ
+  T∙⁻¹ (A∙⁻¹ tt) = T∙⁻¹ Γ
+  OK -- propositional args
+
+(LAM (APP T))▶⁻¹ (A▶⁻¹(Γ, A)) = T▶⁻¹ (A▶⁻¹(Γ, A))
+  (LAM (APP T))▶⁻¹ (A▶⁻¹(Γ, A))
+  (APP T)▶⁻¹
+  T▶⁻¹ (A▶⁻¹(Γ, A))
+  OK
