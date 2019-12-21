@@ -1,0 +1,54 @@
+
+ID : (T U : TM Γ (EL A)) → TM Γ U
+
+A : TM Γ U
+------------------------------------------------------------
+
+IDTU Γ : Setⱼ
+  IDTU Γ := (T Γ = U Γ)
+
+IDTU A : IDTU Γ → Setⱼ
+    T A : A.Ty A (T Γ)
+    U A : A.Ty A (U Γ)
+  IDTU A e = (T A = U A)
+
+IDTU (σ : Γ.Sub Γ Δ) : (e : IDTU Γ) → IDTU Δ
+  e : T Γ = U Γ
+  T σ : A σ (T Γ) = T Δ
+  U σ : A σ (U Γ) = U Δ
+  goal : T Δ = U Δ
+  OK
+
+IDTU (t : Γ.Tm Γ A) : (e : IDTU Γ) → IDTU A e
+  OK likewise
+
+
+IDTU∙⁻¹ : ⊤ → IDTU ∙
+        : ⊤ → T ∙ = U ∙
+	: ⊤ → A∙⁻¹ tt = A∙⁻¹ tt
+
+  T∙⁻¹ : (EL A).Sub (A∙⁻¹ tt) (T ∙) id
+       : A∙⁻¹ tt = T ∙
+  U∙⁻¹ : A∙⁻¹ tt = U ∙
+  IDTU∙⁻¹ _ := refl
+
+IDTU∙⁻¹ ∘ ε = id
+  OK UIP
+
+IDTU▶⁻¹ : Sub (IDTU Γ ▶ IDTU A) (IDTU (Γ ▶ A)) id
+        : Σ (IDTU Γ) (IDTU A) → IDTU (Γ ▶ A)
+	: (T Γ = U Γ) × (A Γ = U Γ) → T (Γ ▶ A) = U (Γ ▶ A)
+
+  T▶⁻¹ : (EL A).Sub (T Γ ▶ T A) (T (Γ ▶ A)) id
+       : A id (A▶⁻¹(T Γ, T A)) = T (Γ ▶ A)
+       : (A▶⁻¹(T Γ, T A)) = T (Γ ▶ A)
+
+  U▶⁻¹ : (A▶⁻¹(U Γ, U A)) = U (Γ ▶ A)
+
+  IDTU▶⁻¹ _ := refl
+
+IDTU▶⁻¹ ∘ (IDTU p, IDTU q) = id
+OK UIP
+
+(IDTU p, IDTU q) ∘ IDTU▶⁻¹ = id
+OK UIP

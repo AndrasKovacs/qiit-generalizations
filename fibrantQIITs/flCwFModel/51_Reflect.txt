@@ -1,0 +1,28 @@
+
+REFLECT : (EQ : TM Γ (EL (ID T U))) → T = U
+
+-- unfortunate U overloading
+T : TM Γ (EL A)
+U : TM Γ (EL A)
+A : TM Γ U
+
+------------------------------------------------------------
+
+T Γ = U Γ
+  EQ Γ : (EL (ID T U)).Con Γ
+       : T Γ = U Γ
+  OK
+
+T A = U A
+  EQ A : T A = U A
+  OK
+
+T σ = U σ
+  UIP
+
+T t = U t
+  UIP
+
+T∙⁻¹ = U∙⁻¹
+T▶⁻¹ = U▶⁻¹
+UIP

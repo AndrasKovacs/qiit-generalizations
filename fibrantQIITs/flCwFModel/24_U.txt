@@ -10,7 +10,7 @@ Ty Γ _    := Γ → Setⱼ
 Tm Γ A _  := (γ : Γ) → A γ  -- implicit lvl lift
 
 -- etc.
--- lifting is trivial because of constancy
+-- iso lifting is trivial because of constancy
 
 
 K : {Γ : Con Γ⁻} → Con Δ⁻ → Ty Γ (K {Γ⁻} Δ⁻)

@@ -1,0 +1,17 @@
+
+REFL : TM Γ (EL (ID T T))
+
+T : TM Γ (EL A)
+------------------------------------------------------------
+
+REFL Γ : T Γ = T Γ
+  OK
+
+REFL A : T A = T A
+  OK
+
+  UIP
+REFL σ
+REFL t
+REFL∙⁻¹
+REFL▶⁻¹
