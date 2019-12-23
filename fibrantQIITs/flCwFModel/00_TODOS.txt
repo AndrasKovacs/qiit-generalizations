@@ -7,3 +7,5 @@
 
 check 29.Π[].K
 finish 29.Π[]
+
+Π̂ check (but obbbvious)

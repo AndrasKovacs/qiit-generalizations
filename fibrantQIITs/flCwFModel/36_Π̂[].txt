@@ -1,0 +1,24 @@
+
+(Π̂ A B)[F] = Π̂ A (λ a. (B a)[F])
+------------------------------------------------------------
+
+(Π̂ A B)[F].Con Γ⁻ = (Π̂ A (λ a. (B a)[F])).Con Γ⁻
+  Π̂AB.Con (F Γ⁻) = (Π̂ A (λ a. (B a)[F])).Con Γ⁻
+  OK
+
+-- likewise Ty, Sub, Tm
+
+(Π̂ A B)[F].id = (Π̂ A (λ a. (B a)[F])).id
+  OK
+
+-- likewise _∘_
+
+((Π̂ A B)[F]).∙ = (Π̂ A (λ a. (B a)[F])).∙
+  λ _. coe F∙⁻¹ ∙  = λ _. coe F∙⁻¹ ∙
+  OK
+
+ε OK
+▶ OK
+
+-- everything else OK
+-- Π̂AB.coe/coh always just computes to pointwise (B a).coe/coh

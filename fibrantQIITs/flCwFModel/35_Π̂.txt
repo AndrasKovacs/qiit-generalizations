@@ -1,0 +1,52 @@
+
+Π̂ (A : Setᵢ)(B : A → TY Γ) : TY Γ
+------------------------------------------------------------
+
+Con : Γ.Con → Setᵢ
+Con Γ⁻ := (a : A) → (B a).Con Γ⁻
+
+Sub : Con Γ⁻ → Con Δ⁻ → Γ.Sub Γ⁻ Δ⁻ → Setᵢ
+Sub Γ Δ σ⁻ := (a : A) → (B a).Sub (Γ a) (Δ a) σ⁻
+
+Ty : (Γ : Con Γ⁻) → Γ.Ty Γ⁻ → Setᵢ
+Ty Γ A⁻ := (a : A) → (B a).Ty (Γ a) A⁻
+
+Tm : (Γ : Con Γ⁻) → Ty Γ A⁻ → Γ.Tm Γ⁻ A⁻ → Set i
+Tm Γ A t⁻ := (a : A) → (B a).Tm (Γ a) (A a) t⁻
+
+id : (Γ : Con Γ⁻) → Sub Γ Γ id
+id Γ = λ a. (B a).id
+
+_∘_ : Sub Δ Σ σ⁻ → Sub Γ Δ δ⁻ → Sub Γ Σ (σ⁻ ∘ δ⁻)
+σ ∘ δ = λ a. σ a ∘ δ a
+
+OK
+ass : (σ ∘ δ) ∘ ν = σ ∘ (δ ∘ ν)
+idl : id ∘ σ = σ
+idr : σ ∘ id = σ
+
+_[_] : Ty Δ A⁻ → Sub Γ Δ σ⁻ → Ty Γ (A⁻[σ⁻])
+A[σ] := λ a. A a [σ a]
+
+_[_] : Tm Δ A t⁻ → (σ : Sub Γ Δ σ⁻) → Tm Γ (A[σ]) (t⁻[σ⁻])
+t[σ] = λ a. t a [σ a]
+
+OK
+[id] : A [id] = A
+[∘]  : A [σ ∘ δ] = A [σ] [δ]
+
+∙  : Con ∙
+∙ := λ a. (B a).∙
+
+ε  : (Γ : Con Γ⁻) → Sub Γ ∙ ε
+ε := λ a. (B a).ε
+
+∙η : (σ : Sub Γ ∙ σ⁻) → σ = ε
+  OK
+
+-- everything else is defined pointwise
+
+coe σ⁻ Γ := λ a. coe σ⁻ (Γ a)
+coh σ⁻ Γ := λ a. coh σ⁻ (Γ a)
+coe t⁻ A := λ a. coe t⁻ (A a)
+coh t⁻ A := λ a. coh t⁻ (A a)

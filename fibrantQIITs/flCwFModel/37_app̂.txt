@@ -1,0 +1,19 @@
+
+APP̂ (T : TM Γ (Π̂ A B)) → (a : A) → TM Γ (B a)
+
+-- APP abbrevs APP̂ T a
+------------------------------------------------------------
+
+APP Γ⁻ :=  T Γ⁻ a
+APP A⁻ :=  T A⁻ a
+APP σ⁻ :=  T σ⁻ a
+APP t⁻ :=  T t⁻ a
+
+APP∙⁻¹ : (B a).Sub ∙ (APP ∙) id
+       : (B a).Sub ∙ (T ∙ a) id
+APP∙⁻¹ := T∙⁻¹ a
+
+APP▶⁻¹ : (B a).Sub (T Γ⁻ a ▶ T A⁻ a) (T (Γ⁻ ▶ A⁻) a) id
+APP▶⁻¹ := T▶⁻¹ a
+
+-- equations OK
