@@ -1,0 +1,30 @@
+
+LAM̃ (T : (a : A) → TM Γ (EL (B a))) : TM Γ (EL (Π̃ A B))
+
+-- abbrev LAM̃ T as LAM
+------------------------------------------------------------
+
+LAM Γ⁻ : (Π̃ A B) Γ⁻
+       : ∀ a → B a Γ⁻
+       := λ a. T a Γ⁻
+
+LAM A⁻ : (EL (Π̃ A B)).Ty (LAM Γ⁻) A⁻
+       : (Π̃ A B).Ty A⁻ (LAM Γ⁻)
+       : ∀ a → B a A⁻ (T a Γ⁻)
+       := λ a. T a A⁻
+
+LAM (σ⁻ : Γ.Sub Γ⁻ Δ⁻) : (EL (Π̃ A B)).Sub (LAM Γ⁻) (LAM Δ⁻) σ⁻
+                       : (Π̃ A B) σ⁻ (LAM Γ⁻) a = LAM Δ⁻ a
+		       : B a σ⁻ (T a Γ⁻) = T a Δ⁻
+		       OK -- by T a σ⁻
+
+LAM (t⁻ : Γ.Tm Γ⁻ A⁻) : (EL (Π̃ A B)).Sub (LAM Γ⁻) (LAM A⁻) t⁻
+   OK likewise
+
+LAM∙⁻¹ : (Π̃ A B).∙ a = LAM ∙ a
+  OK by propositionality
+
+LAM▶⁻¹ : (LAM Γ⁻ ▶ LAM A⁻) = LAM (Γ⁻ ▶ A⁻)
+       : (Π̃ A B)▶⁻¹(LAM Γ⁻, LAM A⁻) a = T a (Γ⁻ ▶ A⁻)
+       : (B a)▶⁻¹(T a Γ⁻, T a A⁻) = T a (Γ⁻ ▶ A⁻)
+       OK -- by (T a)▶⁻¹

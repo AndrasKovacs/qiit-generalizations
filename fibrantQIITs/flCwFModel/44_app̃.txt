@@ -1,0 +1,39 @@
+
+APP̃ (T : TM Γ (EL (Π̃ A B))) (a : A) : TM Γ (EL (B a))
+
+-- abbrev (APP̃ T a) as APP
+------------------------------------------------------------
+
+APP Γ⁻ : EL (B a) Γ⁻
+       : B a Γ⁻
+APP Γ⁻ := T Γ⁻ a
+
+APP A⁻ : B a A⁻ (T Γ⁻ a)
+APP A⁻ := T A⁻ a
+
+APP (σ⁻ : Γ.Sub Γ⁻ Δ⁻) : (EL (B a)).Sub (APP Γ⁻) (APP Δ⁻) σ⁻
+                       : B a σ⁻ (APP Γ⁻) = APP Δ⁻
+		       : B a σ⁻ (T Γ⁻ a) = T Δ⁻ a
+  T σ⁻ : (EL (Π̃ A B)).Sub (T Γ⁻) (T Δ⁻) σ⁻
+       : (Π̃ A B) σ⁻ (T Γ⁻) a = T Δ⁻ a
+       : B a σ⁻ (T Γ⁻ a) = T Δ⁻ a
+  OK
+
+APP (t⁻ : Γ.Tm Γ⁻ A⁻) : (EL (B a)).Tm (APP Γ⁻) (APP A⁻) t⁻
+  OK likewise
+
+
+APP∙⁻¹ : (EL (B a)).Sub ∙ (APP ∙) id
+       : B a id ∙ = APP ∙
+       : ∙ = APP ∙
+       : (B a)̇∙⁻¹ tt = T ∙ a
+  OK -- propositionality of B a ∙
+
+
+APP▶⁻¹ : (EL (B a)).Sub (APP Γ⁻ ▶ APP A⁻) (APP (Γ⁻ ▶ A⁻)) id
+       : (B a)▶⁻¹(APP Γ⁻, APP A⁻) = APP (Γ⁻ ▶ A⁻)
+       : (B a)▶⁻¹(T Γ⁻ a, T A⁻ a) = T (Γ⁻ ▶ A⁻) a
+
+  T▶⁻¹ : Π̃AB.▶⁻¹ (T Γ⁻, T A⁻) = T (Γ⁻ ▶ A⁻)
+       : (λ a. (B a)▶⁻¹(T Γ⁻ a, T A⁻ a)) = T (Γ⁻ ▶ A⁻)
+  OK

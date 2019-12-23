@@ -1,0 +1,74 @@
+
+Π̃ : (A : Setᵢ)(B : A → TM Γ U) → TM Γ U
+------------------------------------------------------------
+
+Π̃AB Γ⁻ : Setᵢ
+Π̃AB Γ⁻ := (a : A) → B a Γ⁻
+
+Π̃AB A⁻ : Π̃AB Γ⁻ → Setᵢ
+Π̃AB A⁻ Γ := (a : A) → B a A⁻ (Γ a)
+
+Π̃AB (σ⁻ : Γ.Sub Γ⁻ Δ⁻) : Π̃AB Γ⁻ → Π̃AB Δ⁻
+                       : ((a : A) → B a Γ⁻) → (a : A) → B a Δ⁻
+  Π̃AB σ⁻ Γ := λ a. B a σ⁻ (Γ a)
+
+Π̃AB (t⁻ : Γ.Tm Γ⁻ A⁻) : (Γ : Π̃AB Γ⁻) → Π̃AB A Γ
+  Π̃AB t⁻ Γ := λ a. B a t⁻ (Γ a)
+
+Π̃AB id Γ = Γ
+  λ a. B a id (Γ a)
+  λ a. Γ a
+  OK
+
+Π̃AB (σ⁻ ∘ δ⁻) Γ = Π̃AB σ⁻ (Π̃AB δ⁻ Γ)
+  λ a. B a (σ⁻ ∘ δ⁻) (Γ a) = λ a. B a σ⁻ (B a δ⁻ (Γ a))
+  OK
+
+Π̃AB (A⁻[σ⁻]) Γ = Π̃AB A⁻ (Π̃AB σ⁻ Γ)
+  Π̃AB (A⁻[σ⁻]) Γ
+  (a : A) → B a A⁻[σ⁻] (Γ a)
+  (a : A) → B a A⁻ (B a σ⁻ (Γ a))
+
+  Π̃AB A⁻ (Π̃AB σ⁻ Γ)
+  (a : A) → B a A⁻ (B a σ⁻ (Γ a))
+  OK
+
+Π̃AB (t⁻[σ⁻]) Γ = Π̃AB t⁻ (Π̃AB σ⁻ Γ)
+
+  Π̃AB (t⁻[σ⁻]) Γ
+  λ a. B a t⁻[σ⁻] (Γ a)
+  λ a. B a t⁻ (B a σ⁻ (Γ a))
+
+  Π̃AB t⁻ (Π̃AB σ⁻ Γ)
+  Π̃AB t⁻ (λ a. B σ⁻ (Γ a))
+  λ a. B t⁻ (B σ⁻ (Γ a))
+  OK
+
+Π̃AB∙⁻¹ : ⊤ → Π̃AB ∙
+       : ⊤ → (a : A) → B a ∙
+Π̃AB∙⁻¹ := λ _ a. (B a)∙⁻¹ tt
+
+Π̃AB∙⁻¹ ∘ ε = id
+ OK by propositionality
+
+Π̃AB▶⁻¹ : (Γ : Π̃AB Γ⁻) × Π̃AB A⁻ → Π̃AB (Γ⁻ ▶ A⁻)
+       :   (Γ : (a : A) → B a Γ⁻) × (A : (a : A) → B a A⁻ (Γ a))
+         → (a : A) → B a (Γ⁻ ▶ A⁻)
+  Π̃AB▶⁻¹ := λ (Γ, A) a. (B a)▶⁻¹(Γ a, A a)
+
+Π̃AB▶⁻¹ ∘ (Π̃AB p⁻, Π̃AB q⁻) = id
+  Π̃AB▶⁻¹ (Π̃AB p⁻ Γ, Π̃AB q⁻ Γ) = Γ
+  Π̃AB▶⁻¹ (Π̃AB p⁻ Γ, Π̃AB q⁻ Γ) a = Γ a
+  (B a)▶⁻¹(B a p⁻ (Γ a),B a q⁻ (Γ a)) = Γ a
+  OK
+
+(Π̃AB p⁻, Π̃AB q⁻) ∘ Π̃AB▶⁻¹ = id
+  (Π̃AB p⁻, Π̃AB q⁻) (Π̃AB▶⁻¹(Γ, A)) = (Γ, A)
+  (Π̃AB p⁻ Π̃AB▶⁻¹(Γ, A), Π̃AB q⁻ Π̃AB▶⁻¹(Γ, A)) = (Γ, A)
+
+    Π̃AB p⁻ (λ a. (B a)▶⁻¹(Γ a, A a))
+    λ a. (B a) p⁻ ((B a)▶⁻¹(Γ a, A a))
+    λ a. p ((B a)▶ ((B a)▶⁻¹(Γ a, A a)))
+    λ a. Γ a
+    OK
+    -- likewise for second component
