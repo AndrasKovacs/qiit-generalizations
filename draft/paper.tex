@@ -71,6 +71,12 @@
 \usepackage{mathpartir}
 \usepackage{scalerel}
 
+
+\usepackage{tikz-cd}
+
+
+\newtheorem{notation}{Notation}
+
 \input{abbrevs.tex}
 \newcommand{\Lift}{\Uparrow}
 \newcommand{\ToS}{\mathsf{ToS}}
@@ -106,11 +112,27 @@
 \newcommand{\bDelta}{\boldsymbol{\Delta}}
 \newcommand{\bsigma}{\boldsymbol{\sigma}}
 \newcommand{\bdelta}{\boldsymbol{\delta}}
+\newcommand{\bepsilon}{\boldsymbol{\epsilon}}
 \newcommand{\bt}{\boldsymbol{t}}
 \newcommand{\bu}{\boldsymbol{u}}
 \newcommand{\bA}{\boldsymbol{A}}
 \newcommand{\bB}{\boldsymbol{B}}
 \newcommand{\bid}{\boldsymbol{\id}}
+\newcommand{\bemptycon}{\boldsymbol{\emptycon}}
+
+\newcommand{\ul}[1]{\underline{#1}}
+\newcommand{\ulGamma}{\ul{\Gamma}}
+\newcommand{\ulDelta}{\ul{\Delta}}
+\newcommand{\ulsigma}{\ul{\sigma}}
+\newcommand{\uldelta}{\ul{\delta}}
+\newcommand{\ulepsilon}{\ul{\epsilon}}
+\newcommand{\ult}{\ul{t}}
+\newcommand{\ulu}{\ul{u}}
+\newcommand{\ulA}{\ul{A}}
+\newcommand{\ulB}{\ul{B}}
+
+\newcommand{\coe}{\mathsf{coe}}
+\newcommand{\coh}{\mathsf{coh}}
 
 
 
@@ -317,7 +339,7 @@ In its most basic form, cumulativity requires that whenever $A : \Set_i$, and $i
 types, in order to have cumulativity for QII algebras in general. For example,
 we want to have $\gamma : NatAlg_j$ whenever $\gamma : NatAlg_i$ and $i < j$.
 
-We use Sterling's cumulative algebraic type theory \cite{sterling2019algebraic} as basis for our metatheory. \todo{REASONS}
+We use Sterling's cumulative algebraic type theory \cite{sterling2019algebraic} as basis for our metatheory. \todo{REASONS, revamp}
 
 %% The reason is that it is the only rigorous
 %% algebraic definition of cumulativity that we are aware of, and it also
@@ -337,14 +359,19 @@ From now on, we refer to this theory as cETT (cumulative extensional type
 theory). When working in cETT, we use the following notation. We have
 Russell-style universes $\Set_i$ indexed by natural numbers, dependent functions
 as $(x : A)\ra B$, and dependent pairs as $(x : A)\times B$ with projections
-$\proj1$ and $\proj2$. We also use subscripts as a field projection notation for
-iterated pairs. For example, for $t : (A : \Set_i) \times (B : \Set_i) \times (f
-: A \ra B)$, we use $B_t$ to denote the projection of the second
-component. Sometimes we omit the subscript if it is clear from context.
+$\proj1$ and $\proj2$. We sometimes leave parameters implicit in dependent
+function types, e.g.\ write $\id : A \ra A$ instead of $\id : (A : \Set_i)\ra A
+\ra A$. We also use subscripts as a field projection notation for iterated
+pairs. For example, for $t : (A : \Set_i) \times (B : \Set_i) \times (f : A \ra
+B)$, we use $B_t$ to denote the projection of the second component. Sometimes we
+omit the subscript if it is clear from context. When we write ``exists'' in this
+paper, we always mean chosen structure given by a $\Sigma$-type.
 
 We write propositional equality as $t = u$, with $\refl_t$ for reflexivity. We
 have equality reflection and uniqueness of identity proofs (UIP) for
 $\blank=\blank$. The unit type is $\top$, with inhabitant $\tt$.
+
+\todo{compactify cumulativity}
 
 \begin{figure}
 \begin{mathpar}
@@ -638,16 +665,13 @@ iterated $\Sigma$-type with the following components:
   \item $\Sigma$-type $\Sg : (A : \Ty\,\Gamma)\ra \Ty\,(\Gamma \ext A)
     \ra \Ty\,\Gamma$, with term formers $\proj1$, $\proj2$ and $\blank,\blank$.
   \item Identity type $\Id : (A : \Ty\,\Gamma)\ra \Tm\,\Gamma\,A\ra
-    \Tm\,\Gamma\,A\ra \Ty\,\Gamma$, with equality reflection and UIP.
+    \Tm\,\Gamma\,A\ra \Ty\,\Gamma$, with $\refl$, equality reflection and UIP.
   \item Constant families. This includes a type former $\Kfam : \Con \ra
-    \Ty\,\Gamma$, where $\Gamma$ is implicitly quantified, and an isomorphism
-    between $\Sub\,\Gamma\,\Delta$ and $\Tm\,\Gamma\,(\Kfam\,\Delta)$ which is
-    natural in $\Gamma$. We have $\lamK : \Sub\,\Gamma\,\Delta \ra
-    \Tm\,\Gamma\,(\Kfam\,\Delta)$ and $\appK : \Tm\,\Gamma\,(\Kfam\,\Delta)
-    \ra \Sub\,\Gamma\,\Delta$ as its components.  The idea is that
-    $\Kfam\,\Delta$ is a representation of $\Delta$ as a type in any
-    context. Clairambault and Dybjer called constant families ``democracy'' in
-    \cite{clairambault2014biequivalence}.
+    \Ty\,\Gamma$, where $\Gamma$ is implicitly quantified, together with $\lamK
+    : \Sub\,\Gamma\,\Delta \ra \Tm\,\Gamma\,(\Kfam\,\Delta)$ and its inverse
+    $\appK$. The idea is that $\Kfam\,\Delta$ is a representation of $\Delta$ as
+    a type in any context. Clairambault and Dybjer called constant families
+    ``democracy'' in \cite{clairambault2014biequivalence}.
 \end{enumerate}
 \end{definition}
 
@@ -683,21 +707,22 @@ predicates.
 
 The reason for the ``finite limit CwF'' naming is the following: Clairambault
 and Dybjer showed that the 2-category of flCwFs is biequivalent to the
-2-category of finitely complete (or ``lex'') categories
-\cite{clairambault2014biequivalence}. It can be also seen that the categorical
-product of $\Gamma$ and $\Delta$ in an flCwF can be given as $\Gamma \ext
-\Kfam\, \Delta$, and equalizers can be given using the identity type.
+2-category of finitely complete categories
+\cite{clairambault2014biequivalence}. In particular, in an flCwF the categorical
+product of $\Gamma$ and $\Delta$ can be given as $\Gamma \ext \Kfam\, \Delta$,
+and the equalizer of $\sigma$ and $\delta$ as $\Gamma\ext
+\Id\,(\K\,\Delta)\,(\lamK\,\sigma)\,(\lamK\,\delta)$.
 
 \todo{segue text?}
 
 \begin{definition} A \emph{context isomorphism} is an invertible morphism $\sigma : \Sub\,\Gamma\,\Delta$. We note the inverse as $\sigma^{-1}$. We also use the notation $\sigma : \Gamma \simeq \Delta$.
 \end{definition}
 
-\begin{definition}[Type categories, c.f.\ \cite{clairambault2014biequivalence}] For each $\Gamma : \Con$, there is a category
+\begin{definition}[Type categories, c.f.\ \cite{clairambault2014biequivalence}]\label{def:type_categories} For each $\Gamma : \Con$, there is a category
 whose objects are types $A : \Ty\,\Gamma$, and morphisms from $A$ to $B$ are
 terms $t : \Tm\,(\Gamma\,\ext\,A)\,B[\p]$. Identity morphisms are given by $\q :
 \Tm\,(\Gamma\,\ext\,A)\,A[\p]$, and composition $t \circ u$ by $t[\p, u]$. The
-assignment of type categories to contexts extends to an indexed category. For
+assignment of type categories to contexts extends to a split indexed category. For
 each $\sigma : \Sub\,\Gamma\,\Delta$, there is a functor from $\Ty\,\Delta$ to
 $\Ty\,\Gamma$, which sends $A$ to $A[\sigma]$ and $t :
 \Tm\,(\Gamma\,\ext\,A)\,B[\p]$ to $t[\sigma\circ \p, \q]$.
@@ -713,7 +738,7 @@ $\Ty\,\Gamma$, which sends $A$ to $A[\sigma]$ and $t :
 We define $\boldsymbol{\Sub\,\Gamma\,\Delta} : \Set_{1 + \max(i, j+1)}$ as the type
 of weak flCwF morphisms from $\boldsymbol{\Gamma}$ to $\boldsymbol{\Delta}$.
 
-\begin{definition} A weak flCwF morphism $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a functor between underlying categories, which additionally maps types to types and terms to terms, and satisfies the following:
+\begin{definition} A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a functor between underlying categories, which additionally maps types to types and terms to terms, and satisfies the following:
   \begin{enumerate}
     \item $\bsigma\,(A[\sigma]) = (\bsigma\,A)\,[\bsigma\,\sigma]$
     \item $\bsigma\,(t[\sigma]) = (\bsigma\,t)\,[\bsigma\,\sigma]$
@@ -727,11 +752,12 @@ empty context and context extension up to isomorphism. We notate the evident
 isomorphisms as $\bsigma_{\emptycon} :
 \bsigma\,\emptycon \simeq \emptycon$ and $\bsigma_{\ext}
 :
-\bsigma\,(\Gamma\,\ext\,A)\,\simeq\,\bsigma\,\Gamma\,\ext\,\bsigma\,A$.
+\bsigma\,(\Gamma\,\ext\,A)\,\simeq\,\bsigma\,\Gamma\,\ext\,\bsigma\,A$. Our notion of weak morphism is the same as in \cite{birkedal2018modal}, when restricted to CwFs.
 
 %% We do not require preservation of fl-structure, because the above conditions already insure that.
 
-\begin{theorem} Every $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ preserves fl-structure up to type isomorphism. That is, we have isomorphisms
+
+\begin{theorem} Every $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ preserves fl-structure up to type isomorphism. That is, we have
 \begin{alignat*}{3}
   & \bsigma_{\Sigma} : \bsigma\,(\Sigma\,A\,B) \simeq \Sigma\,(\bsigma\,A)\,((\bsigma\,B)[\bsigma_{\ext}^{-1}]) \\
   & \bsigma_{\K} : \bsigma\,(\K\,\Delta) \simeq \K\,(\bsigma\,\Delta) \\
@@ -765,13 +791,160 @@ $\epsilon : \Sub\,\Gamma\,\emptycon$ to weaken it to any $\Gamma$ context.
 
 For $\bsigma_{\Id}$, both component morphisms can be constructed by $\refl$ and
 equality reflection, and the morphisms are inverses by UIP. We omit here the
-verification that $\bsigma$ preserves term and substitution formers.
+verification that $\bsigma$ preserves term and substitution formers in the
+fl-structure.
 \end{proof}
 
 \subsection{Identity and Composition}
 
-%% $\bid : \bSub\,\bGamma\,\bGamma$ is defined in the obvious way, with $\bid
-%% For composition
+$\bid : \bSub\,\bGamma\,\bGamma$ is defined in the obvious way, with identities for
+underlying functions and for preservation morphisms.
+
+For $\boldsymbol{\sigma \circ \delta}$, the underlying functions are given by
+function composition, and the preservation morphisms are given as follows:
+\begin{alignat*}{3}
+  & (\boldsymbol{\sigma \circ \delta})_{\emptycon}^{-1} :\equiv
+    \bsigma\,\bdelta_{\emptycon}^{-1} \circ \bdelta_{\emptycon}^{-1} \\
+  & (\boldsymbol{\sigma \circ \delta})_{\ext}^{-1} :\equiv
+    \bsigma\,\bdelta_{\ext}^{-1} \circ \bdelta_{\ext}^{-1}
+\end{alignat*}
+
+\begin{lemma} The derived preservation isomorphisms for the fl-structure can be decomposed analogously; all derived isomorphisms in $\bid$ are identities, and we have
+\begin{alignat*}{3}
+  & (\boldsymbol{\sigma \circ \delta})_{\Sigma} =
+  \bsigma\,\bdelta_{\Sigma} \circ \bdelta_{\Sigma}\\
+  & (\boldsymbol{\sigma \circ \delta})_{\K} =
+  \bsigma\,\bdelta_{\K} \circ \bdelta_{\K}\\
+  & (\boldsymbol{\sigma \circ \delta})_{\Id} =
+  \bsigma\,\bdelta_{\Id} \circ \bdelta_{\Id}
+\end{alignat*}
+Here, $\blank\circ\blank$ denotes composition of type morphisms.
+\end{lemma}
+\begin{proof} In the case of $\Id$, the equations hold immediately by UIP. For $\Sigma$ and $\K$, we prove by flCwF computation and straightforward unfolding of definitions.
+\end{proof}
+
+\subsection{Empty Context}
+The empty context $\boldsymbol{\emptycon : \Con}$ is the terminal flCwF, which
+has all underlying sets defined as $\top$ (or constantly $\top$), with an
+evident unique $\boldsymbol{\epsilon : \Sub\,\Gamma\,\emptycon}$. Since
+$\bepsilon$ is a strict flCwF morphism, $\bepsilon_{\emptycon}^{-1}$ and
+$\bepsilon_{\ext}^{-1}$ are both identity morphisms.
+
+\subsection{Types}
+
+We define $\boldsymbol{\Ty\,\Gamma} : \Set_{1 + \max(i, j+1)}$ as the type of
+split flCwF-isofibrations over $\bGamma$. We extend Ahrens' and Lumsdaine's
+displayed categories and their definition of isofibrations \cite{displayedcats}.
+We first define displayed flCwFs, then specify iso-cleaving as additional structure
+on top of that.
+
+\begin{definition}[Displayed flCwF] The type of displayed flCwFs is given as the logical predicate interpretation \cite{TODO} of $\flCwF_i$. For each flCwF component in $\bGamma$, there is a component in a displayed flCwF which ``lies over'' it.
+
+In situations where we need to refer to both ``base'' and displayed things, we give
+\ul{underlined} names to contexts, substitutions, types and terms in a base
+flCwF. For example, we may have $\ulGamma : \Con_{\bGamma}$ living in
+$\boldsymbol{\Gamma : \Con}$, and $\Gamma : \Con_{\bA}\,\ulGamma$ living in
+$\boldsymbol{A : \Ty\,\Gamma}$. We only use underlining on cETT variable names,
+and overload flCwF component names for displayed counterparts.
+
+Concretely, $\boldsymbol{A : \Ty\,\Gamma}$ has the following underlying sets, which we call displayed contexts, substitutions, types and terms respectively.
+\begin{alignat*}{3}
+  & \Con_{\bA} && : \Con_{\bGamma}\ra \Set_i\\
+  & \Sub_{\bA} && : \Con_{\bA}\,\ulGamma \ra \Con_{\bA}\,\ulDelta \ra \Sub_{\bGamma}\,\ulGamma\,\ulDelta \ra \Set_i \\
+  & \Ty_{\bA}  && : \Con_{\bA}\,\ulGamma \ra \Ty_{\bGamma}\,\ulGamma \ra \Set_i\\
+  & \Tm_{\bA}  && : (\Gamma : \Con_{\bA}\,\ulGamma)\ra \Ty_{\bA}\,\Gamma\,\ulA \ra \Tm_{\bGamma}\,\ulGamma\,\ulA \ra \Set_i
+\end{alignat*}
+
+Above, we implicitly quantify over $\ulGamma$, $\ulDelta$ and $\ulA$ base
+parameters. We also have the following components for empty context, context
+extension and substitution. We omit listing other components here.
+\begin{alignat*}{3}
+  & \emptycon_{\bA} && : \Con_{\bA}\,\emptycon_{\bGamma}\\
+  & \ext_{\bA}      && : (\Gamma : \Con_{\bA}\,\ulGamma)\ra \Ty_{\bA}\,\Gamma\,\ulA \ra
+                     \Con_{\bA}\,\Gamma\,(\ulGamma \ext_{\bGamma} \ulA)\\
+  & \blank[\blank]_{\bA} && : \Ty_{\bA}\,\Delta\,\ulA \ra \Sub_{\bA}\,\Gamma\,\Delta\,\ulsigma
+                     \ra \Ty_{\bA}\,\Gamma\, (\ulA[\ulsigma]_{\bGamma})\\
+  & \blank[\blank]_{\bA} && : \Tm_{\bA}\,\Delta\,A\,\ult \ra (\sigma : \Sub_{\bA}\,\Gamma\,\Delta\,\ulsigma)\\
+  & && \hspace{0.5em}\ra \Tm_{\bA}\,\Gamma\, (A[\sigma]_{\bA})\,(\ult[\ulsigma]_{\bGamma})
+\end{alignat*}
+\end{definition}
+
+In the following we will often omit $_{\bGamma}$ and $_{\bA}$ subscripts on
+components; for example, in the type $\Con_{\bA}\,\emptycon$, the $\emptycon$ is clearly
+a base component in $\bGamma$.
+
+We also need displayed counterparts to the previously defined derived notions on flCwFs;
+these are again given as logical predicate interpretations of the non-displayed definitions.
+
+\begin{definition}[Displayed type categories] For each $\Gamma : \Con_{\bA}\,\ulGamma$, there
+is a displayed category over the type category $\Ty_{\bGamma}\,\ulGamma$, whose objects
+over $\ulA : \Ty_{\bGamma}\,\ulGamma$ are elements of $\Ty_{\bA}\,\Gamma\,\ulA$, and displayed morphisms over $\ult : \Tm_{\bGamma}\,(\ulGamma \ext \ulA)\,(\ulB[\p])$ are elements of $\Tm_{\bA}\,(\Gamma \ext A)\,(B[\p])\,\ult$. The identity morphism is given by $\q_{\bA}$, and the composition of $t$ and $u$ is $t[\p_{\bA},u]$. Analogously to Definition \ref{def:type_categories}, this extends to a displayed split indexed category.
+\end{definition}
+
+\begin{definition}[Displayed isomorphisms] A \emph{displayed context isomorphism} over $\ulsigma : \ulGamma \simeq \ulDelta$, notated $\sigma : \Gamma \simeq_{\ulsigma} \Delta$, is an invertible displayed morphism $\sigma : \Sub_{\bA}\,\Gamma\,\Delta\,\ulsigma$, with inverse $\sigma^{-1} : \Sub_{\bA}\,\Delta\,\Gamma\,\ulsigma^{-1}$. A \emph{displayed type isomorphism} over $\ult : \ulA \simeq \ulB$, notated $t : A \simeq_{\ult} B$, is an isomorphism in a displayed type category.
+\end{definition}
+
+\begin{definition} A \emph{vertical morphism} lies over an identity morphism. We use this definition for context and type morphisms as well.
+\end{definition}
+
+In contrast to \cite{kaposi2019constructing}, it is not sufficient to model
+types with displayed flCwFs. In ibid.\ substitutions are modeled as strict
+morphisms, which we cannot do because our infinitary function types and identity
+types cannot be interpreted strictly, as we will see in Section
+\ref{TODO}. Strict preservation is expressed with metatheoretic equality, which
+is respected by all cETT constructions, but isomorphisms are not necessarily
+respected. Hence, we need to add additional structure to displayed flCwFs which
+expresses preservation of base isomorphisms.
+
+\begin{definition}[Context iso-cleaving] This lifts a base context isomorphism to a displyed one. It consists of
+\begin{alignat*}{3}
+  & \coe : \ulGamma \simeq \ulDelta \ra \Con_{\bA}\,\ulGamma \ra \Con_{\bA}\,\ulDelta\\
+  & \coh : (\ulsigma : \ulGamma \simeq \ulDelta)(\Gamma : \Con_{\bA}\,\ulGamma)
+           \ra \Gamma \simeq_{\ulsigma} \coe\,\ulsigma\,\Gamma
+\end{alignat*}
+such that
+\begin{alignat*}{3}
+  & \coe\,\id\,\Gamma && = \Gamma\\
+  & \coe\,(\ulsigma\circ\uldelta)\,\Gamma && = \coe\,\ulsigma\,(\coe\,\uldelta\,\Gamma)\\
+  & \coh\,\id\,\Gamma && = \id\\
+  & \coh\,(\ulsigma\circ\uldelta)\,\Gamma && = \coh\,\ulsigma\,(\coe\,\uldelta\,\Gamma)
+          \circ \coh\,\uldelta\,\Gamma
+\end{alignat*}
+Here, $\coe$ and $\coh$ abbreviate ``coercion'' and ``coherence'' respectively.
+\end{definition}
+
+\begin{definition}[Type iso-cleaving] This consists of
+\begin{alignat*}{3}
+  & \coe : \ulA \simeq \ulB \ra \Ty_{\bA}\,\Gamma\,\ulA \ra \Ty_{\bA}\,\Gamma\,\ulB\\
+  & \coh : (\ult : \ulA \simeq \ulB)(A : \Ty_{\bA}\,\Gamma\,\ulA)
+           \ra A \simeq_{\ult} \coe\,\ult\,A
+\end{alignat*}
+such that
+\begin{alignat*}{3}
+  & \coe\,\id\,A && = A\\
+  & \coe\,\ult\,(\coe\,\uldelta\,A) && = \coe\,(\ult\circ\uldelta)\,A\\
+  & \coh\,\id\,A && = \id\\
+  & \coh\,(\ult\circ\uldelta)\,A && = \coh\,\ult\,(\coe\,\uldelta\,A)
+          \circ \coh\,\uldelta\,A
+\end{alignat*}
+Also, whenever $\sigma : \Sub_{\bA}\,\Gamma\,\Delta\,\ulsigma$, we have
+\begin{alignat*}{3}
+  & \coe\,(\ult[\ulsigma])\,(A[\sigma]) && = (\coe\,\ult\,A)[\sigma]\\
+  & \coh\,(\ult[\ulsigma\circ \p,\q])\,(A[\sigma]) && = (\coh\,\ult\,A)[\sigma]
+\end{alignat*}
+
+\end{definition}
+
+\begin{definition} A \emph{split flCwF isofibration} is a displayed flCwF equipped with iso-cleaving for contexts and types.
+\end{definition}
+
+\subsection{Type Substitution}
+
+We seek to define $\boldsymbol{\blank[\blank] : \Ty\,\Delta \ra \Sub\,\Gamma\,\Delta \ra \Ty\,\Gamma}$.
+
+
+
+
 
 
 %% Acknowledgments
