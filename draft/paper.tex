@@ -135,10 +135,6 @@
 \newcommand{\coh}{\mathsf{coh}}
 
 
-
-%% \newcommand{\bDelta}{\boldsymbol{\Delta}}
-
-
 %% ------------------------------------------------------------
 
 
@@ -738,7 +734,7 @@ $\Ty\,\Gamma$, which sends $A$ to $A[\sigma]$ and $t :
 We define $\boldsymbol{\Sub\,\Gamma\,\Delta} : \Set_{1 + \max(i, j+1)}$ as the type
 of weak flCwF morphisms from $\boldsymbol{\Gamma}$ to $\boldsymbol{\Delta}$.
 
-\begin{definition} A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a functor between underlying categories, which additionally maps types to types and terms to terms, and satisfies the following:
+\begin{definition}\label{def:weakmorphism} A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a functor between underlying categories, which additionally maps types to types and terms to terms, and satisfies the following:
   \begin{enumerate}
     \item $\bsigma\,(A[\sigma]) = (\bsigma\,A)\,[\bsigma\,\sigma]$
     \item $\bsigma\,(t[\sigma]) = (\bsigma\,t)\,[\bsigma\,\sigma]$
@@ -754,15 +750,18 @@ isomorphisms as $\bsigma_{\emptycon} :
 :
 \bsigma\,(\Gamma\,\ext\,A)\,\simeq\,\bsigma\,\Gamma\,\ext\,\bsigma\,A$. Our notion of weak morphism is the same as in \cite{birkedal2018modal}, when restricted to CwFs.
 
-%% We do not require preservation of fl-structure, because the above conditions already insure that.
-
-
-\begin{theorem} Every $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ preserves fl-structure up to type isomorphism. That is, we have
+\begin{theorem}\label{thm:flpres} Every $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ preserves fl-structure up to type isomorphism. That is, we have
 \begin{alignat*}{3}
   & \bsigma_{\Sigma} : \bsigma\,(\Sigma\,A\,B) \simeq \Sigma\,(\bsigma\,A)\,((\bsigma\,B)[\bsigma_{\ext}^{-1}]) \\
   & \bsigma_{\K} : \bsigma\,(\K\,\Delta) \simeq \K\,(\bsigma\,\Delta) \\
   & \bsigma_{\Id} : \bsigma\,(\Id\,t\,u) \simeq \Id\,(\bsigma\,t)\,(\bsigma\,u)
 \end{alignat*}
+These are all natural in the following sense: for $\sigma :
+\Sub_{\bGamma}\,\Gamma\,\Delta$, the functorial action of $\bsigma\,\sigma :
+\Sub_{\bDelta}\,(\bsigma\,\Gamma)\,(\bsigma\,\Delta)$ on $\bsigma_{\Sigma}$ (in
+the $\bsigma\,\Gamma$ context) is equal to $\bsigma_{\Sigma}$ (in
+$\bsigma\,\Delta$), and similarly for $\bsigma_{\K}$ and $\bsigma_{\Id}$.
+
 Moreover, $\bsigma$ preserves all term and substitution formers in the
 fl-structure. For example, $\bsigma\,(\proj1\,t) = \proj1\,
 (\bsigma_{\Sigma}[\id, \bsigma\,t])$.
@@ -791,8 +790,8 @@ $\epsilon : \Sub\,\Gamma\,\emptycon$ to weaken it to any $\Gamma$ context.
 
 For $\bsigma_{\Id}$, both component morphisms can be constructed by $\refl$ and
 equality reflection, and the morphisms are inverses by UIP. We omit here the
-verification that $\bsigma$ preserves term and substitution formers in the
-fl-structure.
+verification of naturality and that $\bsigma$ preserves term and substitution
+formers in the fl-structure.
 \end{proof}
 
 \subsection{Identity and Composition}
@@ -809,7 +808,9 @@ function composition, and the preservation morphisms are given as follows:
     \bsigma\,\bdelta_{\ext}^{-1} \circ \bdelta_{\ext}^{-1}
 \end{alignat*}
 
-\begin{lemma} The derived preservation isomorphisms for the fl-structure can be decomposed analogously; all derived isomorphisms in $\bid$ are identities, and we have
+It is easy to verify the left and right identity laws and associativity for $\boldsymbol{\blank\circ\blank}$.
+
+\begin{lemma}\label{lem:idcomppres} The derived preservation isomorphisms for the fl-structure can be decomposed analogously; all derived isomorphisms in $\bid$ are identities, and we have
 \begin{alignat*}{3}
   & (\boldsymbol{\sigma \circ \delta})_{\Sigma} =
   \bsigma\,\bdelta_{\Sigma} \circ \bdelta_{\Sigma}\\
@@ -818,7 +819,7 @@ function composition, and the preservation morphisms are given as follows:
   & (\boldsymbol{\sigma \circ \delta})_{\Id} =
   \bsigma\,\bdelta_{\Id} \circ \bdelta_{\Id}
 \end{alignat*}
-Here, $\blank\circ\blank$ denotes composition of type morphisms.
+On the right sides, $\blank\circ\blank$ refers to composition of type morphisms.
 \end{lemma}
 \begin{proof} In the case of $\Id$, the equations hold immediately by UIP. For $\Sigma$ and $\K$, we prove by flCwF computation and straightforward unfolding of definitions.
 \end{proof}
@@ -838,7 +839,7 @@ displayed categories and their definition of isofibrations \cite{displayedcats}.
 We first define displayed flCwFs, then specify iso-cleaving as additional structure
 on top of that.
 
-\begin{definition}[Displayed flCwF] The type of displayed flCwFs is given as the logical predicate interpretation \cite{TODO} of $\flCwF_i$. For each flCwF component in $\bGamma$, there is a component in a displayed flCwF which ``lies over'' it.
+\begin{definition}[Displayed flCwF] The type of displayed flCwFs at level $i$ is given as the logical predicate interpretation \cite{TODO} of $\flCwF_i$. For each flCwF component in $\bGamma$, there is a component in a displayed flCwF which ``lies over'' it.
 
 In situations where we need to refer to both ``base'' and displayed things, we give
 \ul{underlined} names to contexts, substitutions, types and terms in a base
@@ -847,7 +848,7 @@ $\boldsymbol{\Gamma : \Con}$, and $\Gamma : \Con_{\bA}\,\ulGamma$ living in
 $\boldsymbol{A : \Ty\,\Gamma}$. We only use underlining on cETT variable names,
 and overload flCwF component names for displayed counterparts.
 
-Concretely, $\boldsymbol{A : \Ty\,\Gamma}$ has the following underlying sets, which we call displayed contexts, substitutions, types and terms respectively.
+Concretely, a displayed flCwF $\bA$ over $\bGamma$ has the following underlying sets, which we call displayed contexts, substitutions, types and terms respectively.
 \begin{alignat*}{3}
   & \Con_{\bA} && : \Con_{\bGamma}\ra \Set_i\\
   & \Sub_{\bA} && : \Con_{\bA}\,\ulGamma \ra \Con_{\bA}\,\ulDelta \ra \Sub_{\bGamma}\,\ulGamma\,\ulDelta \ra \Set_i \\
@@ -896,18 +897,15 @@ is respected by all cETT constructions, but isomorphisms are not necessarily
 respected. Hence, we need to add additional structure to displayed flCwFs which
 expresses preservation of base isomorphisms.
 
-\begin{definition}[Context iso-cleaving] This lifts a base context isomorphism to a displyed one. It consists of
+\begin{definition}[Context iso-cleaving] This lifts a base context isomorphism to a displayed one. It consists of
 \begin{alignat*}{3}
-  & \coe : \ulGamma \simeq \ulDelta \ra \Con_{\bA}\,\ulGamma \ra \Con_{\bA}\,\ulDelta\\
-  & \coh : (\ulsigma : \ulGamma \simeq \ulDelta)(\Gamma : \Con_{\bA}\,\ulGamma)
-           \ra \Gamma \simeq_{\ulsigma} \coe\,\ulsigma\,\Gamma
-\end{alignat*}
-such that
-\begin{alignat*}{3}
-  & \coe\,\id\,\Gamma && = \Gamma\\
-  & \coe\,(\ulsigma\circ\uldelta)\,\Gamma && = \coe\,\ulsigma\,(\coe\,\uldelta\,\Gamma)\\
-  & \coh\,\id\,\Gamma && = \id\\
-  & \coh\,(\ulsigma\circ\uldelta)\,\Gamma && = \coh\,\ulsigma\,(\coe\,\uldelta\,\Gamma)
+  & \coe &&: \ulGamma \simeq \ulDelta \ra \Con_{\bA}\,\ulGamma \ra \Con_{\bA}\,\ulDelta\\
+  & \coh &&: (\ulsigma : \ulGamma \simeq \ulDelta)(\Gamma : \Con_{\bA}\,\ulGamma)
+           \ra \Gamma \simeq_{\ulsigma} \coe\,\ulsigma\,\Gamma\\
+  & \coe_{\id} && : \coe\,\id\,\Gamma = \Gamma\\
+  & \coe_{\circ} && : \coe\,(\ulsigma\circ\uldelta)\,\Gamma = \coe\,\ulsigma\,(\coe\,\uldelta\,\Gamma)\\
+  & \coh_{\id} && : \coh\,\id\,\Gamma = \id\\
+  & \coh_{\circ} && : \coh\,(\ulsigma\circ\uldelta)\,\Gamma = \coh\,\ulsigma\,(\coe\,\uldelta\,\Gamma)
           \circ \coh\,\uldelta\,\Gamma
 \end{alignat*}
 Here, $\coe$ and $\coh$ abbreviate ``coercion'' and ``coherence'' respectively.
@@ -915,22 +913,19 @@ Here, $\coe$ and $\coh$ abbreviate ``coercion'' and ``coherence'' respectively.
 
 \begin{definition}[Type iso-cleaving] This consists of
 \begin{alignat*}{3}
-  & \coe : \ulA \simeq \ulB \ra \Ty_{\bA}\,\Gamma\,\ulA \ra \Ty_{\bA}\,\Gamma\,\ulB\\
-  & \coh : (\ult : \ulA \simeq \ulB)(A : \Ty_{\bA}\,\Gamma\,\ulA)
-           \ra A \simeq_{\ult} \coe\,\ult\,A
-\end{alignat*}
-such that
-\begin{alignat*}{3}
-  & \coe\,\id\,A && = A\\
-  & \coe\,\ult\,(\coe\,\uldelta\,A) && = \coe\,(\ult\circ\uldelta)\,A\\
-  & \coh\,\id\,A && = \id\\
-  & \coh\,(\ult\circ\uldelta)\,A && = \coh\,\ult\,(\coe\,\uldelta\,A)
+  & \coe &&: \ulA \simeq \ulB \ra \Ty_{\bA}\,\Gamma\,\ulA \ra \Ty_{\bA}\,\Gamma\,\ulB\\
+  & \coh &&: (\ult : \ulA \simeq \ulB)(A : \Ty_{\bA}\,\Gamma\,\ulA)
+           \ra A \simeq_{\ult} \coe\,\ult\,A\\
+  & \coe_{\id} && : \coe\,\id\,A = A\\
+  & \coe_{\circ} && : \coe\,\ult\,(\coe\,\uldelta\,A) = \coe\,(\ult\circ\uldelta)\,A\\
+  & \coh_{\id} &&: \coh\,\id\,A = \id\\
+  & \coh_{\circ} &&: \coh\,(\ult\circ\uldelta)\,A = \coh\,\ult\,(\coe\,\uldelta\,A)
           \circ \coh\,\uldelta\,A
 \end{alignat*}
-Also, whenever $\sigma : \Sub_{\bA}\,\Gamma\,\Delta\,\ulsigma$, we have
+Additionally, for $\sigma : \Sub_{\bA}\,\Gamma\,\Delta\,\ulsigma$, we have
 \begin{alignat*}{3}
-  & \coe\,(\ult[\ulsigma])\,(A[\sigma]) && = (\coe\,\ult\,A)[\sigma]\\
-  & \coh\,(\ult[\ulsigma\circ \p,\q])\,(A[\sigma]) && = (\coh\,\ult\,A)[\sigma]
+  & \coe_{[]} &&: \coe\,(\ult[\ulsigma])\,(A[\sigma]) = (\coe\,\ult\,A)[\sigma]\\
+  & \coh_{[]} &&: \coh\,(\ult[\ulsigma\circ \p,\q])\,(A[\sigma]) = (\coh\,\ult\,A)[\sigma]
 \end{alignat*}
 
 \end{definition}
@@ -939,8 +934,135 @@ Also, whenever $\sigma : \Sub_{\bA}\,\Gamma\,\Delta\,\ulsigma$, we have
 \end{definition}
 
 \subsection{Type Substitution}
+We aim to define $\boldsymbol{\blank[\blank] : \Ty\,\Delta \ra
+  \Sub\,\Gamma\,\Delta \ra \Ty\,\Gamma}$, such that $\boldsymbol{A[\id]} = \bA$
+and $\boldsymbol{A[\sigma\circ\delta]} = \boldsymbol{A[\sigma][\delta]}$. This
+is rather laborious to fully write out, so we omit most details and focus on the
+main points.
 
-We seek to define $\boldsymbol{\blank[\blank] : \Ty\,\Delta \ra \Sub\,\Gamma\,\Delta \ra \Ty\,\Gamma}$.
+The underlying sets are given by simple composition:
+\begin{alignat*}{3}
+  & \Con_{\boldsymbol{A[\sigma]}}\,\ulGamma && :\equiv \Con_{\bA}\,(\bsigma\,\ulGamma)\\
+  & \Sub_{\boldsymbol{A[\sigma]}}\,\Gamma\,\Delta\,\ulsigma && :\equiv
+    \Sub_{\bA}\,\Gamma\,\Delta\,(\bsigma\,\ulsigma)\\
+  & \Ty_{\boldsymbol{A[\sigma]}}\,\Gamma\,\ulA && :\equiv
+      \Ty_{\bA}\,\Gamma\,(\bsigma\,\ulA)\\
+  & \Tm_{\boldsymbol{A[\sigma]}}\,\Gamma\,A\,\ult && :\equiv
+      \Tm_{\bA}\,\Gamma\,A\,(\bsigma\,\ult)
+\end{alignat*}
+
+Moreover, $\id_{\boldsymbol{A[\sigma]}} :\equiv \id_{\bA}$,
+$\sigma\circ_{\boldsymbol{A[\sigma]}}\delta :\equiv \sigma\circ_{\bA}\delta$,
+and likewise substitution components are given by corresponding substitution
+components in $\bA$.
+
+Context and type formers are given by coercing $\bA$
+structures along $\bsigma$ preservation isomorphisms. For example:
+\begin{alignat*}{3}
+  &\emptycon_{\boldsymbol{A[\sigma]}} && :\equiv
+    \coe\,\bsigma_{\emptycon}^{-1}\,\emptycon_{\bA}\\
+  &\Gamma\ext_{\boldsymbol{A[\sigma]}}A && :\equiv
+    \coe\,\bsigma_{\ext}^{-1}\,(\Gamma\ext_{\bA} A)\\
+  &\Id_{\boldsymbol{A[\sigma]}}\,t\,u && :\equiv
+    \coe\,\bsigma_{\Id}^{-1}\,(\Id_{\bA}\,t\,u)
+\end{alignat*}
+
+Term and substitution formers are given by composing $\coh$-lifted
+isomorphisms with term and substitution formers from $\bA$. For example:
+\begin{alignat*}{3}
+  & \epsilon_{\boldsymbol{A[\sigma]}} && :\equiv
+    \coh\,\bsigma_{\emptycon}^{-1}\,\emptycon_{\bA} \circ \epsilon_{\bA}\\
+  & \p_{\boldsymbol{A[\sigma]}} && :\equiv
+    \p_{\bA} \circ (\coh\,\bsigma_{\ext}^{-1}\,(\Gamma\ext A))^{-1}\\
+  & \appK_{\boldsymbol{A[\sigma]}}\,t && :\equiv
+    \appK_{\bA}\,((\coh\,\bsigma_{\K}\,(\K\,\Delta))^{-1}\circ t)
+\end{alignat*}
+Equations for term and type substitution follow from naturality of preservation
+isomorphisms in $\bsigma$, $\coe[]$, $\coh[]$ and substitution equations in
+$\bA$.
+
+\todo{iso-cleaving}
+
+Functoriality of type substitution, i.e.\ $\boldsymbol{A[\id]} = \bA$ and
+$\boldsymbol{A[\sigma\circ\delta]} = \boldsymbol{A[\sigma][\delta]}$, follow
+from Lemma \ref{lem:idcomppres} and split cleaving given by $\coe_{\id}$,
+$\coe_{\circ}$, $\coh_{\id}$ and $\coh_{\circ}$ in $\bA$.
+
+\subsection{Terms}
+
+$\boldsymbol{\Tm\,\Gamma\,A} : \Set_{1 + \max(i, j)}$ is defined as the type of \emph{weak flCwF sections} of $\bA$.
+
+\begin{definition}[Weak flCwF section] Given $\bA : \bTy\,\bGamma$, the underlying functions of $\bt : \bTm\,\bGamma\,\bA$ are as follows:
+\begin{alignat*}{3}
+  & \bt : (\ulGamma : \Con_{\bGamma}) \ra \Con_{\bA}\,\ulGamma\\
+  & \bt : (\ulsigma : \Sub_{\bGamma}\,\ulGamma\,\ulDelta)
+         \ra \Sub_{\bA}\,(\bt\,\ulGamma)\,(\bt\,\ulDelta)\,\ulsigma\\
+  & \bt : (\ulA : \Ty_{\bGamma}) \ra \Ty_{\bA}\,(\bt\,\ulGamma)\,\ulA\\
+  & \bt : (\ult : \Tm_{\bGamma}\,\ulGamma\,\ulA) \ra
+          \Tm_{\bA}\,(\bt\,\ulGamma)\,(\bt\,\ulA)\,\ult
+\end{alignat*}
+Such that
+\begin{enumerate}
+  \item $\bsigma\,(\ulA[\ulsigma]) = (\bsigma\,\ulA)\,[\bsigma\,\ulsigma]$
+  \item $\bsigma\,(\ult[\ulsigma]) = (\bsigma\,\ult)\,[\bsigma\,\ulsigma]$
+  \item The unique map $\epsilon_{\bA} : \Sub\,(\bsigma\,\emptycon)\,\emptycon_{\bGamma}\,\id$ has a vertical retraction.
+  \item Each $(\bsigma\,\p,\,\bsigma\,\q) : \Sub\,(\bsigma\,(\ulGamma\,\ext\,\ulA))\,(\bsigma\,\ulGamma\,\ext\,\bsigma\,\ulA)\,\id$ has a vertical inverse.
+\end{enumerate}
+Similarly to Definition \ref{def:weakmorphism}, we denote the evident preservation
+isomorphisms as $\bt_{\emptycon} : \bt\,\emptycon \simeq_{\id} \emptycon$ and
+$\bt_{\ext} : \bt\,(\ulGamma\ext \ulA) \simeq_{\id} \bt\,\ulGamma \ext
+\bt\,\ulA$. In short, weak section is a dependently typed analogue of weak
+morphism, with dependent underlying functions and displayed preservation
+isomorphisms. We also have the derived fl-preservation isomorphisms.
+\end{definition}
+
+\begin{theorem} A weak section $\boldsymbol{t : \Tm\,\Gamma\,A}$ preserves fl-structure up to vertical type isomorphisms, that is, the following are derivable:
+\begin{alignat*}{3}
+  & \bt_{\Sigma} : \bt\,(\Sigma\,\ulA\,\ulB) \simeq_{\id} \Sigma\,(\bt\,\ulA)\,((\bt\,\ulB)[\bt_{\ext}^{-1}]) \\
+  & \bt_{\K} : \bt\,(\K\,\ulDelta) \simeq_{\id} \K\,(\bt\,\ulDelta) \\
+  & \bt_{\Id} : \bt\,(\Id\,\ult\,\ulu) \simeq_{\id} \Id\,(\bt\,\ult)\,(\bt\,\ulu)
+\end{alignat*}
+Also, the above isomorphisms are natural in the sense of Theorem
+\ref{thm:flpres}, and $\bt$ preserves type and substitution formers in the
+fl-structure.
+\end{theorem}
+\begin{proof} The construction of isomorphisms is the same as in Theorem \ref{thm:flpres}. Indeed, every construction there has a displayed counterpart which we can use here.
+\end{proof}
+
+We note though that the move from Theorem \ref{thm:flpres} to here is not simply a
+logical predicate translation, because we are only lifting the codomain of a
+weak morphism to a displayed version, and we leave the domain non-displayed. We
+leave to future work the investigation of such asymmetrical (or
+``modal'') logical predicate translations.
+
+\subsection{Term Substitution}
+
+$\boldsymbol{\blank[\blank] : \Tm\,\Delta\,A \ra (\sigma : \Sub\,\Gamma\,\Delta)
+  \ra \Tm\,\Gamma\,(A[\sigma])}$ is given the similarly to
+$\boldsymbol{\blank\circ\blank}$ in Section \ref{TODO}. Underlying functions
+are given by function composition, and preservation morphisms are also similar:
+\begin{alignat*}{3}
+  & (\boldsymbol{t[\sigma]})_{\emptycon}^{-1} :\equiv
+    \bt\,\bsigma_{\emptycon}^{-1} \circ \bt_{\emptycon}^{-1} \\
+  & (\boldsymbol{t[\sigma]})_{\ext}^{-1} :\equiv
+    \bt\,\bsigma_{\ext}^{-1} \circ \bt_{\ext}^{-1}
+\end{alignat*}
+
+We also have the same decomposition of derived isomorphisms as in Lemma
+\ref{lem:idcomppres}. We do not have to show functoriality of term substitution
+here, since that is derivable in any CwF \cite{TODO}.
+
+\subsection{Context Extension and Comprehension}
+
+$\boldsymbol{\Gamma \ext A : \Con}$ is defined as the \emph{total flCwF} of
+$\bA$. This is given by bundling together all displayed flCwF components in
+$\bA$ with corresponding base components in $\bGamma$, using metatheoretic
+$\Sigma$-types. It is a straightforward extension of total categories in
+\cite{displayedcats}.
+
+$\boldsymbol{\p : \Sub\,(\Gamma\ext A)\,\Gamma}$ is a strict morphism given by
+taking a first projection for each component. $\boldsymbol{\q : \Tm\,(\Gamma\ext
+  A)\,(A[\p])}$ is likewise a strict flCwF section given by second projections.
 
 
 
