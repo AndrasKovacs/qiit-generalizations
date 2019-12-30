@@ -85,12 +85,12 @@
 \newcommand{\Pii}{\Pi}
 \newcommand{\appi}{\mathsf{app}}
 \newcommand{\lami}{\mathsf{lam}}
-\newcommand{\Pie}{\hat{\Pi}}
-\newcommand{\appe}{\mathsf{ap\hat{p}}}
-\newcommand{\lame}{\mathsf{la\hat{m}}}
-\newcommand{\Piinf}{\tilde{\Pi}}
-\newcommand{\appinf}{\mathsf{ap\tilde{p}}}
-\newcommand{\laminf}{\mathsf{la\tilde{m}}}
+\newcommand{\Pie}{\Pi^{\mathsf{ext}}}
+\newcommand{\appe}{\mathsf{app^{ext}}}
+\newcommand{\lame}{\mathsf{lam^{ext}}}
+\newcommand{\Piinf}{\Pi^{\mathsf{inf}}}
+\newcommand{\appinf}{\mathsf{app^{inf}}}
+\newcommand{\laminf}{\mathsf{lam^{inf}}}
 \newcommand{\appitt}{\mathop{{\scriptstyle @}}}
 \newcommand{\Refl}{\mathsf{Refl}}
 \newcommand{\IdU}{\mathsf{IdU}}
@@ -104,6 +104,10 @@
 \newcommand{\lamK}{\mathsf{lam}^{\K}}
 \newcommand{\appK}{\mathsf{app}^{\K}}
 
+\newcommand{\arri}{\Rightarrow}
+\newcommand{\arre}{\Rightarrow^{\mathsf{ext}}}
+\newcommand{\arrinf}{\Rightarrow^{\mathsf{inf}}}
+
 \newcommand{\bCon}{\boldsymbol{\Con}}
 \newcommand{\bTy}{\boldsymbol{\Ty}}
 \newcommand{\bSub}{\boldsymbol{\Sub}}
@@ -116,9 +120,16 @@
 \newcommand{\bt}{\boldsymbol{t}}
 \newcommand{\bu}{\boldsymbol{u}}
 \newcommand{\bA}{\boldsymbol{A}}
+\newcommand{\ba}{\boldsymbol{a}}
 \newcommand{\bB}{\boldsymbol{B}}
 \newcommand{\bid}{\boldsymbol{\id}}
 \newcommand{\bemptycon}{\boldsymbol{\emptycon}}
+\newcommand{\bSet}{\boldsymbol{\Set}}
+\newcommand{\bU}{\boldsymbol{\U}}
+\newcommand{\bEl}{\boldsymbol{\El}}
+\newcommand{\bPii}{\boldsymbol{\Pi}}
+\newcommand{\bappi}{\boldsymbol{\mathsf{app}}}
+\newcommand{\blami}{\boldsymbol{\mathsf{lam}}}
 
 \newcommand{\ul}[1]{\underline{#1}}
 \newcommand{\ulGamma}{\ul{\Gamma}}
@@ -474,7 +485,7 @@ Signatures are given as contexts in a certain type theory, the theory of
 signatures. We shall abbreviate it as ToS. However, ToS turns out to be a large
 infinitary QIIT itself, and we would like to define ToS and a notion of
 signature without referring to QIITs, only using features present in cETT. As a
-first step, we define a notion of model. $\Pi$
+first step, we define a notion of model.
 
 \begin{definition}[Notion of model for the theory of signatures]\label{def:tos}
 For levels $i$ and $j$, $\ToS_{i,j} : \Set_{\max(i,\,j)+1}$ is a cETT type whose
@@ -493,28 +504,28 @@ $\epsilon : \Sub\,\Gamma\,\emptycon$. Context extension is $\blank\ext\blank :
 written as $\blank[\blank]$. Projections are noted as $\p :
 \Sub\,(\Gamma\,\ext\,A)\,\Gamma$ and $\q : \Tm\,(\Gamma\,\ext\,A)\,(A[\p])$, and
 substitution extension is $\blank,\blank : (\sigma : \Sub\,\Gamma\,\Delta)\ra
-\Tm\,\Gamma\,A[\sigma]\ra \Sub\,\Gamma\,(\Delta\ext A)$.
+\Tm\,\Gamma\,(A[\sigma])\ra \Sub\,\Gamma\,(\Delta\ext A)$.
 
 A \textbf{universe} $\U : \Ty\,\Gamma$ with decoding $\El : (a :
 \Tm\,\Gamma\,\U) \ra \Ty\,\Gamma$.
 
-\textbf{Inductive function space}, with $\Pii : (a : \Tm\,\Gamma\,\U) \ra
-\Ty\,(\Gamma\,\ext\,\El\,a) \ra \Ty\,\Gamma$ and application as $\appi :
+\textbf{Inductive function space} $\Pii : (a : \Tm\,\Gamma\,\U) \ra
+\Ty\,(\Gamma\,\ext\,\El\,a) \ra \Ty\,\Gamma$, with application as $\appi :
 \Tm\,\Gamma\,(\Pii\,a\,B)\ra \Tm\,(\Gamma\,\ext\,\El\,a)\,B$ and its
 inverse $\lami$.
 
-\textbf{External function space} with $\Set_i$ domain: $\Pie : (A : \Set_i)\ra(A
-\ra \Ty\,\Gamma)\ra \Ty\,\Gamma$, with $\appe : \Tm\,\Gamma\,(\Pie\,A\,B)\ra((x
-: A)\ra \Tm\,\Gamma\,(B\,x))$ and its inverse $\lame$.
+\textbf{External function space} $\Pie : (A : \Set_i)\ra(A \ra \Ty\,\Gamma)\ra
+\Ty\,\Gamma$, with $\appe : \Tm\,\Gamma\,(\Pie\,A\,B)\ra((x : A)\ra
+\Tm\,\Gamma\,(B\,x))$ and its inverse $\lame$.
 
-\textbf{Infinitary function space}, with $\Piinf : (A : \Set_i)\ra(A \ra
-\Tm\,\Gamma\,\U)\ra \Tm\,\Gamma\,\U$, $\appinf :
+\textbf{Infinitary function space} $\Piinf : (A : \Set_i)\ra(A \ra
+\Tm\,\Gamma\,\U)\ra \Tm\,\Gamma\,\U$, with $\appinf :
 \Tm\,\Gamma\,(\El\,(\Pie\,A\,b))\ra((x : A)\ra \Tm\,\Gamma\,(\El\,(b\,x)))$ and
-$\laminf$.
+its inverse $\laminf$.
 
 \textbf{An identity type} $\Id : (a : \Tm\,\Gamma\,\U)\ra
 \Tm\,\Gamma\,(\El\,a)\ra\Tm\,\Gamma\,(\El\,a)\ra \Tm\,\Gamma\,\U$, with $\Refl :
-(T : \Tm\,\Gamma\,(\El\,a))\ra \Id\,a\,t\,t$, equality reflection and UIP.
+(t : \Tm\,\Gamma\,(\El\,a))\ra \Id\,a\,t\,t$, equality reflection and UIP.
 
 \end{definition}
 In the above listing, we omit equations for substitution and
@@ -534,6 +545,15 @@ extension, $\Pii$ and $\lami$, e.g.\ as $(\emptycon\,\ext (a : U) \ext (t :
       (u : \Tm\,\Gamma\,(\El\,a)) \ra \Tm\,\Gamma\,(B[\id, u])\\
   & t\appitt u && :\equiv (\appi\,t)[\id, u]
 \end{alignat*}
+We abbreviate non-dependent inductive $\Pii$ as $\blank\arri\blank$, and likewise we use $\blank\arre\blank$ and $\blank\arrinf\blank$.
+
+%% We use abbreviations for non-dependent function types:
+%% \begin{alignat*}{3}
+%%   & A\arri B && :\equiv \Pi\,A\,(B[\p])\\
+%%   & A \arre\,B &&:\equiv \Pie\,A\,(\lambda\,\_.\,B) \\
+%%   & A \arrinf\,B &&:\equiv \Piinf\,A\,(\lambda\,\_.\,B)
+%% $A\arri B :\equiv \Pi\,A\,(B[\p])$, and $A \arre\,B :\equiv \Pie\,A\,(\lambda\,\_.\,B)$, and likewise
+%% $A \arrinf\,B :\equiv \Piinf\,A\,(\lambda\,\_.\,B)$.
 
 \begin{definition}[Notion of signature]
 A QIIT signature at level $i$ is a context in an arbitrary $M : \ToS_{i,j}$
@@ -555,7 +575,7 @@ not in any cETT universe.
   & NatSig : \Sig_0 \\
   & NatSig :\equiv \lambda (j :\mathbb{N})(M : \ToS_{0,j}).\\
   & \hspace{1em}(\emptycon_M\,\ext_M\, (N : \U_M) \,\ext_M\,(zero : \El_M\,N)\\
-  & \hspace{2.67em}\ext_M (suc : \Pii_M\,N\,(\El_M\,N)))
+  & \hspace{2.67em}\ext_M (suc : N\arri_M\El_M\,N))
 \end{alignat*}
 \end{example}
 
@@ -568,15 +588,18 @@ components. In functional programming, this is sometimes called
 interpreting embedded languages.
 \end{definition}
 
+In the following examples, we leave the abstracted $M : \ToS_{0,j}$ implicit.
+
 \begin{example}{Infinitary constructors}. The universe $\U$ is closed under
 the $\Piinf$ function type, which allows such functions to appear in the domains
-of $\Pii$ types. This allows a signature for trees branching with arbitrary
-small sets. This is a signature at level 1, since we have $\Set_0$ as a $\Pie$
-domain type.
-\[
-TreeSig :\equiv
-\emptycon \ext (Tree : \U) \ext (node : \Pie\,\Set_0\,\lambda A.\,\Pii\,(\Piinf\,A\,\lambda \_.\,Tree)\,(\El\,Tree))
-\]
+of $\Pii$ types. This allows, for example, a signature for trees branching with
+arbitrary small sets. This is a signature at level 1, since we have $\Set_0$ as
+a $\Pie$ domain type.
+\begin{alignat*}{3}
+& TreeSig :\equiv \\
+& \hspace{1em}\emptycon \ext (Tree : \U)\\
+& \hspace{1.35em}\ext (node : \Pie\,\Set_0\,(\lambda A.\,(A\,\arrinf\,Tree)\arri\El\,Tree))
+\end{alignat*}
 \end{example}
 
 %% \begin{example}{Sort equations}. An interesting example is the term lifting
@@ -589,9 +612,10 @@ TreeSig :\equiv
 
 \begin{example}{Recursive equations}. Again, the universe is closed under $\Id$, which allows us to write equations
 in $\Pii$ domains. A minimal example:
-\[
-RecEqSig :\equiv \emptycon \ext (A : \U) \ext (a : \El\,A) \ext (f : \Pii\,(x : A)\,(\Pii\,(\Id\,A\,x\,a)\,(\El\,A)))
-\]
+\begin{alignat*}{3}
+  & RecEqSig :\equiv\\
+  & \hspace{0.5em}\emptycon\,\ext (A : \U) \ext (a : \El\,A)\ext (f : \Pii\,(x : A)\,(\Id\,A\,x\,a\arri\El\,A))
+\end{alignat*}
 More interesting (and complicated) examples are boundary conditions in various
 cubical type theories\cite{TODO}. Note that our $\Id$ allows iterated equations
 as well, but these are all trivial in the semantics, where we assume UIP.
@@ -622,16 +646,16 @@ strict enough. Hence, instead of modeling types as certain slices and
 substitution by pullback, we model types as displayed categories with extra
 structure, which naturally support strict reindexing.
 
-We make a similar choice in the interpretation of signatures themselves: we
-use structured CwFs instead of lex categories to model notions of induction. The
-reason here is that CwFs allow us to define induction in strictly the same way as
-one would write it down in type theory, since we have $\Ty$ and $\Tm$ for a
-primitive notion of dependent objects and morphisms. In contrast, dependent
-objects in lex categories is a derived notion, and the induction principles we
-get are only up to isomorphisms. This issue is perhaps not relevant from a
-purely categorical perspective, but we are concerned with eventually
-implementing QIITs in proof assistants, so we prefer if our semantics computes
-strictly.
+We make a similar choice in the interpretation of signatures themselves: we use
+structured CwFs instead of lex categories to model notions of induction. The
+reason here is that CwFs allow us to compute induction principles in strictly
+the same way as one would write them down in type theory, since we have $\Ty$
+and $\Tm$ for a primitive notion of dependent objects and morphisms. In
+contrast, dependent objects in lex categories is a derived notion, and the
+induction principles we get are only up to isomorphism. This issue is perhaps
+not relevant from a purely categorical perspective, but we are concerned with
+eventually implementing QIITs in proof assistants, so we prefer if our semantics
+computes strictly.
 
 In the following, we fix $i$ and $j$ levels, and define a model $M : \ToS_{i,
   1+\max(i,j+1)}$, such than $\Con_M$ is a type of structured categories (of
@@ -646,18 +670,21 @@ We present the components of the model in order. In the following, we use
 structures. For example, we use $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$
 to denote a substitution in the model.
 
+The model involves a large amount of technical detail, most of which we omit,
+and only present the most salient parts.
 
 \subsection{Contexts}
 
-We define $\bCon : \Set_{1+\max(i,j+1)}$ as $\flCwF_{\max(i,j+1)}$. We define
-$\flCwF$ as follows.
+We define $\bCon : \Set_{1+\max(i,j+1)}$ as $\flCwF_{\max(i,j+1)}$.
+%% We define
+%% $\flCwF$ as follows.
 
 \begin{definition}[Finite limit CwFs]\label{def:flCwF}
 For a level $i$, there is a cETT type $\flCwF_i : \Set_{i+1}$, which is an
 iterated $\Sigma$-type with the following components:
 \begin{enumerate}
-  \item A CwF with underlying sets all in $\Set_i$. We reuse the notation
-    from definition \ref{def:tos}.
+  \item A CwF with underlying sets all in $\Set_i$. We reuse the component
+    notations from Definition \ref{def:tos}.
   \item $\Sigma$-type $\Sg : (A : \Ty\,\Gamma)\ra \Ty\,(\Gamma \ext A)
     \ra \Ty\,\Gamma$, with term formers $\proj1$, $\proj2$ and $\blank,\blank$.
   \item Identity type $\Id : (A : \Ty\,\Gamma)\ra \Tm\,\Gamma\,A\ra
@@ -731,8 +758,8 @@ $\Ty\,\Gamma$, which sends $A$ to $A[\sigma]$ and $t :
 
 \todo{we have a level lift here, decide how to handle}
 
-We define $\boldsymbol{\Sub\,\Gamma\,\Delta} : \Set_{1 + \max(i, j+1)}$ as the type
-of weak flCwF morphisms from $\boldsymbol{\Gamma}$ to $\boldsymbol{\Delta}$.
+%% We define $\boldsymbol{\Sub\,\Gamma\,\Delta} : \Set_{1 + \max(i, j+1)}$ as the type
+%% of weak flCwF morphisms from $\boldsymbol{\Gamma}$ to $\boldsymbol{\Delta}$.
 
 \begin{definition}\label{def:weakmorphism} A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a functor between underlying categories, which additionally maps types to types and terms to terms, and satisfies the following:
   \begin{enumerate}
@@ -936,11 +963,8 @@ Additionally, for $\sigma : \Sub_{\bA}\,\Gamma\,\Delta\,\ulsigma$, we have
 \subsection{Type Substitution}
 We aim to define $\boldsymbol{\blank[\blank] : \Ty\,\Delta \ra
   \Sub\,\Gamma\,\Delta \ra \Ty\,\Gamma}$, such that $\boldsymbol{A[\id]} = \bA$
-and $\boldsymbol{A[\sigma\circ\delta]} = \boldsymbol{A[\sigma][\delta]}$. This
-is rather laborious to fully write out, so we omit most details and focus on the
-main points.
-
-The underlying sets are given by simple composition:
+and $\boldsymbol{A[\sigma\circ\delta]} = \boldsymbol{A[\sigma][\delta]}$. The
+underlying sets are given by simple composition:
 \begin{alignat*}{3}
   & \Con_{\boldsymbol{A[\sigma]}}\,\ulGamma && :\equiv \Con_{\bA}\,(\bsigma\,\ulGamma)\\
   & \Sub_{\boldsymbol{A[\sigma]}}\,\Gamma\,\Delta\,\ulsigma && :\equiv
@@ -984,15 +1008,15 @@ $\bA$.
 \todo{iso-cleaving}
 
 Functoriality of type substitution, i.e.\ $\boldsymbol{A[\id]} = \bA$ and
-$\boldsymbol{A[\sigma\circ\delta]} = \boldsymbol{A[\sigma][\delta]}$, follow
+$\boldsymbol{A[\sigma\circ\delta]} = \boldsymbol{A[\sigma][\delta]}$, follows
 from Lemma \ref{lem:idcomppres} and split cleaving given by $\coe_{\id}$,
 $\coe_{\circ}$, $\coh_{\id}$ and $\coh_{\circ}$ in $\bA$.
 
 \subsection{Terms}
 
-$\boldsymbol{\Tm\,\Gamma\,A} : \Set_{1 + \max(i, j)}$ is defined as the type of \emph{weak flCwF sections} of $\bA$.
-
-\begin{definition}[Weak flCwF section] Given $\bA : \bTy\,\bGamma$, the underlying functions of $\bt : \bTm\,\bGamma\,\bA$ are as follows:
+\begin{definition} $\boldsymbol{\Tm\,\Gamma\,A} : \Set_{1 + \max(i, j)}$ is defined as the type of
+\emph{weak flCwF sections} of $\bA$. The underlying functions of $\bt :
+\bTm\,\bGamma\,\bA$ are as follows:
 \begin{alignat*}{3}
   & \bt : (\ulGamma : \Con_{\bGamma}) \ra \Con_{\bA}\,\ulGamma\\
   & \bt : (\ulsigma : \Sub_{\bGamma}\,\ulGamma\,\ulDelta)
@@ -1003,18 +1027,18 @@ $\boldsymbol{\Tm\,\Gamma\,A} : \Set_{1 + \max(i, j)}$ is defined as the type of 
 \end{alignat*}
 Such that
 \begin{enumerate}
-  \item $\bsigma\,(\ulA[\ulsigma]) = (\bsigma\,\ulA)\,[\bsigma\,\ulsigma]$
-  \item $\bsigma\,(\ult[\ulsigma]) = (\bsigma\,\ult)\,[\bsigma\,\ulsigma]$
-  \item The unique map $\epsilon_{\bA} : \Sub\,(\bsigma\,\emptycon)\,\emptycon_{\bGamma}\,\id$ has a vertical retraction.
-  \item Each $(\bsigma\,\p,\,\bsigma\,\q) : \Sub\,(\bsigma\,(\ulGamma\,\ext\,\ulA))\,(\bsigma\,\ulGamma\,\ext\,\bsigma\,\ulA)\,\id$ has a vertical inverse.
+  \item $\bt\,(\ulA[\ulsigma]) = (\bt\,\ulA)\,[\bt\,\ulsigma]$
+  \item $\bt\,(\ult[\ulsigma]) = (\bt\,\ult)\,[\bt\,\ulsigma]$
+  \item The unique map $\epsilon_{\bA} : \Sub\,(\bt\,\emptycon)\,\emptycon\,\id$ has a vertical retraction.
+  \item Each $(\bt\,\p,\,\bt\,\q) : \Sub\,(\bt\,(\ulGamma\,\ext\,\ulA))\,(\bt\,\ulGamma\,\ext\,\bt\,\ulA)\,\id$ has a vertical inverse.
 \end{enumerate}
+\end{definition}
 Similarly to Definition \ref{def:weakmorphism}, we denote the evident preservation
 isomorphisms as $\bt_{\emptycon} : \bt\,\emptycon \simeq_{\id} \emptycon$ and
 $\bt_{\ext} : \bt\,(\ulGamma\ext \ulA) \simeq_{\id} \bt\,\ulGamma \ext
 \bt\,\ulA$. In short, weak section is a dependently typed analogue of weak
 morphism, with dependent underlying functions and displayed preservation
 isomorphisms. We also have the derived fl-preservation isomorphisms.
-\end{definition}
 
 \begin{theorem} A weak section $\boldsymbol{t : \Tm\,\Gamma\,A}$ preserves fl-structure up to vertical type isomorphisms, that is, the following are derivable:
 \begin{alignat*}{3}
@@ -1038,7 +1062,7 @@ leave to future work the investigation of such asymmetrical (or
 \subsection{Term Substitution}
 
 $\boldsymbol{\blank[\blank] : \Tm\,\Delta\,A \ra (\sigma : \Sub\,\Gamma\,\Delta)
-  \ra \Tm\,\Gamma\,(A[\sigma])}$ is given the similarly to
+  \ra \Tm\,\Gamma\,(A[\sigma])}$ is given similarly to
 $\boldsymbol{\blank\circ\blank}$ in Section \ref{TODO}. Underlying functions
 are given by function composition, and preservation morphisms are also similar:
 \begin{alignat*}{3}
@@ -1056,16 +1080,59 @@ here, since that is derivable in any CwF \cite{TODO}.
 
 $\boldsymbol{\Gamma \ext A : \Con}$ is defined as the \emph{total flCwF} of
 $\bA$. This is given by bundling together all displayed flCwF components in
-$\bA$ with corresponding base components in $\bGamma$, using metatheoretic
-$\Sigma$-types. It is a straightforward extension of total categories in
+$\bA$ with corresponding base components in $\bGamma$, using the metatheoretic
+$\Sigma$-type. It is a straightforward extension of total categories in
 \cite{displayedcats}.
 
 $\boldsymbol{\p : \Sub\,(\Gamma\ext A)\,\Gamma}$ is a strict morphism given by
 taking a first projection for each component. $\boldsymbol{\q : \Tm\,(\Gamma\ext
-  A)\,(A[\p])}$ is likewise a strict flCwF section given by second projections.
+  A)\,(A[\p])}$ is likewise a strict flCwF section given by second projections. Substitution extension $\boldsymbol{\sigma,\,t}$ is given by pointwise combining $\bsigma$ and $\bt$ with metatheoretic $\Sigma$ pairing, e.g.\ $\Con_{\boldsymbol{(\sigma,t)}}\,\ulGamma :\equiv (\bsigma\,\ulGamma,\,\bt\,\ulGamma)$.
 
+\subsection{Universe}
 
+\begin{definition} For a level $i$, we write $\bSet_i$ for the flCwF of sets where $\Con_{\bSet_i} :\equiv \Set_i$ and $\Sub_{\bSet_i}\,\Gamma\,\Delta :\equiv \Gamma \ra \Delta$.
+\end{definition}
 
+We define $\boldsymbol{\U : \Ty\,\Gamma}$ as the isofibration which is
+constantly $\bSet_j$. A constant isofibration does not actually depend on
+the base flCwF, and has trivial iso-cleaving where $\coe$-s are identity
+functions. Hence, we have $\Con_{\bU}\,\ulGamma :\equiv \Set_j$ and $\Sub_{\bU}\,\Gamma\,\Delta\,\ulsigma :\equiv \Gamma \ra \Delta$.
+
+\emph{Remark.} The type $\bTm\,\bGamma\,\bU$ is strictly equal to $\bSub\,\bGamma\,\bSet_j$, so in the following we will think about semantic elements of the universe as weak morphisms from $\bGamma$ to $\bSet_j$.
+
+\subsection{Elements of the Universe}
+
+\begin{definition}
+We define $\boldsymbol{\El : \Tm\,\Gamma\,\U \ra \Ty\,\Gamma}$ as discrete
+isofibration formation. For $\boldsymbol{a : \Tm\,\Gamma\,\U}$, the underlying
+sets of $\bEl\,\ba$ are the following:
+\begin{alignat*}{3}
+  & \Con_{\bEl\,\ba}\,\ulGamma && :\equiv \ba\,\ulGamma\\
+  & \Sub_{\bEl\,\ba}\,\Gamma\,\Delta\,\ulsigma && :\equiv \ba\,\ulsigma\,\Gamma = \Delta\\
+  & \Ty_{\bEl\,\ba}\,\Gamma\,\ulA && :\equiv \ba\,\ulA\,\Gamma\\
+  & \Tm_{\bEl\,\ba}\,\Gamma\,A\,\ult && :\equiv \ba\,\ult\,\Gamma = A
+\end{alignat*}
+Hence, in $\bEl\,\ba$, $\Sub$ and $\Tm$ are propositional. We use the
+isomorphisms $\ba_{\emptycon} : \ba\,\emptycon \simeq \top$ and $\ba_{\ext} :
+\ba\,(\ulGamma\ext\ulA) \simeq (\Gamma :
+\ba\,\ulGamma)\times(\ba\,\ulA\,\Gamma)$ to define empty context and context
+extension:
+\begin{alignat*}{3}
+  & \emptycon_{\bEl\,\ba} && :\equiv \ba_{\emptycon}^{-1}\,\tt\\
+  & (\Gamma\ext_{\bEl\,\ba} A) && :\equiv \ba_{\ext}^{-1}\,(\Gamma,\,A)
+\end{alignat*}
+We likewise use preservation isomorphisms to define $\K$, $\Id$ and $\Sigma$.
+Context coercion is $\coe\,\ulsigma\,\Gamma :\equiv \ba\,\ulsigma\,\Gamma$. Type coercion, for $A : \ba\,\ulA\,\Gamma$ is given as $\coe\,\ult\,A :\equiv \ba\,\ult\,(\ba_{\ext}^{-1}\,(\Gamma,\,A))$.
+\end{definition}
+
+\subsection{Inductive Function Space}
+
+For $\boldsymbol{a : \Tm\,\Gamma\,\U}$ and $\boldsymbol{B :
+  \Ty\,(\Gamma\ext\El\,a)}$, we aim to define $\boldsymbol{\Pi\,a\,B}
+\boldsymbol{:} \bTy\,\bGamma$. We define this as a dependent product of
+isofibrations, indexed by a discrete domain. $\bPii$ would not be definable with
+general $\bA \boldsymbol{:} \bTy\,\bGamma$ domain, since variance issues already
+prevent $\Pi$-types in the CwF of categories, see e.g. \cite{TODO}.
 
 
 
