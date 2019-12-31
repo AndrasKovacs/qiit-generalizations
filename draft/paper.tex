@@ -133,6 +133,7 @@
 \newcommand{\bPiinf}{\boldsymbol{\Piinf}}
 \newcommand{\bappi}{\boldsymbol{\mathsf{app}}}
 \newcommand{\blami}{\boldsymbol{\mathsf{lam}}}
+\newcommand{\bId}{\boldsymbol{\Id}}
 
 \newcommand{\ul}[1]{\underline{#1}}
 \newcommand{\ulGamma}{\ul{\Gamma}}
@@ -244,7 +245,7 @@ constructible from the syntax of the theory of signatures.
 
 \section{Introduction}
 
-\todo{P and Q in cwf, level lifts, think about revising cETT or compressing}
+\todo{revise cETT (compress), more mention of interp of term constructors in model, include missing iso-cleaving to type subst}
 
 The aim of this work is to provide theoretical underpinning to a general notion
 of inductive types, called quotient inductive-inductive types (QIITs). QIITs are
@@ -1183,15 +1184,68 @@ Likewise, $\coh$-s are given by backwards-forwards $\coh$-s.
 
 \subsection{External Function Space}
 
-For $A : \Set_i$ and $\bB : A \ra \bTy\,\bGamma$, we define $\bPie\,A\,\bB \boldsymbol{:} \bTy\,\bGamma$ as
-the evident $A$-indexed direct product of $\bB$.
+For $A : \Set_i$ and $\bB : A \ra \bTy\,\bGamma$, we define $\bPie\,A\,\bB
+\boldsymbol{:} \bTy\,\bGamma$ as the $A$-indexed direct product of $\bB$. Since
+the indexing is given by a metatheoretic function, every component is given in the
+evident pointwise way.
 
 \subsection{Infinitary Function Space}
 
 For $A : \Set_i$ and $\bb : A \ra \bTm\,\bGamma\,\bU$, we aim to define
-$\bPiinf\,A\,\bB \boldsymbol{:} \bTm\,\bGamma\,\bU$.
+$\bPiinf\,A\,\bb \boldsymbol{:} \bTm\,\bGamma\,\bU$. The underlying functions
+are:
+\begin{alignat*}{3}
+  & (\bPiinf\,A\,\bb)\,\ulGamma    &&:\equiv (a : A)\ra \bb\,a\,\ulGamma\\
+  & (\bPiinf\,A\,\bb)\,\ulsigma    &&:\equiv \lambda\,a.\, \bb\,a\,\ulsigma\\
+  & (\bPiinf\,A\,\bb)\,\ulA\       &&:\equiv \lambda\,\Gamma.\,(a : A)\ra \bb\,a\,\ulA\,(\Gamma\, a)\\
+  & (\bPiinf\,A\,\bb)\,\ult        &&:\equiv \lambda\,a.\, \bb\,a\,\ult
+\end{alignat*}
+The preservation morphisms are as follows. Note that $\emptycon_{\bU} = \top$ and $\ext_{\bU}$ is
+metatheoretic $\Sigma$.
+\begin{alignat*}{3}
+  &(\bPiinf\,A\,\bb)_{\emptycon}^{-1} && : \top\ra (\bPiinf\,A\,\bb)\,\emptycon\\
+  %% &                               && : \top\ra (a : A) \ra \bb\,a\,\emptycon\\
+  &(\bPiinf\,A\,\bb)_{\emptycon}^{-1} && :\equiv \lambda\,\_\,a.\,(\bb\,a)_{\emptycon}^{-1}\,\tt\\
+  &(\bPiinf\,A\,\bb)_{\ext}^{-1} && : (\Gamma : (\bPiinf\,A\,\bb)\,\ulGamma)\times((\bPiinf\,A\,\bb)\,\ulA\,\Gamma)\\
+  & && \hspace{0.5em}\ra (\bPiinf\,A\,\bb)\,(\ulGamma \ext \ulA)\\
+  & (\bPiinf\,A\,\bb)_{\ext}^{-1} && :\equiv \lambda\,(\Gamma,A)\,a.\,(\bb\,a)_{\ext}^{-1}(\Gamma\,a,\,A\,a)
+\end{alignat*}
 
+The preservation of $\emptycon$ and $\blank\ext\blank$ here is in fact the main
+point of divergence from \cite{kaposi2019constructing}. In ibid., substitutions
+and terms are modeled as strict morphisms and types as displayed CwFs (with no
+iso-cleaving). However, it is not the case that $(\bPiinf\,A\,\bb)\,\emptycon =
+\top$, which is the statement of strict $\emptycon$-preservation. The left side
+reduces to $(a : A)\ra \bb\,a\,\emptycon$, which is isomorphic to $\top$ but not
+strictly equal to it. Likewise for $\ext$-preservation.
 
+Hence, we are forced to
+interpret terms as weak sections, which in turn forces us to interpret
+types as isofibrations, since type substitution requires iso-cleaving.
+
+\subsection{Identity}
+For $\bt$ and $\bu$ in $\bTm\,\bGamma\,(\bEl\,\ba)$, we define $\bId\,\bt\,\bu
+\boldsymbol{:} \bTm\,\bGamma\,\bU$ as expressing pointwise equality of weak
+sections.
+\begin{alignat*}{3}
+& (\bId\,\bt\,\bu)\,\ulGamma &&:\equiv \bt\,\ulGamma = \bu\,\ulGamma\\
+& (\bId\,\bt\,\bu)\,\ulA     && :\equiv \lambda\,e.\, \bt\,\ulA = \bu\,\ulA
+\end{alignat*}
+Above, $\bt\,\ulA = \bu\,\ulA$ is well-typed because of $e :
+\bt\,\ulGamma = \bu\,\ulGamma$. For substitutions, we have to complete a square
+of equalities:
+\begin{alignat*}{3}
+  (\bId\,\bt\,\bu)\,(\ulsigma : \Sub\,\ulGamma\,\ulDelta) : \bt\,\ulGamma = \bt\,\ulGamma \ra
+       \bt\,\ulDelta = \bt\,\ulDelta
+\end{alignat*}
+This can be given by $\bt\,\ulsigma : \ba\,\ulsigma\,(\bt\,\ulGamma) =
+\bt\,\ulDelta$ and $\bu\,\ulsigma : \ba\,\ulsigma\,(\bu\,\ulGamma) =
+\bu\,\ulDelta$. The action on terms is analogous. We omit preservation morphisms
+here as they are straightforward. Like $\bPiinf$, $\bId$ also does not support
+strict preservation of $\emptycon$ and $\ext$. Equality reflection and $\boldsymbol{\refl :}
+\bId\,\bt\,\bt$ are also evident.
+
+\section{Model Theory of the Theory of Signatures}
 
 %% Acknowledgments
 \begin{acks}
