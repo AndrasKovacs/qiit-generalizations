@@ -121,6 +121,7 @@
 \newcommand{\bu}{\boldsymbol{u}}
 \newcommand{\bA}{\boldsymbol{A}}
 \newcommand{\ba}{\boldsymbol{a}}
+\newcommand{\bb}{\boldsymbol{b}}
 \newcommand{\bB}{\boldsymbol{B}}
 \newcommand{\bid}{\boldsymbol{\id}}
 \newcommand{\bemptycon}{\boldsymbol{\emptycon}}
@@ -128,14 +129,17 @@
 \newcommand{\bU}{\boldsymbol{\U}}
 \newcommand{\bEl}{\boldsymbol{\El}}
 \newcommand{\bPii}{\boldsymbol{\Pi}}
+\newcommand{\bPie}{\boldsymbol{\Pie}}
+\newcommand{\bPiinf}{\boldsymbol{\Piinf}}
 \newcommand{\bappi}{\boldsymbol{\mathsf{app}}}
 \newcommand{\blami}{\boldsymbol{\mathsf{lam}}}
 
 \newcommand{\ul}[1]{\underline{#1}}
 \newcommand{\ulGamma}{\ul{\Gamma}}
 \newcommand{\ulDelta}{\ul{\Delta}}
-\newcommand{\ulsigma}{\ul{\sigma}}
+\newcommand{\ulgamma}{\ul{\gamma}}
 \newcommand{\uldelta}{\ul{\delta}}
+\newcommand{\ulsigma}{\ul{\sigma}}
 \newcommand{\ulepsilon}{\ul{\epsilon}}
 \newcommand{\ult}{\ul{t}}
 \newcommand{\ulu}{\ul{u}}
@@ -588,7 +592,7 @@ components. In functional programming, this is sometimes called
 interpreting embedded languages.
 \end{definition}
 
-In the following examples, we leave the abstracted $M : \ToS_{0,j}$ implicit.
+In the following examples, we leave the abstracted $M : \ToS_{i,j}$ implicit.
 
 \begin{example}{Infinitary constructors}. The universe $\U$ is closed under
 the $\Piinf$ function type, which allows such functions to appear in the domains
@@ -647,23 +651,22 @@ substitution by pullback, we model types as displayed categories with extra
 structure, which naturally support strict reindexing.
 
 We make a similar choice in the interpretation of signatures themselves: we use
-structured CwFs instead of lex categories to model notions of induction. The
-reason here is that CwFs allow us to compute induction principles in strictly
-the same way as one would write them down in type theory, since we have $\Ty$
-and $\Tm$ for a primitive notion of dependent objects and morphisms. In
-contrast, dependent objects in lex categories is a derived notion, and the
-induction principles we get are only up to isomorphism. This issue is perhaps
-not relevant from a purely categorical perspective, but we are concerned with
-eventually implementing QIITs in proof assistants, so we prefer if our semantics
-computes strictly.
+structured CwFs instead of lex categories. The reason here is that CwFs allow us
+to compute induction principles in strictly the same way as one would write them
+down in type theory, since we have $\Ty$ and $\Tm$ for a primitive notion of
+dependent objects and morphisms. In contrast, dependent objects in lex
+categories is a derived notion, and the induction principles we get are only up
+to isomorphism. This issue is perhaps not relevant from a purely categorical
+perspective, but we are concerned with eventually implementing QIITs in proof
+assistants, so we prefer if our semantics computes strictly.
 
 In the following, we fix $i$ and $j$ levels, and define a model $M : \ToS_{i,
-  1+\max(i,j+1)}$, such than $\Con_M$ is a type of structured categories (of
+  1+\max(i,1+j)}$, such than $\Con_M$ is a type of structured categories (of
 algebras). The level $i$ marks the level of all external sets in function
 domains, and $j$ marks the level of all internal sorts in an algebra. Hence,
-every algebra has level $\max(i,j+1)$. The bump is only needed for $j$, since
+every algebra has level $\max(i,1+j)$. The bump is only needed for $j$, since
 algebras only contain elements of $T : \Set_j$ types, while inductive sets are
-themselves elements of $\Set_i$. For example, $NatAlg_i : \Set_{\max(0, i+1)}$.
+themselves elements of $\Set_i$. For example, $NatAlg_i : \Set_{\max(0, 1+i)}$.
 
 We present the components of the model in order. In the following, we use
 \textbf{bold} font to disambiguate components of this model from internal
@@ -675,12 +678,12 @@ and only present the most salient parts.
 
 \subsection{Contexts}
 
-We define $\bCon : \Set_{1+\max(i,j+1)}$ as $\flCwF_{\max(i,j+1)}$.
+We define $\bCon : \Set_{1+\max(i,1+j)}$ as $\flCwF_{\max(i,1+j)}$.
 %% We define
 %% $\flCwF$ as follows.
 
 \begin{definition}[Finite limit CwFs]\label{def:flCwF}
-For a level $i$, there is a cETT type $\flCwF_i : \Set_{i+1}$, which is an
+For a level $i$, there is a cETT type $\flCwF_i : \Set_{1+i}$, which is an
 iterated $\Sigma$-type with the following components:
 \begin{enumerate}
   \item A CwF with underlying sets all in $\Set_i$. We reuse the component
@@ -912,7 +915,7 @@ over $\ulA : \Ty_{\bGamma}\,\ulGamma$ are elements of $\Ty_{\bA}\,\Gamma\,\ulA$,
 \begin{definition}[Displayed isomorphisms] A \emph{displayed context isomorphism} over $\ulsigma : \ulGamma \simeq \ulDelta$, notated $\sigma : \Gamma \simeq_{\ulsigma} \Delta$, is an invertible displayed morphism $\sigma : \Sub_{\bA}\,\Gamma\,\Delta\,\ulsigma$, with inverse $\sigma^{-1} : \Sub_{\bA}\,\Delta\,\Gamma\,\ulsigma^{-1}$. A \emph{displayed type isomorphism} over $\ult : \ulA \simeq \ulB$, notated $t : A \simeq_{\ult} B$, is an isomorphism in a displayed type category.
 \end{definition}
 
-\begin{definition} A \emph{vertical morphism} lies over an identity morphism. We use this definition for context and type morphisms as well.
+\begin{definition} A \emph{vertical morphism} lies over an identity morphism. We use this definition for context morphisms (substitutions) and type morphisms as well.
 \end{definition}
 
 In contrast to \cite{kaposi2019constructing}, it is not sufficient to model
@@ -929,10 +932,10 @@ expresses preservation of base isomorphisms.
   & \coe &&: \ulGamma \simeq \ulDelta \ra \Con_{\bA}\,\ulGamma \ra \Con_{\bA}\,\ulDelta\\
   & \coh &&: (\ulsigma : \ulGamma \simeq \ulDelta)(\Gamma : \Con_{\bA}\,\ulGamma)
            \ra \Gamma \simeq_{\ulsigma} \coe\,\ulsigma\,\Gamma\\
-  & \coe_{\id} && : \coe\,\id\,\Gamma = \Gamma\\
-  & \coe_{\circ} && : \coe\,(\ulsigma\circ\uldelta)\,\Gamma = \coe\,\ulsigma\,(\coe\,\uldelta\,\Gamma)\\
-  & \coh_{\id} && : \coh\,\id\,\Gamma = \id\\
-  & \coh_{\circ} && : \coh\,(\ulsigma\circ\uldelta)\,\Gamma = \coh\,\ulsigma\,(\coe\,\uldelta\,\Gamma)
+  & \coe^{\id} && : \coe\,\id\,\Gamma = \Gamma\\
+  & \coe^{\circ} && : \coe\,(\ulsigma\circ\uldelta)\,\Gamma = \coe\,\ulsigma\,(\coe\,\uldelta\,\Gamma)\\
+  & \coh^{\id} && : \coh\,\id\,\Gamma = \id\\
+  & \coh^{\circ} && : \coh\,(\ulsigma\circ\uldelta)\,\Gamma = \coh\,\ulsigma\,(\coe\,\uldelta\,\Gamma)
           \circ \coh\,\uldelta\,\Gamma
 \end{alignat*}
 Here, $\coe$ and $\coh$ abbreviate ``coercion'' and ``coherence'' respectively.
@@ -943,22 +946,26 @@ Here, $\coe$ and $\coh$ abbreviate ``coercion'' and ``coherence'' respectively.
   & \coe &&: \ulA \simeq \ulB \ra \Ty_{\bA}\,\Gamma\,\ulA \ra \Ty_{\bA}\,\Gamma\,\ulB\\
   & \coh &&: (\ult : \ulA \simeq \ulB)(A : \Ty_{\bA}\,\Gamma\,\ulA)
            \ra A \simeq_{\ult} \coe\,\ult\,A\\
-  & \coe_{\id} && : \coe\,\id\,A = A\\
-  & \coe_{\circ} && : \coe\,\ult\,(\coe\,\uldelta\,A) = \coe\,(\ult\circ\uldelta)\,A\\
-  & \coh_{\id} &&: \coh\,\id\,A = \id\\
-  & \coh_{\circ} &&: \coh\,(\ult\circ\uldelta)\,A = \coh\,\ult\,(\coe\,\uldelta\,A)
+  & \coe^{\id} && : \coe\,\id\,A = A\\
+  & \coe^{\circ} && : \coe\,\ult\,(\coe\,\uldelta\,A) = \coe\,(\ult\circ\uldelta)\,A\\
+  & \coh^{\id} &&: \coh\,\id\,A = \id\\
+  & \coh^{\circ} &&: \coh\,(\ult\circ\uldelta)\,A = \coh\,\ult\,(\coe\,\uldelta\,A)
           \circ \coh\,\uldelta\,A
 \end{alignat*}
 Additionally, for $\sigma : \Sub_{\bA}\,\Gamma\,\Delta\,\ulsigma$, we have
 \begin{alignat*}{3}
-  & \coe_{[]} &&: \coe\,(\ult[\ulsigma])\,(A[\sigma]) = (\coe\,\ult\,A)[\sigma]\\
-  & \coh_{[]} &&: \coh\,(\ult[\ulsigma\circ \p,\q])\,(A[\sigma]) = (\coh\,\ult\,A)[\sigma]
+  & \coe[] &&: \coe\,(\ult[\ulsigma])\,(A[\sigma]) = (\coe\,\ult\,A)[\sigma]\\
+  & \coh[] &&: \coh\,(\ult[\ulsigma\circ \p,\q])\,(A[\sigma]) = (\coh\,\ult\,A)[\sigma]
 \end{alignat*}
 
 \end{definition}
 
 \begin{definition} A \emph{split flCwF isofibration} is a displayed flCwF equipped with iso-cleaving for contexts and types.
 \end{definition}
+
+\emph{Remark.} It is not possible to model types as fibrations or opfibrations, because
+we have no restriction on the variance of ToS types. For example, the type which extends
+a pointed set to a $Nat$-signature is invariant in the base signature.
 
 \subsection{Type Substitution}
 We aim to define $\boldsymbol{\blank[\blank] : \Ty\,\Delta \ra
@@ -1014,7 +1021,7 @@ $\coe_{\circ}$, $\coh_{\id}$ and $\coh_{\circ}$ in $\bA$.
 
 \subsection{Terms}
 
-\begin{definition} $\boldsymbol{\Tm\,\Gamma\,A} : \Set_{1 + \max(i, j)}$ is defined as the type of
+$\boldsymbol{\Tm\,\Gamma\,A} : \Set_{1 + \max(i, 1+j)}$ is defined as the type of
 \emph{weak flCwF sections} of $\bA$. The underlying functions of $\bt :
 \bTm\,\bGamma\,\bA$ are as follows:
 \begin{alignat*}{3}
@@ -1032,7 +1039,7 @@ Such that
   \item The unique map $\epsilon_{\bA} : \Sub\,(\bt\,\emptycon)\,\emptycon\,\id$ has a vertical retraction.
   \item Each $(\bt\,\p,\,\bt\,\q) : \Sub\,(\bt\,(\ulGamma\,\ext\,\ulA))\,(\bt\,\ulGamma\,\ext\,\bt\,\ulA)\,\id$ has a vertical inverse.
 \end{enumerate}
-\end{definition}
+
 Similarly to Definition \ref{def:weakmorphism}, we denote the evident preservation
 isomorphisms as $\bt_{\emptycon} : \bt\,\emptycon \simeq_{\id} \emptycon$ and
 $\bt_{\ext} : \bt\,(\ulGamma\ext \ulA) \simeq_{\id} \bt\,\ulGamma \ext
@@ -1102,7 +1109,6 @@ functions. Hence, we have $\Con_{\bU}\,\ulGamma :\equiv \Set_j$ and $\Sub_{\bU}\
 
 \subsection{Elements of the Universe}
 
-\begin{definition}
 We define $\boldsymbol{\El : \Tm\,\Gamma\,\U \ra \Ty\,\Gamma}$ as discrete
 isofibration formation. For $\boldsymbol{a : \Tm\,\Gamma\,\U}$, the underlying
 sets of $\bEl\,\ba$ are the following:
@@ -1123,16 +1129,67 @@ extension:
 \end{alignat*}
 We likewise use preservation isomorphisms to define $\K$, $\Id$ and $\Sigma$.
 Context coercion is $\coe\,\ulsigma\,\Gamma :\equiv \ba\,\ulsigma\,\Gamma$. Type coercion, for $A : \ba\,\ulA\,\Gamma$ is given as $\coe\,\ult\,A :\equiv \ba\,\ult\,(\ba_{\ext}^{-1}\,(\Gamma,\,A))$.
-\end{definition}
 
 \subsection{Inductive Function Space}
 
 For $\boldsymbol{a : \Tm\,\Gamma\,\U}$ and $\boldsymbol{B :
   \Ty\,(\Gamma\ext\El\,a)}$, we aim to define $\boldsymbol{\Pi\,a\,B}
 \boldsymbol{:} \bTy\,\bGamma$. We define this as a dependent product of
-isofibrations, indexed by a discrete domain. $\bPii$ would not be definable with
-general $\bA \boldsymbol{:} \bTy\,\bGamma$ domain, since variance issues already
-prevent $\Pi$-types in the CwF of categories, see e.g. \cite{TODO}.
+isofibrations, indexed by a discrete domain. With a general $\bA \boldsymbol{:}
+\bTy\,\bGamma$ domain, $\bPii$ would not be definable, since variance issues
+preclude $\Pi$-types in the CwF of categories \cite{TODO}.
+
+%% _{(\bPii\,\ba\,\bB)}
+
+Contexts are products of $\bB$-contexts, and types are products of $\bB$-types,
+indexed respectively by contexts and types of $\bEl\,\ba$.
+\begin{alignat*}{3}
+  & \Con_{(\bPii\,\ba\,\bB)}\,\ulGamma &&:\equiv (\gamma : \ba\,\ulGamma)\ra \Con_{\bB}\,(\ulGamma, \gamma)\\
+  & \Ty_{(\bPii\,\ba\,\bB)}\,\Gamma\,\ulA &&:\equiv (\gamma : \ba\,\ulGamma)(a : \ba\,\ulA\,\gamma)\ra \Ty_{\bB}\,(\Gamma\,\gamma)\,(\ulA, a)
+\end{alignat*}
+Note that since $\bB$ is over the total $\boldsymbol{(\Gamma\ext\El\,a)}$,
+$\Con_{\bB}$ has a $\Sigma$-typed argument, and likewise the last argument
+of every $\bB$ component.  We could define substitutions similarly, as
+products of substitutions:
+\begin{alignat*}{3}
+  & \Sub_{(\bPii\,\ba\,\bB)}\,\Gamma\,\Delta\,\ulsigma :\equiv
+  (\gamma : \ba\,\ulGamma)(\delta : \ba\,\ulDelta)
+  (\sigma : \Sub_{(\bEl\,\ba)}\,\gamma\,\delta\,\ulsigma)\\
+  &\hspace{6.5em}\ra \Sub_{\bB}\,(\Gamma\,\gamma)\,(\Delta\,\delta)\,(\ulsigma, \sigma)
+\end{alignat*}
+This would work, but we know that $\Sub_{(\bEl\,\ba)}\,\gamma\,\delta\,\ulsigma$ is defined
+as $\ba\,\ulsigma\,\gamma = \delta$, so we can eliminate $\sigma$ by singleton contraction,
+and use the following equivalent definition:
+\begin{alignat*}{3}
+  & \Sub_{(\bPii\,\ba\,\bB)}\,\Gamma\,\Delta\,\ulsigma :\equiv
+  (\gamma : \ba\,\ulGamma)\ra\Sub_{\bB}\,(\Gamma\,\gamma)\,(\Delta\,(\ba\,\ulsigma\,\gamma)\,(\ulsigma, \refl)
+\end{alignat*}
+The benefit of the contracted definition is that it computes preservation laws
+in algebra homomorphisms strictly as expected, while the non-contracted
+definition computes homomorphisms as functional logical relations.
+
+Terms are also given as a singleton-contracted version of products of terms. In
+$\bPii\,\ba\,\bB$, all other structure is given pointwise by $\bB$-structure.
+
+Iso-cleaving is given by transporting indices backwards in $\bEl\,\ba$ and outputs forwards
+in $\bB$:
+\begin{alignat*}{3}
+  & \coe\,\ulsigma\,\Gamma &&:\equiv
+    \lambda\,\gamma.\,\coe_{\bB}\,(\ulsigma,\refl)\,(\Gamma\,(\ba\,(\ulsigma^{-1})\,\gamma))\\
+  & \coe\,\ult\,A &&:\equiv
+    \lambda\,\gamma\,a.\,\coe_{\bB}\,(\ult,\refl)\,(A\,(\ba\,(\ult^{-1})\,(\ba_{\ext}^{-1}(\gamma,a))))
+\end{alignat*}
+Likewise, $\coh$-s are given by backwards-forwards $\coh$-s.
+
+\subsection{External Function Space}
+
+For $A : \Set_i$ and $\bB : A \ra \bTy\,\bGamma$, we define $\bPie\,A\,\bB \boldsymbol{:} \bTy\,\bGamma$ as
+the evident $A$-indexed direct product of $\bB$.
+
+\subsection{Infinitary Function Space}
+
+For $A : \Set_i$ and $\bb : A \ra \bTm\,\bGamma\,\bU$, we aim to define
+$\bPiinf\,A\,\bB \boldsymbol{:} \bTm\,\bGamma\,\bU$.
 
 
 
