@@ -96,6 +96,8 @@
 \newcommand{\IdU}{\mathsf{IdU}}
 \newcommand{\ReflU}{\mathsf{ReflU}}
 \newcommand{\Sig}{\mathsf{Sig}}
+\newcommand{\ToSSig}{\mathsf{ToSSig}}
+
 \newcommand{\Sg}{\Sigma}
 \newcommand{\flCwF}{\mathsf{flCwF}}
 \newcommand{\Kfam}{\mathsf{K}}
@@ -134,6 +136,7 @@
 \newcommand{\bappi}{\boldsymbol{\mathsf{app}}}
 \newcommand{\blami}{\boldsymbol{\mathsf{lam}}}
 \newcommand{\bId}{\boldsymbol{\Id}}
+\newcommand{\bM}{\boldsymbol{\mathsf{M}}}
 
 \newcommand{\ul}[1]{\underline{#1}}
 \newcommand{\ulGamma}{\ul{\Gamma}}
@@ -560,11 +563,11 @@ We abbreviate non-dependent inductive $\Pii$ as $\blank\arri\blank$, and likewis
 %% $A\arri B :\equiv \Pi\,A\,(B[\p])$, and $A \arre\,B :\equiv \Pie\,A\,(\lambda\,\_.\,B)$, and likewise
 %% $A \arrinf\,B :\equiv \Piinf\,A\,(\lambda\,\_.\,B)$.
 
-\begin{definition}[Notion of signature]
-A QIIT signature at level $i$ is a context in an arbitrary $M : \ToS_{i,j}$
+\begin{definition}[Notion of signature]\label{def:signature}
+A QIIT signature at level $i$ is a context in an arbitrary p$M : \ToS_{i,j}$
 model. We define the type of such signatures as follows:
 \[
-  \Sig_i :\equiv (j : \mathbb{N})\ra(M : \ToS_{i,j})\ra Con_M
+  \Sig_i :\equiv (j : \mathbb{N})\ra(M : \ToS_{i,j})\ra \Con_M
 \]
 
 Here, $i$ refers to the level of external types appearing in the signature, in
@@ -629,7 +632,7 @@ as well, but these are all trivial in the semantics, where we assume UIP.
 \section{Semantics}
 \label{sec:semantics}
 
-\subsection{Overview}
+\subsection{Overview}\label{sec:overview}
 
 For each signature, we would like to have at least
 \begin{enumerate}
@@ -661,21 +664,23 @@ to isomorphism. This issue is perhaps not relevant from a purely categorical
 perspective, but we are concerned with eventually implementing QIITs in proof
 assistants, so we prefer if our semantics computes strictly.
 
-In the following, we fix $i$ and $j$ levels, and define a model $M : \ToS_{i,
-  1+\max(i,1+j)}$, such than $\Con_M$ is a type of structured categories (of
+In the following, for $i$ and $j$ levels we define a model $\bM_{i,j} : \ToS_{i,
+  1+\max(i,1+j)}$, such than $\Con_{\bM_{i,j}}$ is a type of structured categories (of
 algebras). The level $i$ marks the level of all external sets in function
 domains, and $j$ marks the level of all internal sorts in an algebra. Hence,
 every algebra has level $\max(i,1+j)$. The bump is only needed for $j$, since
 algebras only contain elements of $T : \Set_j$ types, while inductive sets are
-themselves elements of $\Set_i$. For example, $NatAlg_i : \Set_{\max(0, 1+i)}$.
+themselves elements of $\Set_i$. For example, $NatAlg_i : \Set_{\max(0, 1+i)} :
+\Set_{1+\max(0, 1+i)}$,
+
 
 We present the components of the model in order. In the following, we use
-\textbf{bold} font to disambiguate components of this model from internal
-structures. For example, we use $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$
-to denote a substitution in the model.
+\textbf{bold} font to disambiguate components of $\bM_{i,j}$ from components of other
+structures. For example, we use $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ to
+denote a substitution in $\bM_{i,j}$.
 
-The model involves a large amount of technical detail, most of which we omit,
-and only present the most salient parts.
+The model involves a large amount of technical detail; we omit a significant
+part of this, and only present the most salient parts.
 
 \subsection{Contexts}
 
@@ -684,8 +689,8 @@ We define $\bCon : \Set_{1+\max(i,1+j)}$ as $\flCwF_{\max(i,1+j)}$.
 %% $\flCwF$ as follows.
 
 \begin{definition}[Finite limit CwFs]\label{def:flCwF}
-For a level $i$, there is a cETT type $\flCwF_i : \Set_{1+i}$, which is an
-iterated $\Sigma$-type with the following components:
+For each level $i$ we define $\flCwF_i : \Set_{1+i}$ as an iterated $\Sigma$-type
+with the following components:
 \begin{enumerate}
   \item A CwF with underlying sets all in $\Set_i$. We reuse the component
     notations from Definition \ref{def:tos}.
@@ -711,7 +716,7 @@ $\Kfam$ as \emph{fl-structure}.
 %% objects'', and $\Tm$ for ``dependent morphisms''. We use these to define
 %% induction.
 
-\begin{definition}[Notion of induction in an flCwF]
+\begin{definition}[Notion of induction in an flCwF]\label{def:induction}
 Given $\bGamma : \flCwF_i$, we have the following predicate on contexts:
 \begin{alignat*}{3}
   & Inductive : \Con_{\bGamma} \ra \Set_i \\
@@ -1182,6 +1187,11 @@ in $\bB$:
 \end{alignat*}
 Likewise, $\coh$-s are given by backwards-forwards $\coh$-s.
 
+$\boldsymbol{\appi : \Tm\,\Gamma\,(\Pii\,a\,B)\ra
+  \Tm\,(\Gamma\,\ext\,\El\,a)\,B}$ can be defined as currying of the underlying
+functions, and $\boldsymbol{\lami}$ as uncurrying.
+
+
 \subsection{External Function Space}
 
 For $A : \Set_i$ and $\bB : A \ra \bTy\,\bGamma$, we define $\bPie\,A\,\bB
@@ -1235,8 +1245,8 @@ Above, $\bt\,\ulA = \bu\,\ulA$ is well-typed because of $e :
 \bt\,\ulGamma = \bu\,\ulGamma$. For substitutions, we have to complete a square
 of equalities:
 \begin{alignat*}{3}
-  (\bId\,\bt\,\bu)\,(\ulsigma : \Sub\,\ulGamma\,\ulDelta) : \bt\,\ulGamma = \bt\,\ulGamma \ra
-       \bt\,\ulDelta = \bt\,\ulDelta
+  (\bId\,\bt\,\bu)\,(\ulsigma : \Sub\,\ulGamma\,\ulDelta) : \bt\,\ulGamma = \bu\,\ulGamma \ra
+       \bt\,\ulDelta = \bu\,\ulDelta
 \end{alignat*}
 This can be given by $\bt\,\ulsigma : \ba\,\ulsigma\,(\bt\,\ulGamma) =
 \bt\,\ulDelta$ and $\bu\,\ulsigma : \ba\,\ulsigma\,(\bu\,\ulGamma) =
@@ -1245,7 +1255,71 @@ here as they are straightforward. Like $\bPiinf$, $\bId$ also does not support
 strict preservation of $\emptycon$ and $\ext$. Equality reflection and $\boldsymbol{\refl :}
 \bId\,\bt\,\bt$ are also evident.
 
+With this, we have defined the $\bM_{i,j} : \ToS_{i, 1+\max(i,1+j)}$ model that we set out to define
+in Section \ref{sec:overview}.
+
 \section{Model Theory of the Theory of Signatures}
+
+At this point, we only have a notion of algebra for ToS, from Definition
+\ref{def:tos}. In the following sections, we would also like to talk about
+initial ToS-algebras and ToS-induction. We get these notions by giving a QIIT
+signature for ToS, and interpreting it in the $\bM$ model from the previous
+section.
+
+\begin{definition}[Signature for ToS] For each level $i$,
+we define $\ToSSig_i : \Sig_{1+i}$, as the signature for the theory of
+signatures with external sets in $\Set_i$. This is a large and infinitary QIIT
+signature, as we have $\Pie$ and $\Piinf$ abstracting over $A : \Set_i$ and
+branching with $A \ra \Ty\,\Gamma$ and $A \ra \Tm\,\Gamma\,\U$ respectively. We
+present an excerpt from $\ToSSig_i$ below.
+\begin{alignat*}{3}
+  & \emptycon && \ext (Con : \U)\\
+  &           && \ext (Sub : Con\arri Con \arri \U)\\
+  &           && \ext (Ty  : Con\arri\U)\\
+  &           && \ext (Tm  : \Pii(\Gamma : Con)(\Ty\,\Gamma \arri \U))\\
+  &           && ...\\
+  &           && \ext (\Piinf : \Pii(\Gamma : Con)\\
+  &           && \hspace{4.2em}(\Pie \Set_i (\lambda\,A.\,(A \arrinf \Ty\,\Gamma)\arri\El(\Ty\,\Gamma))))\\
+  &           && ...
+\end{alignat*}
+
+Now, for each $j$, the interpretation of $\ToSSig_i$ in $\bM_{1+i,j}$ yields an
+flCwF $\bGamma$ such that $\Con_{\bGamma} = \ToS_{i,j}$. In short, we can
+recover ToS algebras from $\ToSSig$. This follows by computation of the
+interpretation and the fact that $\ToSSig$ is the internal representation of
+$\ToS$. Also, since we have an flCwF of $\ToS_{i,j}$-algebras, we can use
+Definition \ref{def:induction} for the notion of $\ToS$-induction.
+
+\emph{Remark.} By the definition of $\bemptycon$ and
+$\boldsymbol{\blank\ext\blank}$, the types of algebras computed by $\bM$ are
+always left-nested iterated $\Sigma$-types which start with $\top$. Hence, we
+need to require that Definition \ref{def:tos} is similarly left-nested and
+starts with $\top$, in order to make the match strict.
+
+\section{Term Models of QIITs}
+
+
+
+
+
+%% \begin{theorem}  For each $j$, the interpretation of $\ToSSig_i$ in $\bM_{1+i,j}$
+%% yields an flCwF $\bGamma$ such that $\Con_{\bGamma} = \ToS_{i,j}$. In short, we
+%% can recover ToS algebras from $\ToSSig$.
+%% \end{theorem}
+%% \begin{proof}
+%% \end{proof}
+
+
+%% Overall, this is just rephrasing Definition \ref{def:tos}
+%% internally to an arbitrary $M : \ToS_{1+i,j}$; recall from Definition
+%% \ref{def:signature} that $\Sig_{1+i} = (j : \mathbb{N})(M : \ToS_{1+i,j})\ra
+%% p\Con_M$. For example, the underlying sets are specified as
+
+
+
+
+\end{definition}
+
 
 %% Acknowledgments
 \begin{acks}
