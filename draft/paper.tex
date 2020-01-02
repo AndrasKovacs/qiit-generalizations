@@ -149,6 +149,7 @@
 \newcommand{\ulu}{\ul{u}}
 \newcommand{\ulA}{\ul{A}}
 \newcommand{\ulB}{\ul{B}}
+\newcommand{\tos}{\mathsf{tos}}
 
 \newcommand{\coe}{\mathsf{coe}}
 \newcommand{\coh}{\mathsf{coh}}
@@ -1282,13 +1283,15 @@ present an excerpt from $\ToSSig_i$ below.
   &           && \hspace{4.2em}(\Pie \Set_i (\lambda\,A.\,(A \arrinf \Ty\,\Gamma)\arri\El(\Ty\,\Gamma))))\\
   &           && ...
 \end{alignat*}
+\end{definition}
 
 Now, for each $j$, the interpretation of $\ToSSig_i$ in $\bM_{1+i,j}$ yields an
 flCwF $\bGamma$ such that $\Con_{\bGamma} = \ToS_{i,j}$. In short, we can
-recover ToS algebras from $\ToSSig$. This follows by computation of the
-interpretation and the fact that $\ToSSig$ is the internal representation of
-$\ToS$. Also, since we have an flCwF of $\ToS_{i,j}$-algebras, we can use
-Definition \ref{def:induction} for the notion of $\ToS$-induction.
+recover ToS algebras from the semantics of $\ToSSig$. This follows by
+computation of the interpretation and the fact that $\ToSSig$ is precisely the
+internal representation of $\ToS$. Also, since we have an flCwF of
+$\ToS_{i,j}$-algebras, we can use Definition \ref{def:induction} for the notion
+of $\ToS$-induction.
 
 \emph{Remark.} By the definition of $\bemptycon$ and
 $\boldsymbol{\blank\ext\blank}$, the types of algebras computed by $\bM$ are
@@ -1298,27 +1301,27 @@ starts with $\top$, in order to make the match strict.
 
 \section{Term Models of QIITs}
 
+In this section we construct QIITs from initial ToS-algebras. From now on, we assume
+the existence of such algebras.
 
+\todo{assumption in environment}
 
+\textbf{For each $i$, we assume that $\tos_i : \ToS_{i, 1+i}$ exists}. The reason for the
+$1 + i$ level of $\ToS$ sorts is that $\tos_i$ may contain $A : \Set_i$ types in
+$\Ty$, and since we intend $\tos_i$ to be a freely generated algebra, the sorts
+must be large enough to avoid size paradoxes.
 
+\begin{lemma}[Cumulativity of $\ToS$] If $i \leq i'$ and $j \leq j'$,
+  then $\ToS_{i,j} \leq \ToS_{i', j'}$.
+\end{lemma}
+\begin{proof} $\ToS_{i,j}$ is uniformly defined in $i$, $j$, hence cumulative subtyping extends
+  through dependent pairs and functions to $\ToS$.
+\end{proof}
 
-%% \begin{theorem}  For each $j$, the interpretation of $\ToSSig_i$ in $\bM_{1+i,j}$
-%% yields an flCwF $\bGamma$ such that $\Con_{\bGamma} = \ToS_{i,j}$. In short, we
-%% can recover ToS algebras from $\ToSSig$.
-%% \end{theorem}
-%% \begin{proof}
-%% \end{proof}
+%% \todo{assumption as environment}
 
+%% \emph{Assumption.}
 
-%% Overall, this is just rephrasing Definition \ref{def:tos}
-%% internally to an arbitrary $M : \ToS_{1+i,j}$; recall from Definition
-%% \ref{def:signature} that $\Sig_{1+i} = (j : \mathbb{N})(M : \ToS_{1+i,j})\ra
-%% p\Con_M$. For example, the underlying sets are specified as
-
-
-
-
-\end{definition}
 
 
 %% Acknowledgments
