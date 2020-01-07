@@ -800,3 +800,24 @@ We need at least two levels to parametrize stuff with.
     If Γ : Conⱼ, and we have syn : ToSⱼ
        con   : Γᴬ(j+1)
        elimᵢ : (α : Γᴰ(1+i⊔j)) → Γˢ(1+i⊔j) con α
+
+------------------------------------------------------------
+
+ONCE AGAIN
+
+  i : external  (switch?)
+  j : inductive level
+ToS(i,j) : Set(max(i+1, j+1))
+
+  (Con : Set j)  : Set (j+1)
+  (Π̂   : (A : Set i) → (A → Ty Γ) → Ty Γ : Set(max(i+1, j))
+     : Set(max(j+1, max(i+1, j)))
+     : Set(max(i+1, j+1))
+
+Cumulativity:
+  m : ToS(i, j)  j < j'   -> m : ToS(i, j')
+
+Syntax:
+  for each i
+    assume tos : ToS(i, i+1)
+    assume ind : Ty tos

@@ -97,6 +97,7 @@
 \newcommand{\ReflU}{\mathsf{ReflU}}
 \newcommand{\Sig}{\mathsf{Sig}}
 \newcommand{\ToSSig}{\mathsf{ToSSig}}
+\newcommand{\Inductive}{\mathsf{Inductive}}
 
 \newcommand{\Sg}{\Sigma}
 \newcommand{\flCwF}{\mathsf{flCwF}}
@@ -249,7 +250,11 @@ constructible from the syntax of the theory of signatures.
 
 \section{Introduction}
 
-\todo{revise cETT (compress), more mention of interp of term constructors in model, include missing iso-cleaving to type subst}
+\todo{revise metatheory intro, use Timany cumulativity}
+\todo{recheck universe levels, prettify levels}
+\todo{explain the limitations and design choices in univ levels}
+\todo{write the rest}
+\todo{see if we can cut back on flCwF, add more examples instead}
 
 The aim of this work is to provide theoretical underpinning to a general notion
 of inductive types, called quotient inductive-inductive types (QIITs). QIITs are
@@ -324,168 +329,193 @@ isomorphisms.
 
 \subsection{Outline of the Paper}
 
-In Section \ref{sec:metatheory}, we describe a cumulative variant of extensional type
-theory which is used as metatheory in the rest of the paper. In Section \ref{sec:tos},
-we introduce the theory of QIIT signatures. TODO
+In Section \ref{sec:metatheory}, we describe the metatheory used in the rest of
+the paper.  In Section \ref{sec:tos}, we introduce the theory of QIIT
+signatures. TODO
 
 \section{Metatheory}
 
-In this paper we consider QII algebras at arbitrary finite levels, along with
-large eliminations, where the initial algebra can be at a different level than
-the target algebra. For a simple example, consider natural number algebras at
-level $i$, given as the $\Sigma$-type $NatAlg_i :\equiv(Nat : \Set_i)\times
-Nat\times(Nat \ra Nat)$. The initial such algebra is the set of natural numbers,
-which is at level $0$, but in type theory we often want to eliminate into larger
-$\Set_i$, for example when computing a $Nat$-indexed family of types. To support
-convenient reasoning about levels in this paper, we need two features:
-cumulativity and a way to quantify over finite levels. The former is essential
-to reduce bureaucratic overhead, while the latter is required to talk about
-arbitrary levels.
+%% We use extensional type theory as metatheory, extended with two features:
+%% cumulative universes and a limited form of universe polymorphism.
 
-\subsection{Cumulativity}
+%% The extensions are used to conveniently talk about large elimination and
+%% algebras at different universe levels. For example, consider natural number
+%% algebras at level $i$, given as the $\Sigma$-type $NatAlg_i :\equiv(Nat :
+%% \Set_i)\times Nat\times(Nat \ra Nat)$. The initial such algebra is the set of
+%% natural numbers, which is at level $0$, but in type theory we often want to
+%% eliminate into larger $\Set_i$, for example when computing a $Nat$-indexed
+%% family of types. Hence, we would like to
 
-%% Cumulativity makes handling of algebras and constructions at different levels
-%% much easier. For example, given an algebra $\gamma : NatAlg_i$, cumulativity
-%% allows us to also have $\gamma : NatAlg_{i+j}$. In a non-cumulative setting such
-%% as Agda, we may only have for each type $A : \Set_i$ a type $\mathsf{Lift}_{i\,j}\,A :
-%% \Set_{i+j}$ which is isomorphic to $A$ up to definitional equality.
-
-In its most basic form, cumulativity requires that whenever $A : \Set_i$, and $i
-< j$ then also $A : \Set_j$. We also need cumulativity for $\Sigma$ and function
-types, in order to have cumulativity for QII algebras in general. For example,
-we want to have $\gamma : NatAlg_j$ whenever $\gamma : NatAlg_i$ and $i < j$.
-
-We use Sterling's cumulative algebraic type theory \cite{sterling2019algebraic} as basis for our metatheory. \todo{REASONS, revamp}
-
-%% The reason is that it is the only rigorous
-%% algebraic definition of cumulativity that we are aware of, and it also
-
-%% The reason for this is twofold. First, it
-%% supports the right kind of cumulativity for our purposes. Second, it is itself a
-%% finitary QIIT with sort equations, hence this paper provides a model theory for
-%% it
-
-We extend the base theory with an extensional identity type, $\Sigma$-types and
-the unit type. In \cite{sterling2019algebraic} a proof of canonicity is provided for the base
-theory, which also includes a standard set-theoretic model. It is
-straightforward to extend the canonicity proof to cover our additional type
-formers.
-
-From now on, we refer to this theory as cETT (cumulative extensional type
-theory). When working in cETT, we use the following notation. We have
-Russell-style universes $\Set_i$ indexed by natural numbers, dependent functions
-as $(x : A)\ra B$, and dependent pairs as $(x : A)\times B$ with projections
-$\proj1$ and $\proj2$. We sometimes leave parameters implicit in dependent
-function types, e.g.\ write $\id : A \ra A$ instead of $\id : (A : \Set_i)\ra A
-\ra A$. We also use subscripts as a field projection notation for iterated
-pairs. For example, for $t : (A : \Set_i) \times (B : \Set_i) \times (f : A \ra
-B)$, we use $B_t$ to denote the projection of the second component. Sometimes we
-omit the subscript if it is clear from context. When we write ``exists'' in this
-paper, we always mean chosen structure given by a $\Sigma$-type.
-
-We write propositional equality as $t = u$, with $\refl_t$ for reflexivity. We
-have equality reflection and uniqueness of identity proofs (UIP) for
-$\blank=\blank$. The unit type is $\top$, with inhabitant $\tt$.
-
-\todo{compactify cumulativity}
-
-\begin{figure}
-\begin{mathpar}
-  \inferrule*[lab=universe formation]
-             {i < j}
-             {\Gamma \vdash \Set_i : \Set_{j}}
-
-  \inferrule*[lab=function formation]
-             {\Gamma \vdash A : \U_i \\ \Gamma,\,x : A \vdash B : \U_j}
-             {\Gamma \vdash (x : A)\ra B : \U_{\max(i,j)} }
-
-  \inferrule*[lab=$\Sigma$ formation]
-             {\Gamma \vdash A : \U_i \\ \Gamma,\,x : A \vdash B : \U_j}
-             {\Gamma \vdash (x : A)\times B : \U_{\max(i,j)} }
-
-  \inferrule*[lab=unit formation]
-             {\\}
-             {\Gamma \vdash \top : \Set_i}
-
-  \inferrule*[lab=equality formation]
-             {\Gamma \vdash A : \Set_i \\ \Gamma \vdash t : A \\ \Gamma \vdash u : A}
-             {\Gamma \vdash t = u : \Set_i}
-
-  \inferrule*[lab=type lifting]
-             {\Gamma \vdash A : \Set_i \\ i \leq j}
-             {\Gamma \vdash\,\Lift_j A : \Set_{j}}
-
-  \inferrule*[lab=lift composition]{}{\Lift_j (\Lift_i A) \equiv\,\,\Lift_{j} A}
+%% Cumulativity is used to reduce bureaucratic overhead of
+%% handling algebras at different universe levels. For a simple example, consider
+%% natural number algebras at level $i$, given as the $\Sigma$-type $NatAlg_i
+%% :\equiv(Nat : \Set_i)\times Nat\times(Nat \ra Nat)$. The initial such algebra is
+%% the set of natural numbers, which is at level $0$, but in type theory we often
+%% want to eliminate into larger $\Set_i$, for example when computing a
+%% $Nat$-indexed family of types.
 
 
-  \inferrule*[lab=identity lift]{\Gamma \vdash A : \Set_i}{(\Lift_i A) \equiv\,A}
+%% We are working in a variant of extensional type theory with cumulative
+%% universes, abbreviated as cETT.
 
-  \inferrule*[lab=term lifting]
-             {}
-             {\{t\,|\,\Gamma \vdash t : A\} \equiv \{t\,|\,\Gamma \vdash t :\,\,\Lift_i A\}}
+%% In this paper we consider QII algebras at arbitrary finite levels, along with
+%% large eliminations, where the initial algebra can be at a different level than
+%% the target algebra. For a simple example, consider natural number algebras at
+%% level $i$, given as the $\Sigma$-type $NatAlg_i :\equiv(Nat : \Set_i)\times
+%% Nat\times(Nat \ra Nat)$. The initial such algebra is the set of natural numbers,
+%% which is at level $0$, but in type theory we often want to eliminate into larger
+%% $\Set_i$, for example when computing a $Nat$-indexed family of types. To support
+%% convenient reasoning about levels in this paper, we need two features:
+%% cumulativity and a way to quantify over finite levels. The former is essential
+%% to reduce bureaucratic overhead, while the latter is required to talk about
+%% arbitrary levels.
 
-  \inferrule*[lab=context lifting]
-             {}
-             {(\Gamma,\,x : A) \equiv (\Gamma,\,x :\,\,\Lift_i A)}
 
-  \inferrule*[lab=universe lifting]{}{\Lift_j \Set_i \equiv \Set_i}
 
-  \inferrule*[lab=function lifting]
-             {}
-             {\Lift_i((x : A)\ra B) \equiv (x :\,\Lift_i A)\ra\,\Lift_i B}
+%% \subsection{Cumulativity}
 
-  \inferrule*[lab=pair lifting]
-             {}
-             {\Lift_i((x : A)\times B) \equiv (x :\,\Lift_i A)\,\times\Lift_i B}
+%% %% Cumulativity makes handling of algebras and constructions at different levels
+%% %% much easier. For example, given an algebra $\gamma : NatAlg_i$, cumulativity
+%% %% allows us to also have $\gamma : NatAlg_{i+j}$. In a non-cumulative setting such
+%% %% as Agda, we may only have for each type $A : \Set_i$ a type $\mathsf{Lift}_{i\,j}\,A :
+%% %% \Set_{i+j}$ which is isomorphic to $A$ up to definitional equality.
 
-  \inferrule*[lab=unit lifting]
-             {}
-             {\Lift_i\top \equiv \top}
+%% In its most basic form, cumulativity requires that whenever $A : \Set_i$, and $i
+%% < j$ then also $A : \Set_j$. We also need cumulativity for $\Sigma$ and function
+%% types, in order to have cumulativity for QII algebras in general. For example,
+%% we want to have $\gamma : NatAlg_j$ whenever $\gamma : NatAlg_i$ and $i < j$.
 
-  \inferrule*[lab=equality lifting]
-             {}
-             {\Lift_i(t = u) \equiv (t = u)}
-\end{mathpar}
+%% We use Sterling's cumulative algebraic type theory \cite{sterling2019algebraic} as basis for our metatheory. \todo{REASONS, revamp}
 
-\caption{Some of the rules for lifting.}
-\label{lifting}
-\end{figure}
+%% %% The reason is that it is the only rigorous
+%% %% algebraic definition of cumulativity that we are aware of, and it also
 
-We also have a lifting operation on types, which introduces cumulativity. In
-Figure \ref{lifting}, we include an excerpt of cETT's rules. We change
-presentation slightly from Sterling: we use a $\U_{\max(i,j)}$ return type in
-functions and pairs, instead of having both $A$ and $B$ types in the same
-$\Set_i$, and we define type lifting with $i \leq j$ instead of $i < j$. These
-changed rules are all derivable from the original ones. In general, we can
-expect that lifting never impedes constructions, because it appropriately
-computes out of the way.
+%% %% The reason for this is twofold. First, it
+%% %% supports the right kind of cumulativity for our purposes. Second, it is itself a
+%% %% finitary QIIT with sort equations, hence this paper provides a model theory for
+%% %% it
 
-Of special note is the \emph{term lifting rule}. It is a sort equation, an
-equation between sets of terms, expressing that lifted types have exactly the
-same terms as unlifted ones. This allows us to have $t :\,\,\Lift_j A$ whenever $t
-: A$. Together with the universe lifting rule, this implies $A : \Set_{i+j}$
-whenever $A : \Set_i$. Similarly, the lifting rules for functions and pairs give
-us cumulativity for $NatAlg$. We derive a notion of subtyping:
+%% We extend the base theory with an extensional identity type, $\Sigma$-types and
+%% the unit type. In \cite{sterling2019algebraic} a proof of canonicity is provided for the base
+%% theory, which also includes a standard set-theoretic model. It is
+%% straightforward to extend the canonicity proof to cover our additional type
+%% formers.
 
-\begin{definition}[Cumulative subtyping]
-  For $A : \Set_i$, $i \leq j$ and $B : \Set_{j}$, we define $A \leq B : \Set_{j}$
-  as $B =\,\,\Lift_j A$.  It follows from term lifting and equality reflection
-  that whenever $A \leq B$ and $t : A$, then also $t : B$.
-\end{definition}
+%% From now on, we refer to this theory as cETT (cumulative extensional type
+%% theory). When working in cETT, we use the following notation. We have
+%% Russell-style universes $\Set_i$ indexed by natural numbers, dependent functions
+%% as $(x : A)\ra B$, and dependent pairs as $(x : A)\times B$ with projections
+%% $\proj1$ and $\proj2$. We sometimes leave parameters implicit in dependent
+%% function types, e.g.\ write $\id : A \ra A$ instead of $\id : (A : \Set_i)\ra A
+%% \ra A$. We also use subscripts as a field projection notation for iterated
+%% pairs. For example, for $t : (A : \Set_i) \times (B : \Set_i) \times (f : A \ra
+%% B)$, we use $B_t$ to denote the projection of the second component. Sometimes we
+%% omit the subscript if it is clear from context. When we write ``exists'' in this
+%% paper, we always mean chosen structure given by a $\Sigma$-type.
 
-\subsection{Universe Polymorphism}
-\label{sec:universe_polymorphism}
+%% We write propositional equality as $t = u$, with $\refl_t$ for reflexivity. We
+%% have equality reflection and uniqueness of identity proofs (UIP) for
+%% $\blank=\blank$. The unit type is $\top$, with inhabitant $\tt$.
 
-For the sake of simplicity, we do not add this to cETT directly. Instead, we
-quantify over levels in an unspecified metatheory \emph{outside} cETT. Hence, a
-universe polymorphic cETT term is understood as a $\mathbb{N}$-indexed family of
-terms. We reuse the notation of cETT functions for universe polymorphism, e.g.\ as
-in the following function:
-\[
-\lambda\,i.\,\Set_i : (i : \mathbb{N})\ra \Set_{i+1}
-\]
-In this paper, we do not need to internalize level-polymorphic constructions,
-so this setup is sufficient.
+%% \todo{compactify cumulativity}
+
+%% \begin{figure}
+%% \begin{mathpar}
+%%   \inferrule*[lab=universe formation]
+%%              {i < j}
+%%              {\Gamma \vdash \Set_i : \Set_{j}}
+
+%%   \inferrule*[lab=function formation]
+%%              {\Gamma \vdash A : \U_i \\ \Gamma,\,x : A \vdash B : \U_j}
+%%              {\Gamma \vdash (x : A)\ra B : \U_{\max(i,j)} }
+
+%%   \inferrule*[lab=$\Sigma$ formation]
+%%              {\Gamma \vdash A : \U_i \\ \Gamma,\,x : A \vdash B : \U_j}
+%%              {\Gamma \vdash (x : A)\times B : \U_{\max(i,j)} }
+
+%%   \inferrule*[lab=unit formation]
+%%              {\\}
+%%              {\Gamma \vdash \top : \Set_i}
+
+%%   \inferrule*[lab=equality formation]
+%%              {\Gamma \vdash A : \Set_i \\ \Gamma \vdash t : A \\ \Gamma \vdash u : A}
+%%              {\Gamma \vdash t = u : \Set_i}
+
+%%   \inferrule*[lab=type lifting]
+%%              {\Gamma \vdash A : \Set_i \\ i \leq j}
+%%              {\Gamma \vdash\,\Lift_j A : \Set_{j}}
+
+%%   \inferrule*[lab=lift composition]{}{\Lift_j (\Lift_i A) \equiv\,\,\Lift_{j} A}
+
+
+%%   \inferrule*[lab=identity lift]{\Gamma \vdash A : \Set_i}{(\Lift_i A) \equiv\,A}
+
+%%   \inferrule*[lab=term lifting]
+%%              {}
+%%              {\{t\,|\,\Gamma \vdash t : A\} \equiv \{t\,|\,\Gamma \vdash t :\,\,\Lift_i A\}}
+
+%%   \inferrule*[lab=context lifting]
+%%              {}
+%%              {(\Gamma,\,x : A) \equiv (\Gamma,\,x :\,\,\Lift_i A)}
+
+%%   \inferrule*[lab=universe lifting]{}{\Lift_j \Set_i \equiv \Set_i}
+
+%%   \inferrule*[lab=function lifting]
+%%              {}
+%%              {\Lift_i((x : A)\ra B) \equiv (x :\,\Lift_i A)\ra\,\Lift_i B}
+
+%%   \inferrule*[lab=pair lifting]
+%%              {}
+%%              {\Lift_i((x : A)\times B) \equiv (x :\,\Lift_i A)\,\times\Lift_i B}
+
+%%   \inferrule*[lab=unit lifting]
+%%              {}
+%%              {\Lift_i\top \equiv \top}
+
+%%   \inferrule*[lab=equality lifting]
+%%              {}
+%%              {\Lift_i(t = u) \equiv (t = u)}
+%% \end{mathpar}
+
+%% \caption{Some of the rules for lifting.}
+%% \label{lifting}
+%% \end{figure}
+
+%% We also have a lifting operation on types, which introduces cumulativity. In
+%% Figure \ref{lifting}, we include an excerpt of cETT's rules. We change
+%% presentation slightly from Sterling: we use a $\U_{\max(i,j)}$ return type in
+%% functions and pairs, instead of having both $A$ and $B$ types in the same
+%% $\Set_i$, and we define type lifting with $i \leq j$ instead of $i < j$. These
+%% changed rules are all derivable from the original ones. In general, we can
+%% expect that lifting never impedes constructions, because it appropriately
+%% computes out of the way.
+
+%% Of special note is the \emph{term lifting rule}. It is a sort equation, an
+%% equation between sets of terms, expressing that lifted types have exactly the
+%% same terms as unlifted ones. This allows us to have $t :\,\,\Lift_j A$ whenever $t
+%% : A$. Together with the universe lifting rule, this implies $A : \Set_{i+j}$
+%% whenever $A : \Set_i$. Similarly, the lifting rules for functions and pairs give
+%% us cumulativity for $NatAlg$. We derive a notion of subtyping:
+
+%% \begin{definition}[Cumulative subtyping]
+%%   For $A : \Set_i$, $i \leq j$ and $B : \Set_{j}$, we define $A \leq B : \Set_{j}$
+%%   as $B =\,\,\Lift_j A$.  It follows from term lifting and equality reflection
+%%   that whenever $A \leq B$ and $t : A$, then also $t : B$.
+%% \end{definition}
+
+%% \subsection{Universe Polymorphism}
+%% \label{sec:universe_polymorphism}
+
+%% For the sake of simplicity, we do not add this to cETT directly. Instead, we
+%% quantify over levels in an unspecified metatheory \emph{outside} cETT. Hence, a
+%% universe polymorphic cETT term is understood as a $\mathbb{N}$-indexed family of
+%% terms. We reuse the notation of cETT functions for universe polymorphism, e.g.\ as
+%% in the following function:
+%% \[
+%% \lambda\,i.\,\Set_i : (i : \mathbb{N})\ra \Set_{i+1}
+%% \]
+%% In this paper, we do not need to internalize level-polymorphic constructions,
+%% so this setup is sufficient.
 
 \section{QIIT Signatures}
 \label{sec:tos}
@@ -497,7 +527,7 @@ signature without referring to QIITs, only using features present in cETT. As a
 first step, we define a notion of model.
 
 \begin{definition}[Notion of model for the theory of signatures]\label{def:tos}
-For levels $i$ and $j$, $\ToS_{i,j} : \Set_{\max(i,\,j)+1}$ is a cETT type whose
+For levels $i$ and $j$, $\ToS_{i,j} : \Set_{\max(i,\,1+j)}$ is a cETT type whose
 elements are ToS models (or ToS-algebras). $\ToS_{i,j}$ is an iterated
 $\Sigma$-type, containing all of the following components.
 
@@ -720,8 +750,8 @@ $\Kfam$ as \emph{fl-structure}.
 \begin{definition}[Notion of induction in an flCwF]\label{def:induction}
 Given $\bGamma : \flCwF_i$, we have the following predicate on contexts:
 \begin{alignat*}{3}
-  & Inductive : \Con_{\bGamma} \ra \Set_i \\
-  & Inductive\,\Gamma :\equiv (A : \Ty_{\bGamma}\,\Gamma)\ra \Tm_{\bGamma}\,\Gamma\,A
+  & \Inductive : \Con_{\bGamma} \ra \Set_i \\
+  & \Inductive\,\Gamma :\equiv (A : \Ty_{\bGamma}\,\Gamma)\ra \Tm_{\bGamma}\,\Gamma\,A
 \end{alignat*}
 \end{definition}
 
@@ -1301,22 +1331,34 @@ starts with $\top$, in order to make the match strict.
 
 \section{Term Models of QIITs}
 
-In this section we construct QIITs from initial ToS-algebras. From now on, we assume
-the existence of such algebras.
+In this section we construct QIITs from initial ToS-algebras. Before we can assume
+the existence of such algebras. First, we need cumulative subtyping for $\ToS$.
+\todo{foobar}
+
+\begin{lemma}[Cumulativity of $\ToS$] If $j \leq j'$, then $\ToS_{i,j} \leq \ToS_{i, j'}$.
+\end{lemma}
+\begin{proof}
+  The $j$ universe level only appears in function codomains, hence
+  the subtyping rules for functions and $\Sigma$ can be used to get
+  $\ToS$ subtyping.
+\end{proof}
 
 \todo{assumption in environment}
 
-\textbf{For each $i$, we assume that $\tos_i : \ToS_{i, 1+i}$ exists}. The reason for the
-$1 + i$ level of $\ToS$ sorts is that $\tos_i$ may contain $A : \Set_i$ types in
-$\Ty$, and since we intend $\tos_i$ to be a freely generated algebra, the sorts
-must be large enough to avoid size paradoxes.
+%% For each level $i$,
+%% \begin{enumerate}
+%%   \item We assume that $\tos_i : \ToS_{i, 1+i}$ exists.
+%%   \item For each $i'$ such that $(1+i) \leq i'$, we assume $\Induction
+%% \end{enumerate}
 
-\begin{lemma}[Cumulativity of $\ToS$] If $i \leq i'$ and $j \leq j'$,
-  then $\ToS_{i,j} \leq \ToS_{i', j'}$.
-\end{lemma}
-\begin{proof} $\ToS_{i,j}$ is uniformly defined in $i$, $j$, hence cumulative subtyping extends
-  through dependent pairs and functions to $\ToS$.
-\end{proof}
+%% \textbf{For each $i$, we assume that $\tos_i : \ToS_{i, 1+i}$ exists}. The reason for the
+%% $1 + i$ level of $\ToS$ sorts is that $\tos_i$ may contain $A : \Set_i$ types in
+%% $\Ty$, and since we intend $\tos_i$ to be a freely generated algebra, the sorts
+%% must be large enough to avoid size paradoxes.
+
+
+
+%% \textbf{For each $i$ and $j$, we assume $\mathsf{ToSind :
 
 %% \todo{assumption as environment}
 
@@ -1336,3 +1378,32 @@ EUTypes CA15123.
 \bibliography{references}
 
 \end{document}
+
+%% B : Set j
+
+%% (A : Set_i) -> B
+
+%% A : Seti
+%% B : Set j
+%% (x : A) -> B : Set(max i j)
+
+%% (Con : Setj)x
+%% (Ty  : Con -> Setj)x
+
+%% (Pie : (A : Seti) -> (A -> Ty Gamma) -> Ty Gamma
+%% : Set(max(suci, j))
+
+%% : Set(max(sucj, max(suci,j)))
+%%    max(1+j, max(1+i, j))
+%%  = max(1+i, 1+j)
+
+%% REVISE LEVELS!!
+
+%% syntax levels:
+
+  %% ToS(i, 1+i) : Set(max(1+i, 2+i))
+
+
+%% REWRITE metatheory
+
+%% write about limitations!
