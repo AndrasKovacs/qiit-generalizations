@@ -364,20 +364,19 @@ of the second component. Sometimes we omit the subscript if it is clear from
 context. When we write ``exists'' in this paper, we always mean chosen structure
 given by a $\Sigma$-type.
 
-\todo{univ lvl for pi sigma}
-
-%% Both for functions and $\Sigma$, the output universe level is given as the
-%% maximum of the levels of the constituent type.
+Both for functions and $\Sigma$, the output universe level is given as the
+maximum of the levels of the constituent types, e.g.\ $(x : A)\ra B : \Set_{\max(i,j)}$
+when $A : \Set_i$ and $B : \Set_j$.
 
 We write propositional equality as $t = u$, with $\refl_t$ for reflexivity. We
 have equality reflection and uniqueness of identity proofs (UIP). The unit type
-is $\top$, with inhabitant $\tt$.
+is $\top : \Set_0$, with inhabitant $\tt$.
 
 \subsection{Cumulativity}
 
 We use cumulative universes and cumulative subtyping as described
 in \cite{timany2018cumulative}. Concretely, we have a $\blank\leq\blank$ subtyping
-relation on types, and a corresponding subtyping rule.
+relation on types, specified by the following rules:
 \begin{mathpar}
   \inferrule*{i \leq j}
              {\Gamma \vdash \Set_i \leq \Set_j}
@@ -431,10 +430,7 @@ We need to talk about constructions at arbitrary universe levels. For the sake
 of simplicity, we do not assume a notion of universe polymorphism in cETT,
 instead we quantify over levels in an unspecified theory outside of cETT. Hence,
 a universe polymorphic cETT term is understood as a $\mathbb{N}$-indexed family
-of cETT terms. This is sufficient in this paper, since we do not need to
-internalize level polymorphism.
-
-We reuse the notation of cETT functions for
+of cETT terms. We reuse the notation of cETT functions for
 universe polymorphism, e.g.\ as in the following function:
 \[
 \lambda\,i.\,\Set_i : (i : \mathbb{N})\ra \Set_{i+1}
@@ -450,7 +446,7 @@ signature without referring to QIITs, only using features present in cETT. As a
 first step, we define a notion of model.
 
 \begin{definition}[Notion of model for the theory of signatures]\label{def:tos}
-For levels $i$ and $j$, $\ToS_{i,j} : \Set_{\max(i,\,1+j)}$ is a cETT type whose
+For levels $i$ and $j$, $\ToS_{i,j} : \Set_{\max(i+1,\,j+1)}$ is a cETT type whose
 elements are ToS models (or ToS-algebras). $\ToS_{i,j}$ is an iterated
 $\Sigma$-type, containing all of the following components.
 
@@ -507,7 +503,9 @@ extension, $\Pii$ and $\lami$, e.g.\ as $(\emptycon\,\ext (a : U) \ext (t :
       (u : \Tm\,\Gamma\,(\El\,a)) \ra \Tm\,\Gamma\,(B[\id, u])\\
   & t\appitt u && :\equiv (\appi\,t)[\id, u]
 \end{alignat*}
-We abbreviate non-dependent inductive $\Pii$ as $\blank\arri\blank$, and likewise we use $\blank\arre\blank$ and $\blank\arrinf\blank$.
+We abbreviate non-dependent inductive $\Pii$ as $\blank\arri\blank$, and
+likewise we use $\blank\arre\blank$ and $\blank\arrinf\blank$ for non-dependent
+external and infinitary functions.
 
 %% We use abbreviations for non-dependent function types:
 %% \begin{alignat*}{3}
@@ -518,7 +516,7 @@ We abbreviate non-dependent inductive $\Pii$ as $\blank\arri\blank$, and likewis
 %% $A \arrinf\,B :\equiv \Piinf\,A\,(\lambda\,\_.\,B)$.
 
 \begin{definition}[Notion of signature]\label{def:signature}
-A QIIT signature at level $i$ is a context in an arbitrary p$M : \ToS_{i,j}$
+A QIIT signature at level $i$ is a context in an arbitrary $M : \ToS_{i,j}$
 model. We define the type of such signatures as follows:
 \[
   \Sig_i :\equiv (j : \mathbb{N})\ra(M : \ToS_{i,j})\ra \Con_M
@@ -620,13 +618,13 @@ perspective, but we are concerned with eventually implementing QIITs in proof
 assistants, so we prefer if our semantics computes strictly.
 
 In the following, for $i$ and $j$ levels we define a model $\bM_{i,j} : \ToS_{i,
-  1+\max(i,1+j)}$, such than $\Con_{\bM_{i,j}}$ is a type of structured categories (of
+  \max(i,j+1)+1}$, such than $\Con_{\bM_{i,j}}$ is a type of structured categories (of
 algebras). The level $i$ marks the level of all external sets in function
 domains, and $j$ marks the level of all internal sorts in an algebra. Hence,
-every algebra has level $\max(i,1+j)$. The bump is only needed for $j$, since
-algebras only contain elements of $T : \Set_j$ types, while inductive sets are
-themselves elements of $\Set_i$. For example, $NatAlg_i : \Set_{\max(0, 1+i)} :
-\Set_{1+\max(0, 1+i)}$,
+every algebra has level $\max(i,j+1)$. The bump is only needed for $j$, since
+algebras merely contain elements of $A : \Set_i$ types, while inductive sets are
+themselves elements of $\Set_j$. For example, $NatAlg_j : \Set_{\max(0, j+1)} :
+\Set_{\max(0, j+1)+1}$,
 
 
 We present the components of the model in order. In the following, we use
@@ -639,7 +637,7 @@ part of this, and only present the most salient parts.
 
 \subsection{Contexts}
 
-We define $\bCon : \Set_{1+\max(i,1+j)}$ as $\flCwF_{\max(i,1+j)}$.
+We define $\bCon : \Set_{\max(i,j+1)+1}$ as $\flCwF_{\max(i,j+1)}$.
 %% We define
 %% $\flCwF$ as follows.
 
@@ -700,7 +698,7 @@ product of $\Gamma$ and $\Delta$ can be given as $\Gamma \ext \Kfam\, \Delta$,
 and the equalizer of $\sigma$ and $\delta$ as $\Gamma\ext
 \Id\,(\K\,\Delta)\,(\lamK\,\sigma)\,(\lamK\,\delta)$.
 
-\todo{segue text?}
+In order to talk about weak structure-preservation in the interpretation of substitutions, we need to specify isomorphisms for contexts and types.
 
 \begin{definition} A \emph{context isomorphism} is an invertible morphism $\sigma : \Sub\,\Gamma\,\Delta$. We note the inverse as $\sigma^{-1}$. We also use the notation $\sigma : \Gamma \simeq \Delta$.
 \end{definition}
@@ -719,11 +717,6 @@ $\Ty\,\Gamma$, which sends $A$ to $A[\sigma]$ and $t :
 \end{definition}
 
 \subsection{Substitutions}
-
-\todo{we have a level lift here, decide how to handle}
-
-%% We define $\boldsymbol{\Sub\,\Gamma\,\Delta} : \Set_{1 + \max(i, j+1)}$ as the type
-%% of weak flCwF morphisms from $\boldsymbol{\Gamma}$ to $\boldsymbol{\Delta}$.
 
 \begin{definition}\label{def:weakmorphism} A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a functor between underlying categories, which additionally maps types to types and terms to terms, and satisfies the following:
   \begin{enumerate}
