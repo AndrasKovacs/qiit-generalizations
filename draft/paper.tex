@@ -112,6 +112,8 @@
 \newcommand{\arri}{\Rightarrow}
 \newcommand{\arre}{\Rightarrow^{\mathsf{ext}}}
 \newcommand{\arrinf}{\Rightarrow^{\mathsf{inf}}}
+\newcommand{\syn}{\mathsf{syn}}
+\newcommand{\SynSig}{\mathsf{SynSig}}
 
 \newcommand{\bCon}{\boldsymbol{\Con}}
 \newcommand{\bTy}{\boldsymbol{\Ty}}
@@ -240,7 +242,7 @@ constructible from the syntax of the theory of signatures.
 
 %% Keywords
 %% comma separated list
-\keywords{inductive types, quotient inductive-inductive types}  %% \keywords are mandatory in final camera-ready submission
+\keywords{inductive types, infinitary inductive types, quotient inductive-inductive types, categories with families}
 
 
 %% \maketitle
@@ -249,14 +251,7 @@ constructible from the syntax of the theory of signatures.
 %% environment and commands, and keywords command.
 \maketitle
 
-
 \section{Introduction}
-
-\todo{revise metatheory intro, use Timany cumulativity}
-\todo{recheck universe levels, prettify levels}
-\todo{explain the limitations and design choices in univ levels}
-\todo{write the rest}
-\todo{see if we can cut back on flCwF, add more examples instead}
 
 The aim of this work is to provide theoretical underpinning to a general notion
 of inductive types, called quotient inductive-inductive types (QIITs). QIITs are
@@ -264,7 +259,8 @@ of interest because there are many commonly used mathematical structures, which
 can be conveniently described as QIITs in type theory, but cannot be defined as
 less general inductive types, or doing so incurs large encoding overhead.
 
-Categories are a good example. Signatures for QIITs allow having multiple sorts,
+Categories are a prime example for a structure which is described by a quotient
+inductive-inductive signature. Signatures for QIITs allow having multiple sorts,
 with later ones indexed over previous ones, and equations as well. We need both
 features in order to write down the signature of categories.
 
@@ -277,13 +273,11 @@ interesting initial models.
 
 Algebraic notions of models of type theories are examples for this. Here,
 initial models represent syntax, and initiality corresponds to induction on
-syntax. Several variants have been used, from contextual categories \cite{TODO}
-and comprehension categories \cite{TODO} to categories with families
-\cite{TODO}.
-
-Real, surreal \cite{TODO} and ordinal numbers \cite{TODO} are examples of
-\emph{infinitary} QIITs, which are represented as inductive trees which may
-branch infinitely.
+syntax. Several variants have been used, from contextual categories \cite{gat}
+and comprehension categories \cite{jacobs1993comprehension} to categories with
+families \cite{Dybjer96internaltype}. Additionally, real, surreal \cite{HoTTbook}
+and ordinal numbers \cite{lumsdaineShulman} can be defined as \emph{infinitary}
+QIITs, which are represented as possibly infinitely branching inductive trees.
 
 %% The main motivation of the current paper is to generalize previously formalized
 %% \cite{kaposi2019constructing} QIITs so that they accommodate more algebraic
@@ -292,15 +286,14 @@ branch infinitely.
 %% Cauchy real numbers \cite{TODO} are covered as well.
 
 \subsection{Contributions}
-The current paper extends previously formalized QIITs
-\cite{kaposi2019constructing}. We add the following features:
+The current paper extends the syntax and semantics of QIITs as previously described
+in the literature \cite{kaposi2019constructing, gabe, dijkstra2017quotient}. We add the following features:
 \begin{enumerate}
   \item
   \textbf{Large constructors, large elimination} and algebras at different
-  universe levels. This fills in an important formal gap, since large
-  elimination is routinely used in the metatheory of type theories, but it has
-  not been but it has not been presented explicitly in previous works about
-  QIITs.
+  universe levels. This fills in an important formal gap; large models are
+  routinely used in the metatheory of type theories, but they have not been
+  presented explicitly in previous QIIT literature.
   \item
   \textbf{Infinitary constructors}.
   Of special note here is that the theory of QIIT signatures is itself large and
@@ -325,10 +318,8 @@ complete categories.
 Compared to the case of finitary QIITs, the addition of infinitary constructors
 and recursive equations requires a significant change in semantics: instead of
 strict CwF morphisms, we need to consider weak ones, and instead of modeling
-types as displayed CwFs, we need to model them as CwF isofibrations. In a
-nutshell, the new semantics must be given mutually with a form of a ``structure
-identity principle''\cite{TODO}, which says that signature extension respects algebra
-isomorphisms.
+types as displayed CwFs, we need to model them as CwF isofibrations. The latter
+amounts to showing that signature extension respects algebra isomorphisms.
 
 We also show, by a term model construction, that all QIITs are reducible to the
 syntax of signatures. This construction also essentially relies on invariance under
@@ -341,7 +332,7 @@ the paper. In Section \ref{sec:tos}, we introduce the theory of QIIT
 signatures. In Section \ref{sec:semantics} we give categorical semantics to
 signatures. In Section \ref{sec:tossig} we build model theory for the theory
 of QIIT signatures. In Section \ref{sec:termmodels} we give a term model construction
-of QIITs. We discuss related work and conclude in Sections \ref{TODO}
+of QIITs. We discuss related work and conclude in Sections \ref{sec:relatedwork}-\ref{sec:conclusion}.
 
 \section{Metatheory}
 \label{sec:metatheory}
@@ -364,7 +355,7 @@ of the second component. Sometimes we omit the subscript if it is clear from
 context. When we write ``exists'' in this paper, we always mean chosen structure
 given by a $\Sigma$-type.
 
-Both for functions and $\Sigma$, the output universe level is given as the
+Both for function types and $\Sigma$, the output universe level is given as the
 maximum of the levels of the constituent types, e.g.\ $(x : A)\ra B : \Set_{\max(i,j)}$
 when $A : \Set_i$ and $B : \Set_j$.
 
@@ -373,6 +364,7 @@ have equality reflection and uniqueness of identity proofs (UIP). The unit type
 is $\top : \Set_0$, with inhabitant $\tt$.
 
 \subsection{Cumulativity}
+\label{sec:cumulativity}
 
 We use cumulative universes and cumulative subtyping as described
 in \cite{timany2018cumulative}. Concretely, we have a $\blank\leq\blank$ subtyping
@@ -451,10 +443,10 @@ elements are ToS models (or ToS-algebras). $\ToS_{i,j}$ is an iterated
 $\Sigma$-type, containing all of the following components.
 
 A \textbf{category with families} (CwF), where all four underlying sets (of
-objects, morphisms, types and terms) are in $\Set_j$. Following notation in
-\cite{kaposi2019constructing}, we denote these respectively as $\Con : \Set_j$,
-$\Sub : \Con \ra \Con \ra \Set_j$, $\Ty : \Con \ra \Set_j$ and $\Tm : (\Gamma :
-\Con) \ra \Ty\,\Gamma \ra \Set_j$. We use $\id$ and $\blank\circ\blank$ to
+objects, morphisms, types and terms) are in $\Set_i$. Following notation in
+\cite{kaposi2019constructing}, we denote these respectively as $\Con : \Set_i$,
+$\Sub : \Con \ra \Con \ra \Set_i$, $\Ty : \Con \ra \Set_i$ and $\Tm : (\Gamma :
+\Con) \ra \Ty\,\Gamma \ra \Set_i$. We use $\id$ and $\blank\circ\blank$ to
 denote identity and composition for substitution. We denote the empty context as
 $\emptycon : \Con$, and the unique substitution into the empty context as
 $\epsilon : \Sub\,\Gamma\,\emptycon$. Context extension is $\blank\ext\blank :
@@ -472,11 +464,11 @@ A \textbf{universe} $\U : \Ty\,\Gamma$ with decoding $\El : (a :
 \Tm\,\Gamma\,(\Pii\,a\,B)\ra \Tm\,(\Gamma\,\ext\,\El\,a)\,B$ and its
 inverse $\lami$.
 
-\textbf{External function space} $\Pie : (A : \Set_i)\ra(A \ra \Ty\,\Gamma)\ra
+\textbf{External function space} $\Pie : (A : \Set_j)\ra(A \ra \Ty\,\Gamma)\ra
 \Ty\,\Gamma$, with $\appe : \Tm\,\Gamma\,(\Pie\,A\,B)\ra((x : A)\ra
 \Tm\,\Gamma\,(B\,x))$ and its inverse $\lame$.
 
-\textbf{Infinitary function space} $\Piinf : (A : \Set_i)\ra(A \ra
+\textbf{Infinitary function space} $\Piinf : (A : \Set_j)\ra(A \ra
 \Tm\,\Gamma\,\U)\ra \Tm\,\Gamma\,\U$, with $\appinf :
 \Tm\,\Gamma\,(\El\,(\Pie\,A\,b))\ra((x : A)\ra \Tm\,\Gamma\,(\El\,(b\,x)))$ and
 its inverse $\laminf$.
@@ -516,16 +508,16 @@ external and infinitary functions.
 %% $A \arrinf\,B :\equiv \Piinf\,A\,(\lambda\,\_.\,B)$.
 
 \begin{definition}[Notion of signature]\label{def:signature}
-A QIIT signature at level $i$ is a context in an arbitrary $M : \ToS_{i,j}$
+A QIIT signature at level $j$ is a context in an arbitrary $M : \ToS_{i,j}$
 model. We define the type of such signatures as follows:
 \[
-  \Sig_i :\equiv (j : \mathbb{N})\ra(M : \ToS_{i,j})\ra \Con_M
+  \Sig_j :\equiv (i : \mathbb{N})\ra(M : \ToS_{i,j})\ra \Con_M
 \]
 
-Here, $i$ refers to the level of external types appearing in the signature, in
-the domains of $\Pie$ and $\Piinf$ functions, while the quantified $j$ level is
+Here, $j$ refers to the level of external types appearing in the signature, in
+the domains of $\Pie$ and $\Piinf$ functions, while the quantified $i$ level is
 required to allow interpreting a signature in arbitrary-sized ToS models. Note
-that $\Sig_i$ is universe-polymorphic, so it is a family of cETT types and it is
+that $\Sig_j$ is universe-polymorphic, so it is a family of cETT types and it is
 not in any cETT universe.
 
 \begin{example}{
@@ -533,7 +525,7 @@ not in any cETT universe.
     can be chosen as $0$.}
 \begin{alignat*}{3}
   & NatSig : \Sig_0 \\
-  & NatSig :\equiv \lambda (j :\mathbb{N})(M : \ToS_{0,j}).\\
+  & NatSig :\equiv \lambda (i :\mathbb{N})(M : \ToS_{i,0}).\\
   & \hspace{1em}(\emptycon_M\,\ext_M\, (N : \U_M) \,\ext_M\,(zero : \El_M\,N)\\
   & \hspace{2.67em}\ext_M (suc : N\arri_M\El_M\,N))
 \end{alignat*}
@@ -541,11 +533,11 @@ not in any cETT universe.
 
 With this, we are able to specify QIITs, and we can also interpret each
 signature in an arbitrary ToS model, by applying a signature to a model.
-$\Sig_i$ can be viewed as a precursor to a Church-encoding for the theory of
+$\Sig_j$ can be viewed as a precursor to a Church-encoding for the theory of
 signatures, but we only need contexts encoded in this way, and not other ToS
-components. In functional programming, this is sometimes called
-``finally tagless''\cite{carette2007finally}, and it is used for defining and
-interpreting embedded languages.
+components. In functional programming, this is sometimes called ``finally
+tagless'' \cite{carette2007finally}, and it is used for defining and interpreting
+embedded languages.
 \end{definition}
 
 In the following examples, we leave the abstracted $M : \ToS_{i,j}$ implicit.
@@ -577,10 +569,18 @@ in $\Pii$ domains. A minimal (and trivial) example:
   & \hspace{0.5em}\emptycon\,\ext (A : \U) \ext (a : \El\,A)\ext (f : \Pii\,(x : A)\,(\Id\,A\,x\,a\arri\El\,A))
 \end{alignat*}
 More interesting (and complicated) examples for recursive equations are boundary
-conditions in various cubical type theories \cite{TODO}. Note that our $\Id$
+conditions in various cubical type theories \cite{cohen2016cubical, angiuli2016computational, angiuli2018cartesian}. Note that our $\Id$
 allows iterated equations as well, but these are all trivial in the semantics,
 where we assume UIP.
 \end{example}
+
+
+\emph{Remark.} Since signatures are parametrized by a single universe level, all
+external types in constructors must be contained in the same $\Set_j$
+universe. We opted for this setup for the sake of simplicity. Cumulativity helps
+here: it allows us to pick a $j$ level which is large enough to accommodate all
+external types in a signature.
+
 
 \section{Semantics}
 \label{sec:semantics}
@@ -617,14 +617,14 @@ to isomorphism. This issue is perhaps not relevant from a purely categorical
 perspective, but we are concerned with eventually implementing QIITs in proof
 assistants, so we prefer if our semantics computes strictly.
 
-In the following, for $i$ and $j$ levels we define a model $\bM_{i,j} : \ToS_{i,
-  \max(i,j+1)+1}$, such than $\Con_{\bM_{i,j}}$ is a type of structured categories (of
-algebras). The level $i$ marks the level of all external sets in function
-domains, and $j$ marks the level of all internal sorts in an algebra. Hence,
-every algebra has level $\max(i,j+1)$. The bump is only needed for $j$, since
-algebras merely contain elements of $A : \Set_i$ types, while inductive sets are
-themselves elements of $\Set_j$. For example, $NatAlg_j : \Set_{\max(0, j+1)} :
-\Set_{\max(0, j+1)+1}$,
+In the following, for given $i$ and $j$ levels, we define a model $\bM_{i,j} :
+\ToS_{\max(i+1,j)+1, j}$ such that $\Con_{\bM_{i,j}}$ is a type of structured
+categories (of algebras). The level $i$ marks the level of all internal sorts in
+an algebra, and the level $j$ marks the level of all external sets in function
+domains. Hence, every algebra has level $\max(i+1,j)$. The bump is only needed
+for $i$, since algebras merely contain elements of $A : \Set_j$ types, while
+inductive sets are themselves elements of $\Set_i$. For example, $NatAlg_i :
+\Set_{\max(i+1,0)} : \Set_{\max(i+1, 0)+1}$.
 
 
 We present the components of the model in order. In the following, we use
@@ -637,12 +637,12 @@ part of this, and only present the most salient parts.
 
 \subsection{Contexts}
 
-We define $\bCon : \Set_{\max(i,j+1)+1}$ as $\flCwF_{\max(i,j+1)}$.
+We define $\bCon : \Set_{\max(i+1,j)+1}$ as $\flCwF_{\max(i+1,j)}$.
 %% We define
 %% $\flCwF$ as follows.
 
 \begin{definition}[Finite limit CwFs]\label{def:flCwF}
-For each level $i$ we define $\flCwF_i : \Set_{1+i}$ as an iterated $\Sigma$-type
+For each level $i$ we define $\flCwF_i : \Set_{i+1}$ as an iterated $\Sigma$-type
 with the following components:
 \begin{enumerate}
   \item A CwF with underlying sets all in $\Set_i$. We reuse the component
@@ -682,13 +682,11 @@ that an algebra supports induction if for any dependent algebra over it (which
 is a bundle of induction motives and methods), there is a dependent morphism
 into it (which is a bundle of eliminator functions and their $\beta$-rules).
 
-\begin{theorem}[Equivalence of initiality and induction]
+\begin{theorem}[Equivalence of initiality and induction, c.f. \cite{kaposi2019constructing}]
 An object $\Gamma : \Con_{\bGamma}$ supports induction if and only if it is
 initial. Moreover, induction and initiality are both proof irrelevant
-predicates.
+predicates. \qed
 \end{theorem}
-\begin{proof} By brief internal flCwF reasoning in \cite{kaposi2019constructing}.
-\end{proof}
 
 The reason for the ``finite limit CwF'' naming is the following: Clairambault
 and Dybjer showed that the 2-category of flCwFs is biequivalent to the
@@ -717,15 +715,16 @@ $\Ty\,\Gamma$, which sends $A$ to $A[\sigma]$ and $t :
 \end{definition}
 
 \subsection{Substitutions}
+\label{sec:substitutions}
 
-\begin{definition}\label{def:weakmorphism} A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a functor between underlying categories, which additionally maps types to types and terms to terms, and satisfies the following:
+A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a functor between underlying categories, which additionally maps types to types and terms to terms, and satisfies the following:
   \begin{enumerate}
     \item $\bsigma\,(A[\sigma]) = (\bsigma\,A)\,[\bsigma\,\sigma]$
     \item $\bsigma\,(t[\sigma]) = (\bsigma\,t)\,[\bsigma\,\sigma]$
     \item The unique map $\epsilon : \Sub\,(\bsigma\,\emptycon)\,\emptycon$ has a retraction.
     \item Each $(\bsigma\,\p,\,\bsigma\,\q) : \Sub\,(\bsigma\,(\Gamma\,\ext\,A))\,(\bsigma\,\Gamma\,\ext\,\bsigma\,A)$ has an inverse.
   \end{enumerate}
-\end{definition}
+
 
 In short, $\bsigma$ preserves substitution strictly and preserves
 empty context and context extension up to isomorphism. We notate the evident
@@ -733,6 +732,10 @@ isomorphisms as $\bsigma_{\emptycon} :
 \bsigma\,\emptycon \simeq \emptycon$ and $\bsigma_{\ext}
 :
 \bsigma\,(\Gamma\,\ext\,A)\,\simeq\,\bsigma\,\Gamma\,\ext\,\bsigma\,A$. Our notion of weak morphism is the same as in \cite{birkedal2018modal}, when restricted to CwFs.
+
+Note that the definition we just gave lives in $\Set_{\max(i+1,j)}$, but by
+cumulativity it is also in $\Set_{\max(i+1,j)+1}$, as required by our $\bM_{i,j}
+: \ToS_{\max(i+1,j)+1, j}$ specification of the model being defined.
 
 \begin{theorem}\label{thm:flpres} Every $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ preserves fl-structure up to type isomorphism. That is, we have
 \begin{alignat*}{3}
@@ -817,20 +820,22 @@ $\bepsilon_{\ext}^{-1}$ are both identity morphisms.
 
 \subsection{Types}
 
-We define $\boldsymbol{\Ty\,\Gamma} : \Set_{1 + \max(i, j+1)}$ as the type of
-split flCwF-isofibrations over $\bGamma$. We extend Ahrens' and Lumsdaine's
-displayed categories and their definition of isofibrations \cite{displayedcats}.
-We first define displayed flCwFs, then specify iso-cleaving as additional structure
-on top of that.
+We define $\boldsymbol{\Ty\,\Gamma} : \Set_{\max(i+1, j)+1}$ as the type of
+split flCwF-isofibrations over $\bGamma$, at level $\max(i+1, j)$. We extend
+Ahrens' and Lumsdaine's displayed categories and their definition of
+isofibrations \cite{displayedcats}.  We first define displayed flCwFs, then
+specify iso-cleaving as additional structure on top of that.
 
-\begin{definition}[Displayed flCwF] The type of displayed flCwFs at level $i$ is given as the logical predicate interpretation \cite{TODO} of $\flCwF_i$. For each flCwF component in $\bGamma$, there is a component in a displayed flCwF which ``lies over'' it.
+\begin{definition}[Displayed flCwF] The type of displayed flCwFs at level $i$ is given as the logical predicate interpretation (see e.g.\ \cite{bernardy12parametricity} or \cite{hiit}) of $\flCwF_i$. For each flCwF component in $\bGamma$, there is a component in a displayed flCwF which ``lies over'' it.
 
-In situations where we need to refer to both ``base'' and displayed things, we give
-\ul{underlined} names to contexts, substitutions, types and terms in a base
-flCwF. For example, we may have $\ulGamma : \Con_{\bGamma}$ living in
-$\boldsymbol{\Gamma : \Con}$, and $\Gamma : \Con_{\bA}\,\ulGamma$ living in
-$\boldsymbol{A : \Ty\,\Gamma}$. We only use underlining on cETT variable names,
-and overload flCwF component names for displayed counterparts.
+\emph{Notation.} In situations where we need to refer to both ``base'' and
+displayed things, we give \ul{underlined} names to contexts, substitutions,
+types and terms in a base flCwF. For example, we may have $\ulGamma :
+\Con_{\bGamma}$ living in $\boldsymbol{\Gamma : \Con}$, and $\Gamma :
+\Con_{\bA}\,\ulGamma$ living in a displayed flCwF over $\bGamma$. We only use
+underlining on cETT variable names, and overload flCwF component names for
+displayed counterparts. For example, a $\Con$ component is named the same in
+a base flCwF and a displayed one.
 
 Concretely, a displayed flCwF $\bA$ over $\bGamma$ has the following underlying sets, which we call displayed contexts, substitutions, types and terms respectively.
 \begin{alignat*}{3}
@@ -876,7 +881,7 @@ In contrast to \cite{kaposi2019constructing}, it is not sufficient to model
 types with displayed flCwFs. In ibid.\ substitutions are modeled as strict
 morphisms, which we cannot do because our infinitary function types and identity
 types cannot be interpreted strictly, as we will see in Section
-\ref{TODO}. Strict preservation is expressed with metatheoretic equality, which
+\ref{sec:infinitaryfunction}. Strict preservation is expressed with metatheoretic equality, which
 is respected by all cETT constructions, but isomorphisms are not necessarily
 respected. Hence, we need to add additional structure to displayed flCwFs which
 expresses preservation of base isomorphisms.
@@ -917,9 +922,10 @@ Additionally, for $\sigma : \Sub_{\bA}\,\Gamma\,\Delta\,\ulsigma$, we have
 \begin{definition} A \emph{split flCwF isofibration} is a displayed flCwF equipped with iso-cleaving for contexts and types.
 \end{definition}
 
-\emph{Remark.} It is not possible to model types as fibrations or opfibrations, because
-we have no restriction on the variance of ToS types. For example, the type which extends
-a pointed set to a $Nat$-signature is invariant in the base signature.
+\emph{Remark.} It is not possible to model types as fibrations or opfibrations,
+because we have no restriction on the variance of ToS types. For example, the
+type which extends a pointed set to a natural number signature, is neither a
+fibration nor an opfibration.
 
 \subsection{Type Substitution}
 We aim to define $\boldsymbol{\blank[\blank] : \Ty\,\Delta \ra
@@ -966,16 +972,18 @@ Equations for term and type substitution follow from naturality of preservation
 isomorphisms in $\bsigma$, $\coe[]$, $\coh[]$ and substitution equations in
 $\bA$.
 
-\todo{iso-cleaving}
+Iso-cleaving is given iso-cleaving in $\bA$ and the action of $\bsigma$ on
+isomorphisms, e.g.\ we have $\coe_{\boldsymbol{A[\sigma]}}\,\ulsigma\,\Gamma
+:\equiv \coe_{\bA}\,(\bsigma\,\ulsigma)\,\Gamma$.
 
 Functoriality of type substitution, i.e.\ $\boldsymbol{A[\id]} = \bA$ and
 $\boldsymbol{A[\sigma\circ\delta]} = \boldsymbol{A[\sigma][\delta]}$, follows
-from Lemma \ref{lem:idcomppres} and split cleaving given by $\coe_{\id}$,
-$\coe_{\circ}$, $\coh_{\id}$ and $\coh_{\circ}$ in $\bA$.
+from Lemma \ref{lem:idcomppres} and split cleaving given by $\coe^{\id}$,
+$\coe^{\circ}$, $\coh^{\id}$ and $\coh^{\circ}$ laws in $\bA$.
 
 \subsection{Terms}
 
-$\boldsymbol{\Tm\,\Gamma\,A} : \Set_{1 + \max(i, 1+j)}$ is defined as the type of
+$\boldsymbol{\Tm\,\Gamma\,A} : \Set_{\max(i+1, j)+1}$ is defined as the type of
 \emph{weak flCwF sections} of $\bA$. The underlying functions of $\bt :
 \bTm\,\bGamma\,\bA$ are as follows:
 \begin{alignat*}{3}
@@ -994,7 +1002,7 @@ Such that
   \item Each $(\bt\,\p,\,\bt\,\q) : \Sub\,(\bt\,(\ulGamma\,\ext\,\ulA))\,(\bt\,\ulGamma\,\ext\,\bt\,\ulA)\,\id$ has a vertical inverse.
 \end{enumerate}
 
-Similarly to Definition \ref{def:weakmorphism}, we denote the evident preservation
+Similarly to Section \ref{sec:substitutions}, we denote the evident preservation
 isomorphisms as $\bt_{\emptycon} : \bt\,\emptycon \simeq_{\id} \emptycon$ and
 $\bt_{\ext} : \bt\,(\ulGamma\ext \ulA) \simeq_{\id} \bt\,\ulGamma \ext
 \bt\,\ulA$. In short, weak section is a dependently typed analogue of weak
@@ -1055,11 +1063,14 @@ taking a first projection for each component. $\boldsymbol{\q : \Tm\,(\Gamma\ext
 \end{definition}
 
 We define $\boldsymbol{\U : \Ty\,\Gamma}$ as the isofibration which is
-constantly $\bSet_j$. A constant isofibration does not actually depend on
-the base flCwF, and has trivial iso-cleaving where $\coe$-s are identity
-functions. Hence, we have $\Con_{\bU}\,\ulGamma :\equiv \Set_j$ and $\Sub_{\bU}\,\Gamma\,\Delta\,\ulsigma :\equiv \Gamma \ra \Delta$.
+constantly $\bSet_i$. A constant isofibration does not actually depend on the
+base flCwF, and has trivial iso-cleaving where $\coe$-s are identity
+functions. Hence, we have $\Con_{\bU}\,\ulGamma :\equiv \Set_i$ and
+$\Sub_{\bU}\,\Gamma\,\Delta\,\ulsigma :\equiv \Gamma \ra \Delta$.
 
-\emph{Remark.} The type $\bTm\,\bGamma\,\bU$ is strictly equal to $\bSub\,\bGamma\,\bSet_j$, so in the following we will think about semantic elements of the universe as weak morphisms from $\bGamma$ to $\bSet_j$.
+\emph{Remark.} The type $\bTm\,\bGamma\,\bU$ is strictly equal to
+$\bSub\,\bGamma\,\bSet_i$, so it is helpful to think about semantic elements of
+the universe as weak morphisms from $\bGamma$ to $\bSet_i$.
 
 \subsection{Elements of the Universe}
 
@@ -1089,11 +1100,11 @@ Context coercion is $\coe\,\ulsigma\,\Gamma :\equiv \ba\,\ulsigma\,\Gamma$. Type
 For $\boldsymbol{a : \Tm\,\Gamma\,\U}$ and $\boldsymbol{B :
   \Ty\,(\Gamma\ext\El\,a)}$, we aim to define $\boldsymbol{\Pi\,a\,B}
 \boldsymbol{:} \bTy\,\bGamma$. We define this as a dependent product of
-isofibrations, indexed by a discrete domain. With a general $\bA \boldsymbol{:}
-\bTy\,\bGamma$ domain, $\bPii$ would not be definable, since variance issues
-preclude $\Pi$-types in the CwF of categories \cite{TODO}.
-
-%% _{(\bPii\,\ba\,\bB)}
+isofibrations, indexed by a discrete domain. The discreteness is essential: with
+a general $\bA \boldsymbol{:} \bTy\,\bGamma$ domain, $\bPii$ would not be
+definable because of variance issues. Indeed, the category of categories is not
+locally cartesian closed and does not support a general $\Pi$ type
+\cite{johnstone2002sketches}.
 
 Contexts are products of $\bB$-contexts, and types are products of $\bB$-types,
 indexed respectively by contexts and types of $\bEl\,\ba$.
@@ -1142,14 +1153,15 @@ functions, and $\boldsymbol{\lami}$ as uncurrying.
 
 \subsection{External Function Space}
 
-For $A : \Set_i$ and $\bB : A \ra \bTy\,\bGamma$, we define $\bPie\,A\,\bB
+For $A : \Set_j$ and $\bB : A \ra \bTy\,\bGamma$, we define $\bPie\,A\,\bB
 \boldsymbol{:} \bTy\,\bGamma$ as the $A$-indexed direct product of $\bB$. Since
 the indexing is given by a metatheoretic function, every component is given in the
 evident pointwise way.
 
 \subsection{Infinitary Function Space}
+\label{sec:infinitaryfunction}
 
-For $A : \Set_i$ and $\bb : A \ra \bTm\,\bGamma\,\bU$, we aim to define
+For $A : \Set_j$ and $\bb : A \ra \bTm\,\bGamma\,\bU$, we aim to define
 $\bPiinf\,A\,\bb \boldsymbol{:} \bTm\,\bGamma\,\bU$. The underlying functions
 are:
 \begin{alignat*}{3}
@@ -1203,8 +1215,8 @@ here as they are straightforward. Like $\bPiinf$, $\bId$ also does not support
 strict preservation of $\emptycon$ and $\ext$. Equality reflection and $\boldsymbol{\refl :}
 \bId\,\bt\,\bt$ are also evident.
 
-With this, we have defined the $\bM_{i,j} : \ToS_{i, 1+\max(i,1+j)}$ model that we set out to define
-in Section \ref{sec:overview}.
+With this, we have defined the $\bM_{i,j} : \ToS_{\max(i+1,j)+1, j}$ model that
+we set out to define in Section \ref{sec:overview}.
 
 \section{Model Theory of the Theory of Signatures}
 \label{sec:tossig}
@@ -1215,10 +1227,10 @@ initial ToS-algebras and ToS-induction. We get these notions by giving a QIIT
 signature for ToS, and interpreting it in the $\bM$ model from the previous
 section.
 
-\begin{definition}[Signature for ToS] For each level $i$,
-we define $\ToSSig_i : \Sig_{1+i}$, as the signature for the theory of
-signatures with external sets in $\Set_i$. This is a large and infinitary QIIT
-signature, as we have $\Pie$ and $\Piinf$ abstracting over $A : \Set_i$ and
+\begin{definition}[Signature for ToS] For each level $j$,
+we define $\ToSSig_j : \Sig_{j+i}$, as the signature for the theory of
+signatures with external sets in $\Set_j$. This is a large and infinitary QIIT
+signature, as we have $\Pie$ and $\Piinf$ abstracting over $A : \Set_j$ and
 branching with $A \ra \Ty\,\Gamma$ and $A \ra \Tm\,\Gamma\,\U$ respectively. We
 present an excerpt from $\ToSSig_i$ below.
 \begin{alignat*}{3}
@@ -1228,18 +1240,18 @@ present an excerpt from $\ToSSig_i$ below.
   &           && \ext (Tm  : \Pii(\Gamma : Con)(\Ty\,\Gamma \arri \U))\\
   &           && ...\\
   &           && \ext (\Piinf : \Pii(\Gamma : Con)\\
-  &           && \hspace{4.2em}(\Pie \Set_i (\lambda\,A.\,(A \arrinf \Ty\,\Gamma)\arri\El(\Ty\,\Gamma))))\\
+  &           && \hspace{4.2em}(\Pie \Set_j (\lambda\,A.\,(A \arrinf \Ty\,\Gamma)\arri\El(\Ty\,\Gamma))))\\
   &           && ...
 \end{alignat*}
 \end{definition}
 
-Now, for each $j$, the interpretation of $\ToSSig_i$ in $\bM_{1+i,j}$ yields an
+Now, for each $i$, the interpretation of $\ToSSig_j$ in $\bM_{i,j+1}$ yields an
 flCwF $\bGamma$ such that $\Con_{\bGamma} = \ToS_{i,j}$. In short, we can
 recover ToS algebras from the semantics of $\ToSSig$. This follows by
 computation of the interpretation and the fact that $\ToSSig$ is precisely the
-internal representation of $\ToS$. Also, since we have an flCwF of
-$\ToS_{i,j}$-algebras, we can use Definition \ref{def:induction} for the notion
-of $\ToS$-induction.
+internal representation of $\ToS$. Hence, we have self-description modulo the
+bumping of the $j$ level. Also, as we get an flCwF of $\ToS_{i,j}$-algebras, we
+can use Definition \ref{def:induction} for the notion of $\ToS$-induction.
 
 \emph{Remark.} By the definition of $\bemptycon$ and
 $\boldsymbol{\blank\ext\blank}$, the types of algebras computed by $\bM$ are
@@ -1250,19 +1262,56 @@ starts with $\top$, in order to make the match strict.
 \section{Term Models of QIITs}
 \label{sec:termmodels}
 
-In this section we construct QIITs from initial ToS-algebras. Before we can assume
-the existence of such algebras. First, we need cumulative subtyping for $\ToS$.
-\todo{foobar}
+In this section we construct QIITs from initial ToS-algebras. For this, we need
+to assume the existence of such algebras.
 
-\begin{lemma}[Cumulativity of $\ToS$] If $j \leq j'$, then $\ToS_{i,j} \leq \ToS_{i, j'}$.
+\subsection{Assuming Syntax for the Theory of Signatures}
+
+\begin{lemma}[Cumulativity of $\ToS$]\label{lemma:cumulativity} If $i \leq i'$, then $\ToS_{i,j} \leq \ToS_{i', j}$.
+  This follows from the definition of ToS and the subtyping rules in Section
+  \ref{sec:cumulativity}. \qed
 \end{lemma}
-\begin{proof}
-  The $j$ universe level only appears in function codomains, hence
-  the subtyping rules for functions and $\Sigma$ can be used to get
-  $\ToS$ subtyping.
-\end{proof}
 
-\todo{assumption in environment}
+\textbf{Assumption.} For each level $j$ and $j'$ such that $j+1 \leq j'$, we
+assume the existence of $\syn_j : \ToS_{j+1,j}$, and we assume that $\syn_j$,
+considered as an element of $\ToS_{j',j}$ by Lemma \ref{lemma:cumulativity}, is
+inductive in the sense of Definition \ref{def:induction}.
+
+We explain this assumption. The syntax for the theory of signatures is
+postulated at the lowest possible level $\ToS_{j+1,j}$. This is the lowest
+because signatures may contain $A : \Set_j$ types, and since we want to view the
+syntax as freely generated, its inductive sorts must be large enough to contain
+the $A$ types. Otherwise we would run into Russell's paradox. Then, the
+induction assumption says that we have induction at all levels larger than
+$j+1$.
+
+\begin{example} We have $\syn_0 : \ToS_{1, 0}$, which is the syntax of closed QIIT signatures. We want to define a function $\mathsf{length} : \Con_{\syn_0} \ra \mathbb{N}$ by induction, which returns the length of a (syntactic) signature as a metatheoretic natural number. To this end, we define a displayed ToS over $\syn_0$, where $\Con$ is defined as constantly $\mathbb{N}$, every other sort is defined as constantly $\top$, $\emptycon$ is defined as $0$ and $\Gamma\ext A$ is defined as $\Gamma + 1$. By the induction assumption, we get a ToS-section from $\syn_0$ to the displayed model, whose action on contexts is exactly the $\mathsf{length}$ function. Note that the induction assumption requires that the displayed model is at least at level 1, but this is not problematic because by cumulativity $\mathbb{N} : \Set_1$.
+\end{example}
+
+With $\syn$ at hand, we can use an alternative, more conventional representation of
+signatures.
+
+\begin{definition} We define $\SynSig_j : \Set_{j+1}$, the type of \emph{syntactic signatures} at $j$, as $\Con_{\syn_j}$.
+\end{definition}
+
+We can convert a signature to a syntactic one by interpreting it in some
+$\syn_j$ model, and we can convert in the other direction by using ToS-induction
+to interpret a $\Gamma : \Con_{\syn_j}$ in an arbitrary ToS model.
+
+
+
+%% is inductive
+%% when considered as the element of $\ToS_{j',j}$ by Lemma
+%% \ref{lemma:cumulativity}.
+
+%% In the induction assumption, we are relying on the fact that there is an flCwF
+%% whose objects are $\ToS_{j',j}$ algebras.
+
+%% Above, $\syn$ abbreviates ``syntax'' for $\ToS$. In the assumption of induction,
+%% we are using Definition \ref{def:induction}.
+
+
+
 
 %% For each level $i$,
 %% \begin{enumerate}
@@ -1282,6 +1331,14 @@ the existence of such algebras. First, we need cumulative subtyping for $\ToS$.
 %% \todo{assumption as environment}
 
 %% \emph{Assumption.}
+
+\section{Related Work}
+\label{sec:relatedwork}
+
+
+
+\section{Conclusion}
+\label{sec:conclusion}
 
 
 
@@ -1321,7 +1378,6 @@ EUTypes CA15123.
 %% syntax levels:
 
   %% ToS(i, 1+i) : Set(max(1+i, 2+i))
-
 
 %% REWRITE metatheory
 
