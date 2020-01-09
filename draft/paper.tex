@@ -70,8 +70,7 @@
 \usepackage{amsfonts}
 \usepackage{mathpartir}
 \usepackage{scalerel}
-
-
+\usepackage{stmaryrd}
 \usepackage{tikz-cd}
 
 
@@ -100,6 +99,7 @@
 \newcommand{\Inductive}{\mathsf{Inductive}}
 \newcommand{\Subtype}{\mathsf{Subtype}}
 \newcommand{\subtype}{\mathsf{subtype}}
+\newcommand{\NatSig}{\mathsf{NatSig}}
 
 \newcommand{\Sg}{\Sigma}
 \newcommand{\flCwF}{\mathsf{flCwF}}
@@ -142,11 +142,14 @@
 \newcommand{\blami}{\boldsymbol{\mathsf{lam}}}
 \newcommand{\bId}{\boldsymbol{\Id}}
 \newcommand{\bM}{\boldsymbol{\mathsf{M}}}
+\newcommand{\bT}{\boldsymbol{\mathsf{T}}}
+\newcommand{\bS}{\boldsymbol{\mathsf{S}}}
 
 \newcommand{\ul}[1]{\underline{#1}}
 \newcommand{\ulGamma}{\ul{\Gamma}}
 \newcommand{\ulDelta}{\ul{\Delta}}
 \newcommand{\ulgamma}{\ul{\gamma}}
+\newcommand{\ulOmega}{\ul{\Omega}}
 \newcommand{\uldelta}{\ul{\delta}}
 \newcommand{\ulsigma}{\ul{\sigma}}
 \newcommand{\ulepsilon}{\ul{\epsilon}}
@@ -158,6 +161,8 @@
 
 \newcommand{\coe}{\mathsf{coe}}
 \newcommand{\coh}{\mathsf{coh}}
+\newcommand{\llb}{\llbracket}
+\newcommand{\rrb}{\rrbracket}
 
 
 %% ------------------------------------------------------------
@@ -524,8 +529,8 @@ not in any cETT universe.
     Signature for natural numbers. Here, no external types appear, so the level
     can be chosen as $0$.}
 \begin{alignat*}{3}
-  & NatSig : \Sig_0 \\
-  & NatSig :\equiv \lambda (i :\mathbb{N})(M : \ToS_{i,0}).\\
+  & \NatSig : \Sig_0 \\
+  & \NatSig :\equiv \lambda (i :\mathbb{N})(M : \ToS_{i,0}).\\
   & \hspace{1em}(\emptycon_M\,\ext_M\, (N : \U_M) \,\ext_M\,(zero : \El_M\,N)\\
   & \hspace{2.67em}\ext_M (suc : N\arri_M\El_M\,N))
 \end{alignat*}
@@ -548,7 +553,7 @@ of $\Pii$ types. This allows, for example, a signature for trees branching with
 arbitrary small types. This is a signature at level 1, since we have $\Set_0$ as
 a $\Pie$ domain type.
 \begin{alignat*}{3}
-& TreeSig :\equiv \\
+& \mathsf{TreeSig} :\equiv \\
 & \hspace{1em}\emptycon \ext (Tree : \U)\\
 & \hspace{1.35em}\ext (node : \Pie\,\Set_0\,(\lambda A.\,(A\,\arrinf\,Tree)\arri\El\,Tree))
 \end{alignat*}
@@ -565,7 +570,7 @@ a $\Pie$ domain type.
 \begin{example}{Recursive equations}. Again, the universe is closed under $\Id$, which allows us to write equations
 in $\Pii$ domains. A minimal (and trivial) example:
 \begin{alignat*}{3}
-  & RecEqSig :\equiv\\
+  & \mathsf{RecEqSig} :\equiv\\
   & \hspace{0.5em}\emptycon\,\ext (A : \U) \ext (a : \El\,A)\ext (f : \Pii\,(x : A)\,(\Id\,A\,x\,a\arri\El\,A))
 \end{alignat*}
 More interesting (and complicated) examples for recursive equations are boundary
@@ -682,9 +687,9 @@ that an algebra supports induction if for any dependent algebra over it (which
 is a bundle of induction motives and methods), there is a dependent morphism
 into it (which is a bundle of eliminator functions and their $\beta$-rules).
 
-\begin{theorem}[Equivalence of initiality and induction, c.f. \cite{kaposi2019constructing}]
+\begin{theorem}[Equivalence of initiality and induction, c.f. \cite{kaposi2019constructing}]\label{thm:initialind}
 An object $\Gamma : \Con_{\bGamma}$ supports induction if and only if it is
-initial. Moreover, induction and initiality are both proof irrelevant
+initial. Moreover, induction and initiality are both proof-irrelevant
 predicates. \qed
 \end{theorem}
 
@@ -782,6 +787,7 @@ formers in the fl-structure.
 \end{proof}
 
 \subsection{Identity and Composition}
+\label{sec:idcomp}
 
 $\bid : \bSub\,\bGamma\,\bGamma$ is defined in the obvious way, with identities for
 underlying functions and for preservation morphisms.
@@ -1032,7 +1038,7 @@ leave to future work the investigation of such asymmetrical (or
 
 $\boldsymbol{\blank[\blank] : \Tm\,\Delta\,A \ra (\sigma : \Sub\,\Gamma\,\Delta)
   \ra \Tm\,\Gamma\,(A[\sigma])}$ is given similarly to
-$\boldsymbol{\blank\circ\blank}$ in Section \ref{TODO}. Underlying functions
+$\boldsymbol{\blank\circ\blank}$ in Section \ref{sec:idcomp}. Underlying functions
 are given by function composition, and preservation morphisms are also similar:
 \begin{alignat*}{3}
   & (\boldsymbol{t[\sigma]})_{\emptycon}^{-1} :\equiv
@@ -1285,7 +1291,7 @@ the $A$ types. Otherwise we would run into Russell's paradox. Then, the
 induction assumption says that we have induction at all levels larger than
 $j+1$.
 
-\begin{example} We have $\syn_0 : \ToS_{1, 0}$, which is the syntax of closed QIIT signatures. We want to define a function $\mathsf{length} : \Con_{\syn_0} \ra \mathbb{N}$ by induction, which returns the length of a (syntactic) signature as a metatheoretic natural number. To this end, we define a displayed ToS over $\syn_0$, where $\Con$ is defined as constantly $\mathbb{N}$, every other sort is defined as constantly $\top$, $\emptycon$ is defined as $0$ and $\Gamma\ext A$ is defined as $\Gamma + 1$. By the induction assumption, we get a ToS-section from $\syn_0$ to the displayed model, whose action on contexts is exactly the $\mathsf{length}$ function. Note that the induction assumption requires that the displayed model is at least at level 1, but this is not problematic because by cumulativity $\mathbb{N} : \Set_1$.
+\begin{example} We have $\syn_0 : \ToS_{1, 0}$, which is the syntax of closed QIIT signatures. We want to define a function $\mathsf{length} : \Con_{\syn_0} \ra \mathbb{N}$ by induction, which returns the length of a syntactic context as a metatheoretic natural number. To this end, we define a displayed ToS over $\syn_0$, where $\Con$ is defined as constantly $\mathbb{N}$, every other sort is defined as constantly $\top$, $\emptycon$ is defined as $0$ and $\Gamma\ext A$ is defined as $\Gamma + 1$. By the induction assumption, we get a ToS-section from $\syn_0$ to the displayed model, whose action on contexts is exactly the $\mathsf{length}$ function. Note that the induction assumption requires that the displayed model is at least at level 1, but this is not problematic because by cumulativity $\mathbb{N} : \Set_1$.
 \end{example}
 
 With $\syn$ at hand, we can use an alternative, more conventional representation of
@@ -1298,48 +1304,68 @@ We can convert a signature to a syntactic one by interpreting it in some
 $\syn_j$ model, and we can convert in the other direction by using ToS-induction
 to interpret a $\Gamma : \Con_{\syn_j}$ in an arbitrary ToS model.
 
+\subsection{Term Algebras}
+
+The basic idea is that initial algebras can be built from the terms of $\syn_j$.
+For example, consider the syntactic signature for natural numbers:
+\[
+\NatSig :\equiv \emptycon\ext(N : \U)\ext(zero : \El\,N)\ext (suc : N
+\arri \El\,N)
+\]
+The type $\Tm_{\syn}\,\NatSig\,(\El_{\syn}\,N)$ is isomorphic to the usual type
+of natural numbers, since, intuitively, such terms can only be built from
+iterated usage of $zero$ and $suc$. We will build a term algebra for each
+signature in this manner. First, we describe the interpretation of $\syn$ in the
+$\Set$ model.
+
+\begin{definition}[The $\Set$ model of $\ToS$] For each $j$, we have $\bS : \ToS_{j+1, j}$, which can be given by restricting the $\bM$ model
+of Section \ref{sec:semantics} so that we only have the first $\Con$ components
+in the interpretations for contexts, substitution, types, term, and we only have
+actions on contexts in the interpretations of term and substitution
+formers. Hence, we have:
+\begin{alignat*}{3}
+  & \Con_{\bS} && :\equiv \Set_{j+2} \\
+  & \Sub_{\bS}\,\Gamma\,\Delta && :\equiv \Gamma \ra \Delta\\
+  & \Ty_{\bS}\,\Gamma && :\equiv \Gamma \ra \Set_{j+2}\\
+  & \Tm_{\bS}\,\Gamma\,A && :\equiv (\gamma : \Gamma) \ra A\,\gamma
+\end{alignat*}
+\end{definition}
+
+For every $M : \ToS_{j+1,j}$, there is a unique strict $\ToS$-morphism from
+$\syn_j$ to $M$. This follows from the induction assumption on $\syn_j$ and
+Theorem \ref{thm:initialind}. We denote this morphism as
+$\llbracket\blank\rrbracket_M$.  For example, given $\Gamma : \Con_\syn$, we
+have $\llbracket\Gamma\rrbracket_M : \Con_M$.  Also, for every displayed
+$\ToS$-model $M$ over $\syn_j$, there is a strict $\ToS$-section of $M$. We also
+denote this as $\llbracket\blank\rrbracket_M$, so e.g.\ for $\ulGamma :
+\Con_\syn$ we have $\llbracket\ulGamma\rrbracket_M : \Con_M\,\ulGamma$.
+
+For a syntactic signature $\Gamma$, $\llb\Gamma\rrb_{\bS}$ yields exactly the
+type of $\Gamma$-algebras, e.g.\ $\llb\NatSig\rrb_{\bS}$ is a left-nested
+$\Sigma$-type, which is the type of pointed sets with an endofunction.
+
+\begin{definition}[Term algebra construction]
+For each syntactic signature $\ulOmega : \SynSig_j$, we define a displayed $\ToS$
+model over $\syn_j$, named $\bT$. The underlying sets are as follows:
+\begin{alignat*}{3}
+  & \Con\,\ulGamma :\equiv \Sub_{\syn}\,\ulOmega\,\ulGamma \ra \llb\ulGamma\rrb_{\bS}
+\end{alignat*}
 
 
-%% is inductive
-%% when considered as the element of $\ToS_{j',j}$ by Lemma
-%% \ref{lemma:cumulativity}.
 
-%% In the induction assumption, we are relying on the fact that there is an flCwF
-%% whose objects are $\ToS_{j',j}$ algebras.
-
-%% Above, $\syn$ abbreviates ``syntax'' for $\ToS$. In the assumption of induction,
-%% we are using Definition \ref{def:induction}.
+\end{definition}
 
 
 
 
-%% For each level $i$,
-%% \begin{enumerate}
-%%   \item We assume that $\tos_i : \ToS_{i, 1+i}$ exists.
-%%   \item For each $i'$ such that $(1+i) \leq i'$, we assume $\Induction
-%% \end{enumerate}
-
-%% \textbf{For each $i$, we assume that $\tos_i : \ToS_{i, 1+i}$ exists}. The reason for the
-%% $1 + i$ level of $\ToS$ sorts is that $\tos_i$ may contain $A : \Set_i$ types in
-%% $\Ty$, and since we intend $\tos_i$ to be a freely generated algebra, the sorts
-%% must be large enough to avoid size paradoxes.
 
 
-
-%% \textbf{For each $i$ and $j$, we assume $\mathsf{ToSind :
-
-%% \todo{assumption as environment}
-
-%% \emph{Assumption.}
 
 \section{Related Work}
 \label{sec:relatedwork}
 
-
-
 \section{Conclusion}
 \label{sec:conclusion}
-
 
 
 %% Acknowledgments
@@ -1380,5 +1406,6 @@ EUTypes CA15123.
   %% ToS(i, 1+i) : Set(max(1+i, 2+i))
 
 %% REWRITE metatheory
+
 
 %% write about limitations!
