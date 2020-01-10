@@ -303,7 +303,7 @@ and two extra sorts $Ty$ and $Tm$ \emph{inductive-inductively}, at the
 same time. This is because there is a constructor of $Ob$ which refers
 to $Ty$, constructors of $Ty$ refer to $Ob$ and $Sub$, and so on. This
 is illustrated by the following excerpt of the signature for CwFs
-extending the above signature for categories.
+extending the previous signature for categories.
 \begin{alignat*}{3}
   & Ty && : Ob\ra \U \\
   & empty  && : Ob \\
@@ -528,7 +528,7 @@ $\Theta$, elements of $\Sub\,\Gamma\,\Delta$ as $\sigma$, $\delta$, $\nu$,
 elements of $\Ty\,\Gamma$ as $A$, $B$, $C$, and elements of $\Tm\,\Gamma\,A$ as
 $t$, $u$, $v$. CwF components by default support de Bruijn indices, which are
 not easily readable. We use instead a nameful notation for binders in context
-extension, $\Pii$ and $\lami$, e.g.\ as $(\emptycon\,\ext (a : U) \ext (t :
+extension, $\Pii$ and $\lami$, e.g.\ as $(\emptycon\,\ext (a : \U) \ext (t :
 \El\,a))$. We also define a type-theoretic flavor of $\appi$ for convenience:
 \begin{alignat*}{3}
   & \blank\appitt\blank && :
@@ -576,9 +576,9 @@ With this, we are able to specify QIITs, and we can also interpret each
 signature in an arbitrary ToS model, by applying a signature to a model.
 $\Sig_j$ can be viewed as a precursor to a Church-encoding for the theory of
 signatures, but we only need contexts encoded in this way, and not other ToS
-components. In functional programming, this is sometimes called ``finally
-tagless'' \cite{carette2007finally}, and it is used for defining and interpreting
-embedded languages.
+components. In functional programming, this representation is sometimes called
+``finally tagless'' \cite{carette2007finally}, and it is used for defining and
+interpreting embedded languages.
 \end{definition}
 
 In the following examples, we leave the abstracted $M : \ToS_{i,j}$ implicit.
@@ -638,8 +638,8 @@ For each signature, we would like to have at least
 Following \cite{kaposi2019constructing}, we do this by creating a model of ToS,
 where contexts are categories supporting the above requirements and
 substitutions are appropriate structure-preserving functors. Then, each
-signature can applied to this model, yielding an interpretation of the signature
-as a structured category of algebras.
+signature can be applied to this model, yielding an interpretation of the
+signature as a structured category of algebras.
 
 Our semantics has a ``type-theoretic'' flavor, which is inspired by the cubical
 set model of Martin-Löf type theory by Bezem et al. \cite{cubical}. The core idea
@@ -650,11 +650,11 @@ structure, which naturally support strict reindexing.
 
 We make a similar choice in the interpretation of signatures themselves: we use
 structured CwFs instead of lex categories. The reason here is that CwFs allow us
-to compute induction principles in strictly the same way as one would write them
-down in type theory, since we have $\Ty$ and $\Tm$ for a primitive notion of
-dependent objects and morphisms. In contrast, dependent objects in lex
-categories is a derived notion, and the induction principles we get are only up
-to isomorphism. This issue is perhaps not relevant from a purely categorical
+to compute induction principles in strictly the same way as one would write in
+type theory, since we have $\Ty$ and $\Tm$ for a primitive notion of dependent
+objects and morphisms. In contrast, dependent objects in lex categories is a
+derived notion, and the induction principles we get are only up to
+isomorphism. This issue is perhaps not relevant from a purely categorical
 perspective, but we are concerned with eventually implementing QIITs in proof
 assistants, so we prefer if our semantics computes strictly.
 
@@ -920,7 +920,7 @@ over $\ulA : \Ty_{\bGamma}\,\ulGamma$ are elements of $\Ty_{\bA}\,\Gamma\,\ulA$,
 \end{definition}
 
 In contrast to \cite{kaposi2019constructing}, it is not sufficient to model
-types with displayed flCwFs. In ibid.\ substitutions are modeled as strict
+types as displayed flCwFs. In ibid.\ substitutions are modeled as strict
 morphisms, which we cannot do because our infinitary function types and identity
 types cannot be interpreted strictly, as we will see in Section
 \ref{sec:infinitaryfunction}. Strict preservation is expressed with metatheoretic equality, which
@@ -985,9 +985,9 @@ underlying sets are given by simple composition:
 \end{alignat*}
 
 Moreover, $\id_{\boldsymbol{A[\sigma]}} := \id_{\bA}$,
-$\sigma\circ_{\boldsymbol{A[\sigma]}}\delta := \sigma\circ_{\bA}\delta$,
-and likewise substitution components are given by corresponding substitution
-components in $\bA$.
+$\sigma\circ_{\boldsymbol{A[\sigma]}}\delta := \sigma\circ_{\bA}\delta$, and
+likewise components for substitution are given by corresponding components in
+$\bA$.
 
 Context and type formers are given by coercing $\bA$
 structures along $\bsigma$ preservation isomorphisms. For example:
@@ -1352,7 +1352,7 @@ $\Gamma : \Con_{\syn_j}$ in an arbitrary ToS model.
 
 \subsection{Useful Model Fragments of $\bM$}
 
-We will need in the following three model fragments of $\bM$, which can be used
+In the following, We will need three model fragments of $\bM$, which can be used
 to compute notions of algebras, displayed algebras and sections respectively for
 each syntactic signature. This is a rephrasing of the $\blank^{\A}$,
 $\blank^{\D}$ and $\blank^{\S}$ interpretations in
@@ -1420,9 +1420,8 @@ For example, consider the syntactic signature for natural numbers:
 \]
 The type $\Tm_{\syn}\,\NatSig\,(\El_{\syn}\,N)$ is isomorphic to the usual type
 of natural numbers, since, intuitively, such terms can only be built from
-iterated usage of $zero$ and $suc$. We will build a term algebra for each
-signature in this manner. First, we describe the interpretation of $\syn$ in the
-$\Set$ model.
+iterated usage of $zero$ and $suc$. We build a term algebra for each
+signature in this manner.
 
 \begin{definition}[Term algebra construction]
 For each syntactic signature $\ulOmega : \SynSig_j$, we define a displayed $\ToS$
@@ -1457,7 +1456,6 @@ universe is interpreted as follows:
               \llb\ula\rrb_{\bA}\,(\Gamma\,\ulnu)\\
   & \El_{\bT_{\ulOmega}}\,a\,\ulnu\,\ult := (a\,\ulnu)\,\ult
 \end{alignat*}
-
 Hence, a syntactic $\ult : \Tm\,\ulOmega\,\U$ is interpreted as a set of terms
 with type $\El\,\ult$. In the interpretation of $\El$, note that
 \[
