@@ -1364,10 +1364,10 @@ in the interpretations for contexts, substitution, types, term, and we only have
 actions on contexts in the interpretations of term and substitution
 formers. Hence, we have:
 \begin{alignat*}{3}
-  & \Con_{\bA} && := \Set_{\max(i+1, j)} \\
-  & \Sub_{\bA}\,\Gamma\,\Delta && := \Gamma \ra \Delta\\
-  & \Ty_{\bA}\,\Gamma && := \Gamma \ra \Set_{\max(i+1, j)}\\
-  & \Tm_{\bA}\,\Gamma\,A && := (\gamma : \Gamma) \ra A\,\gamma
+  & \Con_{\bA} && = \Set_{\max(i+1, j)} \\
+  & \Sub_{\bA}\,\Gamma\,\Delta && = \Gamma \ra \Delta\\
+  & \Ty_{\bA}\,\Gamma && = \Gamma \ra \Set_{\max(i+1, j)}\\
+  & \Tm_{\bA}\,\Gamma\,A && = (\gamma : \Gamma) \ra A\,\gamma
 \end{alignat*}
 Now, for some $\Gamma : \Con_{\syn_j}$, the type of $\Gamma$-algebras at level
 $i$ is given by $\llb\Gamma\rrb_{\bA}$, where we implicitly lift $\syn_j :
@@ -1383,10 +1383,10 @@ $\bA$. This model, analogously to $\bA$, is given by restricting $\bM_{i,j}$ to
 the \emph{third} components everywhere, corresponding to types or actions on
 types. Hence, we have:
 \begin{alignat*}{3}
-  & \Con_{\bD}\,\ulGamma && := \ulGamma \ra \Set_{\max(i+1, j)} \\
-  & \Sub_{\bD}\,\Gamma\,\Delta\,\ulsigma && := (\ulgamma : \ulGamma) \ra \Gamma\,\gamma \ra \Delta(\llb\ulsigma\rrb_{\bA}\,\ulgamma)\\
-  & \Ty_{\bD}\,\Gamma\,\ulA && := (\ulgamma : \ulGamma) \ra \Gamma\,\ulgamma \ra \llb\ulA\rrb_{\bA}\,\ulgamma \ra \Set_{\max(i+1, j)}\\
-  & \Tm_{\bD}\,\Gamma\,A\,\ult && := (\ulgamma : \ulGamma)(\gamma : \Gamma\,\ulGamma)
+  & \Con_{\bD}\,\ulGamma && = \ulGamma \ra \Set_{\max(i+1, j)} \\
+  & \Sub_{\bD}\,\Gamma\,\Delta\,\ulsigma && = (\ulgamma : \ulGamma) \ra \Gamma\,\gamma \ra \Delta(\llb\ulsigma\rrb_{\bA}\,\ulgamma)\\
+  & \Ty_{\bD}\,\Gamma\,\ulA && = (\ulgamma : \ulGamma) \ra \Gamma\,\ulgamma \ra \llb\ulA\rrb_{\bA}\,\ulgamma \ra \Set_{\max(i+1, j)}\\
+  & \Tm_{\bD}\,\Gamma\,A\,\ult && = (\ulgamma : \ulGamma)(\gamma : \Gamma\,\ulGamma)
     \ra A\,\ulgamma\,\gamma\,(\llb\ult\rrb_{\bA}\,\ulgamma)
 \end{alignat*}
 \end{definition}
