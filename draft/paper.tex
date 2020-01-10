@@ -637,9 +637,8 @@ For each signature, we would like to have at least
 
 Following \cite{kaposi2019constructing}, we do this by creating a model of ToS,
 where contexts are categories supporting the above requirements and
-substitutions are appropriate structure-preserving functors. Then, each
-signature can be applied to this model, yielding an interpretation of the
-signature as a structured category of algebras.
+substitutions are appropriate structure-preserving functors. Then, each signature can be applied to this model, yielding an interpretation of the signature
+as a structured category of algebras.
 
 Our semantics has a ``type-theoretic'' flavor, which is inspired by the cubical
 set model of Martin-Löf type theory by Bezem et al. \cite{cubical}. The core idea
@@ -687,8 +686,8 @@ For each level $i$ we define $\flCwF_i : \Set_{i+1}$ as an iterated $\Sigma$-typ
 with the following components:
 \begin{enumerate}
   \item A CwF with underlying sets all in $\Set_i$. We reuse the component
-    notations from Definition \ref{def:tos}.
-  \item $\Sigma$-type $\Sg : (A : \Ty\,\Gamma)\ra \Ty\,(\Gamma \ext A)
+    notations $\Con$, $\Sub$, $\Ty$, etc.\ from Definition \ref{def:tos}.
+  \item $\Sigma$-types $\Sg : (A : \Ty\,\Gamma)\ra \Ty\,(\Gamma \ext A)
     \ra \Ty\,\Gamma$, with term formers $\proj1$, $\proj2$ and $\blank,\blank$.
   \item Identity type $\Id : (A : \Ty\,\Gamma)\ra \Tm\,\Gamma\,A\ra
     \Tm\,\Gamma\,A\ra \Ty\,\Gamma$, with $\refl$, equality reflection and UIP.
@@ -744,12 +743,12 @@ In order to talk about weak structure-preservation in the interpretation of subs
 
 \begin{definition}[Type categories, c.f.\ \cite{clairambault2014biequivalence}]\label{def:type_categories} For each $\Gamma : \Con$, there is a category
 whose objects are types $A : \Ty\,\Gamma$, and morphisms from $A$ to $B$ are
-terms $t : \Tm\,(\Gamma\,\ext\,A)\,B[\p]$. Identity morphisms are given by $\q :
-\Tm\,(\Gamma\,\ext\,A)\,A[\p]$, and composition $t \circ u$ by $t[\p, u]$. The
+terms $t : \Tm\,(\Gamma\,\ext\,A)\,(B[\p])$. Identity morphisms are given by $\q :
+\Tm\,(\Gamma\,\ext\,A)\,(A[\p])$, and composition $t \circ u$ by $t[\p, u]$. The
 assignment of type categories to contexts extends to a split indexed category. For
 each $\sigma : \Sub\,\Gamma\,\Delta$, there is a functor from $\Ty\,\Delta$ to
 $\Ty\,\Gamma$, which sends $A$ to $A[\sigma]$ and $t :
-\Tm\,(\Gamma\,\ext\,A)\,B[\p]$ to $t[\sigma\circ \p, \q]$.
+\Tm\,(\Gamma\,\ext\,A)\,(B[\p])$ to $t[\sigma\circ \p, \q]$.
 \end{definition}
 
 \begin{definition} A \emph{type isomorphism}, notated $t : A \simeq B$ is an isomorphism in a type category. We note the inverse as $t^{-1}$.
@@ -802,7 +801,7 @@ For $\bsigma_{\Sigma}$, we construct the following context isomorphism:
 & \simeq (\bsigma\,\Gamma\,\ext\,\Sigma\,(\bsigma\,A)\,((\Sigma\,B)[\bsigma_{\ext}^{-1}]))
 \end{alignat*}
 This isomorphism is the identity on $\bsigma\,\Gamma$, hence we can extract the
-desired $\bsigma_{\Sigma} : \bsigma\,\Sigma\,A\,B) \simeq
+desired $\bsigma_{\Sigma} : \bsigma\,(\Sigma\,A\,B) \simeq
 \Sigma\,(\bsigma\,A)\,((\bsigma\,B)[\bsigma_{\ext}^{-1}])$ from it.
 
 For $\bsigma_{\K}$, note the following:
@@ -812,7 +811,7 @@ For $\bsigma_{\K}$, note the following:
     \bsigma\,(\emptycon\,\ext\,\K\,\Delta)\\
   & \simeq \bsigma\,\Delta \simeq (\emptycon\,\ext\,K\,(\bsigma\,\Delta))
 \end{alignat*}
-This yields a type isomorphism $\bsigma\,(\K\,\Delta)) \simeq
+This yields a type isomorphism $\bsigma\,(\K\,\Delta) \simeq
 \K\,(\bsigma\,\Delta)$ in the empty context, and we use the functorial action of
 $\epsilon : \Sub\,\Gamma\,\emptycon$ to weaken it to any $\Gamma$ context.
 
