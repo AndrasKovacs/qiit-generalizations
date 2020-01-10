@@ -152,10 +152,12 @@
 \newcommand{\ulOmega}{\ul{\Omega}}
 \newcommand{\uldelta}{\ul{\delta}}
 \newcommand{\ulsigma}{\ul{\sigma}}
+\newcommand{\ulnu}{\ul{\nu}}
 \newcommand{\ulepsilon}{\ul{\epsilon}}
 \newcommand{\ult}{\ul{t}}
 \newcommand{\ulu}{\ul{u}}
 \newcommand{\ulA}{\ul{A}}
+\newcommand{\ula}{\ul{a}}
 \newcommand{\ulB}{\ul{B}}
 \newcommand{\tos}{\mathsf{tos}}
 
@@ -1064,6 +1066,7 @@ taking a first projection for each component. $\boldsymbol{\q : \Tm\,(\Gamma\ext
   A)\,(A[\p])}$ is likewise a strict flCwF section given by second projections. Substitution extension $\boldsymbol{\sigma,\,t}$ is given by pointwise combining $\bsigma$ and $\bt$ with metatheoretic $\Sigma$ pairing, e.g.\ $\Con_{\boldsymbol{(\sigma,t)}}\,\ulGamma :\equiv (\bsigma\,\ulGamma,\,\bt\,\ulGamma)$.
 
 \subsection{Universe}
+\label{sec:universe}
 
 \begin{definition} For a level $i$, we write $\bSet_i$ for the flCwF of sets where $\Con_{\bSet_i} :\equiv \Set_i$ and $\Sub_{\bSet_i}\,\Gamma\,\Delta :\equiv \Gamma \ra \Delta$.
 \end{definition}
@@ -1294,6 +1297,15 @@ $j+1$.
 \begin{example} We have $\syn_0 : \ToS_{1, 0}$, which is the syntax of closed QIIT signatures. We want to define a function $\mathsf{length} : \Con_{\syn_0} \ra \mathbb{N}$ by induction, which returns the length of a syntactic context as a metatheoretic natural number. To this end, we define a displayed ToS over $\syn_0$, where $\Con$ is defined as constantly $\mathbb{N}$, every other sort is defined as constantly $\top$, $\emptycon$ is defined as $0$ and $\Gamma\ext A$ is defined as $\Gamma + 1$. By the induction assumption, we get a ToS-section from $\syn_0$ to the displayed model, whose action on contexts is exactly the $\mathsf{length}$ function. Note that the induction assumption requires that the displayed model is at least at level 1, but this is not problematic because by cumulativity $\mathbb{N} : \Set_1$.
 \end{example}
 
+For every $M : \ToS_{j+1,j}$, there is a unique strict $\ToS$-morphism from
+$\syn_j$ to $M$. This follows from the induction assumption on $\syn_j$ and
+Theorem \ref{thm:initialind}. We denote this morphism as
+$\llbracket\blank\rrbracket_M$.  For example, given $\Gamma : \Con_\syn$, we
+have $\llbracket\Gamma\rrbracket_M : \Con_M$.  Also, for every displayed
+$\ToS$-model $M$ over $\syn_j$, there is a strict $\ToS$-section of $M$. We also
+denote this as $\llbracket\blank\rrbracket_M$, so e.g.\ for $\ulGamma :
+\Con_\syn$ we have $\llbracket\ulGamma\rrbracket_M : \Con_M\,\ulGamma$.
+
 With $\syn$ at hand, we can use an alternative, more conventional representation of
 signatures.
 
@@ -1329,27 +1341,90 @@ formers. Hence, we have:
   & \Ty_{\bS}\,\Gamma && :\equiv \Gamma \ra \Set_{j+2}\\
   & \Tm_{\bS}\,\Gamma\,A && :\equiv (\gamma : \Gamma) \ra A\,\gamma
 \end{alignat*}
+Now, for $\Gamma : \Con_{\syn}$, the type of $\Gamma$-algebras is given by
+$\llb\Gamma\rrb_{\bS}$. E.g.\, $\llb\NatSig\rrb_{\bS}$ yields a left-nested
+$\Sigma$-type of pointed sets with an endofunction. Also, $\llb\Gamma\rrb_{\bM}$
+extends $\llb\Gamma\rrb_{\bS}$ to an flCwF of $\Gamma$-algebras.
 \end{definition}
-
-For every $M : \ToS_{j+1,j}$, there is a unique strict $\ToS$-morphism from
-$\syn_j$ to $M$. This follows from the induction assumption on $\syn_j$ and
-Theorem \ref{thm:initialind}. We denote this morphism as
-$\llbracket\blank\rrbracket_M$.  For example, given $\Gamma : \Con_\syn$, we
-have $\llbracket\Gamma\rrbracket_M : \Con_M$.  Also, for every displayed
-$\ToS$-model $M$ over $\syn_j$, there is a strict $\ToS$-section of $M$. We also
-denote this as $\llbracket\blank\rrbracket_M$, so e.g.\ for $\ulGamma :
-\Con_\syn$ we have $\llbracket\ulGamma\rrbracket_M : \Con_M\,\ulGamma$.
-
-For a syntactic signature $\Gamma$, $\llb\Gamma\rrb_{\bS}$ yields exactly the
-type of $\Gamma$-algebras, e.g.\ $\llb\NatSig\rrb_{\bS}$ is a left-nested
-$\Sigma$-type, which is the type of pointed sets with an endofunction.
 
 \begin{definition}[Term algebra construction]
 For each syntactic signature $\ulOmega : \SynSig_j$, we define a displayed $\ToS$
 model over $\syn_j$, named $\bT$. The underlying sets are as follows:
 \begin{alignat*}{3}
-  & \Con\,\ulGamma :\equiv \Sub_{\syn}\,\ulOmega\,\ulGamma \ra \llb\ulGamma\rrb_{\bS}
+  & \Con_{\bT}\,\ulGamma &&:\equiv \Sub\,\ulOmega\,\ulGamma \ra \llb\ulGamma\rrb_{\bS}\\
+  & \Sub_{\bT}\,\Gamma\,\Delta\,\ulsigma &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)
+  \ra \Delta\,(\ulsigma\circ\nu) \simeq \llb\ulsigma\rrb_{\bS}\,(\Gamma\,\ulnu)\\
+  & \Ty_{\bT}\,\Gamma\,\ulA &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma) \ra
+    \Tm\,\ulOmega\,(\ulA[\ulnu]) \ra \llb\ulA\rrb_{\bS}\,(\Gamma\,\ulnu)\\
+  & \Tm_{\bT}\,\Gamma\,A\,\ult &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
+    \llb\ulA\rrb_{\bS}\,\ulnu\,(\ult[\ulnu]) \simeq_{\id} \llb\ult\rrb_{\bS} (\Gamma\,\ulnu)
 \end{alignat*}
+
+Above, the $\simeq$ in the definition of $\Sub_{\bT}$ is a context isomorphism
+in $\llb\ulDelta\rrb_{\bM}$, which is the flCwF of $\ulDelta$-algebras. The
+$\simeq_{\id}$ in $\Ty_{\bT}$ is a vertical context isomorphism in the displayed
+flCwF given by $\llb\ulA\rrb_{\bM}$.
+
+So far, the underlying sets in $\bT$ are similar to what was given in
+\cite{kaposi2019constructing} in the construction of term algebras, but there is
+an important difference: in ibid.\, strict equalities are used instead of
+isomorphisms. In our case, isomorphisms are necessary once again because of
+infinitary functions types and our identity type; we shall see this shortly. The
+universe is interpreted as follows:
+\begin{alignat*}{3}
+  & \U_{\bT} : (\ulnu : \Sub\,\ulOmega\,\ulGamma)(\ult : \Tm\,\ulOmega\,\U)\ra
+              \Set_{j+1}\\
+  & \U_{\bT}\,\ulnu\,\ult :\equiv \Tm\,\ulOmega\,(\El\,\ult)\\
+  & \El_{\bT}\,a : (\ulnu : \Sub\,\ulOmega\,\ulGamma)
+             (\ult : \Tm\,\ulOmega\,(\El\,(\ula[\ulnu])))\ra
+              \llb\ula\rrb_{\bS}\,(\Gamma\,\ulnu)\\
+  & \El_{\bT}\,a\,\ulnu\,\ult :\equiv (a\,\ulnu)\,\ult
+\end{alignat*}
+
+Hence, a syntactic $\ult : \Tm\,\ulOmega\,\U$ is interpreted as a set of terms
+with type $\El\,\ult$. In the interpretation of $\El$, note that
+\[
+  a\,\ulnu : \U_{\bT}\,\ulnu\,(\ula[\ulnu]) \simeq_{\id}
+                 \llb\ula\rrb_{\bS}\,(\Gamma\,\ulnu)
+\]
+hence
+\[
+a\,\ulnu : \Tm\,\ulOmega\,(\El\,(\ula[\ulnu])) \simeq_{\id}
+           \llb\ula\rrb_{\bS}\,(\Gamma\,\ulnu)
+\]
+The $\simeq_{\id}$ above is just an isomorphism of sets, since it lives in
+$\llb\U\rrb_{\bM}$ which was given as the flCwF of sets in Section
+\ref{sec:universe}. This above isomorphism is a good summary of the
+construction: the interpretation of a $\ula : \Tm\,\ulOmega\,\U$ in the term
+algebra is isomorphic to a set of terms.
+
+Inductive functions are interpreted by transport along such isomorphism:
+\[
+  \Pii_{\bT}\,a\,B\,\ulnu\,\ult :\equiv \lambda\,\alpha.\,
+         B\,(\ulnu,\,(a\,\ulnu)^{-1}\,\alpha)\,(\ult\,\appitt\,((a\,\ulnu)^{-1}\,\alpha))
+\]
+
+For the infinitary function space, we need the following, where $\simeq_{\id}$ is
+again set isomorphism.
+\begin{alignat*}{3}
+  & \Piinf_{\bT}\,A\,b\,\ulnu : \Tm\,\ulOmega\,(\El\,(\Piinf\,A\,(\lambda\,\alpha.\,(b\,\alpha)[\ulnu])))\\
+  & \hspace{4.2em}\simeq_{\id} ((\alpha : A) \ra \llb\alpha\rrb_{\bS}\,(\Gamma\,\ulnu))
+\end{alignat*}
+This can be given using the natural isomorphism consisting of $\appinf$ and
+$\laminf$. However, the sides are not strictly equal. For the identity type, we
+build the following isomorphism using equality reflection.
+\begin{alignat*}{3}
+  & \Id_{\bT}\,a\,t\,u\,\ulnu : \Tm\,\ulOmega\,(\El\,(\Id\,(\ula[\ulnu])\,(\ult[\ulnu])\,(\ulu[\ulnu]))\\
+  & \hspace{4.2em}\simeq_{\id} (\llb\ult\rrb_{\bS}\,(\Gamma\,\ulnu) =   \llb\ulu\rrb_{\bS}\,(\Gamma\,\ulnu))
+\end{alignat*}
+
+We omit the rest of the definition of $\bT$. The interpretations of equations in
+the CwF and fl-structure parts become fairly technical, and we also need to
+utilize iso-cleaving to interpret type substitution and substitution
+laws. However, the basic shape of the model remains similar to
+\cite{kaposi2019constructing}.
+
+
 
 
 
@@ -1409,3 +1484,4 @@ EUTypes CA15123.
 
 
 %% write about limitations!
+p
