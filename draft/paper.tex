@@ -1241,15 +1241,15 @@ For $\bt$ and $\bu$ in $\bTm\,\bGamma\,(\bEl\,\ba)$, we define $\bId\,\bt\,\bu
 \boldsymbol{:} \bTm\,\bGamma\,\bU$ as expressing pointwise equality of weak
 sections.
 \begin{alignat*}{3}
-& (\bId\,\bt\,\bu)\,\ulGamma &&:= \bt\,\ulGamma = \bu\,\ulGamma\\
-& (\bId\,\bt\,\bu)\,\ulA     && := \lambda\,e.\, \bt\,\ulA = \bu\,\ulA
+& (\bId\,\bt\,\bu)\,\ulGamma &&:= (\bt\,\ulGamma = \bu\,\ulGamma)\\
+& (\bId\,\bt\,\bu)\,\ulA     && := \lambda\,e.\, (\bt\,\ulA = \bu\,\ulA)
 \end{alignat*}
 Above, $\bt\,\ulA = \bu\,\ulA$ is well-typed because of $e :
 \bt\,\ulGamma = \bu\,\ulGamma$. For substitutions, we have to complete a square
 of equalities:
 \begin{alignat*}{3}
-  (\bId\,\bt\,\bu)\,(\ulsigma : \Sub\,\ulGamma\,\ulDelta) : \bt\,\ulGamma = \bu\,\ulGamma \ra
-       \bt\,\ulDelta = \bu\,\ulDelta
+  (\bId\,\bt\,\bu)\,(\ulsigma : \Sub\,\ulGamma\,\ulDelta) : (\bt\,\ulGamma = \bu\,\ulGamma) \ra
+       (\bt\,\ulDelta = \bu\,\ulDelta)
 \end{alignat*}
 This can be given by $\bt\,\ulsigma : \ba\,\ulsigma\,(\bt\,\ulGamma) =
 \bt\,\ulDelta$ and $\bu\,\ulsigma : \ba\,\ulsigma\,(\bu\,\ulGamma) =
