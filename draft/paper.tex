@@ -1360,14 +1360,14 @@ $\blank^{\D}$ and $\blank^{\S}$ interpretations in
 
 \begin{definition}[The $\Set$ model of $\ToS$] For each $i$ and $j$, we have $\bA : \ToS_{\max(i+1, j)+1, j}$, which can be given by restricting the $\bM_{i,j}$ model
 of Section \ref{sec:semantics} so that we only have the first $\Con$ components
-in the interpretations for contexts, substitution, types, term, and we only have
-actions on contexts in the interpretations of term and substitution
+in the interpretations for contexts, substitutions, types, terms, and we only
+have actions on contexts in the interpretations of term and substitution
 formers. Hence, we have:
 \begin{alignat*}{3}
-  & \Con_{\bA} && :\equiv \Set_{\max(i+1, j)} \\
-  & \Sub_{\bA}\,\Gamma\,\Delta && :\equiv \Gamma \ra \Delta\\
-  & \Ty_{\bA}\,\Gamma && :\equiv \Gamma \ra \Set_{\max(i+1, j)}\\
-  & \Tm_{\bA}\,\Gamma\,A && :\equiv (\gamma : \Gamma) \ra A\,\gamma
+  & \Con_{\bA} && = \Set_{\max(i+1, j)} \\
+  & \Sub_{\bA}\,\Gamma\,\Delta && = \Gamma \ra \Delta\\
+  & \Ty_{\bA}\,\Gamma && = \Gamma \ra \Set_{\max(i+1, j)}\\
+  & \Tm_{\bA}\,\Gamma\,A && = (\gamma : \Gamma) \ra A\,\gamma
 \end{alignat*}
 Now, for some $\Gamma : \Con_{\syn_j}$, the type of $\Gamma$-algebras at level
 $i$ is given by $\llb\Gamma\rrb_{\bA}$, where we implicitly lift $\syn_j :
@@ -1383,10 +1383,10 @@ $\bA$. This model, analogously to $\bA$, is given by restricting $\bM_{i,j}$ to
 the \emph{third} components everywhere, corresponding to types or actions on
 types. Hence, we have:
 \begin{alignat*}{3}
-  & \Con_{\bD}\,\ulGamma && :\equiv \ulGamma \ra \Set_{\max(i+1, j)} \\
-  & \Sub_{\bD}\,\Gamma\,\Delta\,\ulsigma && :\equiv (\ulgamma : \ulGamma) \ra \Gamma\,\gamma \ra \Delta(\llb\ulsigma\rrb_{\bA}\,\ulgamma)\\
-  & \Ty_{\bD}\,\Gamma\,\ulA && :\equiv (\ulgamma : \ulGamma) \ra \Gamma\,\ulgamma \ra \llb\ulA\rrb_{\bA}\,\ulgamma \ra \Set_{\max(i+1, j)}\\
-  & \Tm_{\bD}\,\Gamma\,A\,\ult && :\equiv (\ulgamma : \ulGamma)(\gamma : \Gamma\,\ulGamma)
+  & \Con_{\bD}\,\ulGamma && = \ulGamma \ra \Set_{\max(i+1, j)} \\
+  & \Sub_{\bD}\,\Gamma\,\Delta\,\ulsigma && = (\ulgamma : \ulGamma) \ra \Gamma\,\gamma \ra \Delta(\llb\ulsigma\rrb_{\bA}\,\ulgamma)\\
+  & \Ty_{\bD}\,\Gamma\,\ulA && = (\ulgamma : \ulGamma) \ra \Gamma\,\ulgamma \ra \llb\ulA\rrb_{\bA}\,\ulgamma \ra \Set_{\max(i+1, j)}\\
+  & \Tm_{\bD}\,\Gamma\,A\,\ult && = (\ulgamma : \ulGamma)(\gamma : \Gamma\,\ulGamma)
     \ra A\,\ulgamma\,\gamma\,(\llb\ult\rrb_{\bA}\,\ulgamma)
 \end{alignat*}
 \end{definition}
@@ -1592,10 +1592,10 @@ theoretic syntax. Compared to our QII signatures, his signatures support sort
 equations but do not cover infinitary constructors or recursive equations. A way
 to encode sort equations in our signatures is using isomorphisms instead of
 equalities. In contrast to our algebraic definition, Cartmell's signatures are
-given by presyntax, named variables and typing relations, there is no
-explicit model theory provided for signatures, and no explicit term model
-construction. Cartmell focuses instead on showing that contextual categories
-serve as classifying categories for GATs.
+given by presyntax, named variables and typing relations, there is no explicit
+model theory provided for signatures, and no explicit term model construction is
+given. Cartmell focuses instead on showing that contextual categories serve as
+classifying categories for GATs.
 
 A more semantic approach to QIITs is given by Altenkirch et al.\
 \cite{gabe}. They generalize the initial algebra semantics of
@@ -1612,16 +1612,16 @@ recursive equations, which makes their semantics considerably simpler. They also
 do not provide a model theory of signatures, instead they assume signatures as
 an ad-hoc QIIT.
 
-Streicher's initiality proof \cite{streicher2012semantics} is a direct
-construction of a concrete QIIT: that of the syntax of a type theory. He uses
-preterms, typing relations and quotients to construct the initial model of type
-theory in a set-theoretic metalanguage. A recent formalization of the same
-result for a larger type theory was done by Brunerie et al.\ \cite{brunerie} in
-Agda with UIP, function extensionality and quotients. Lafont et
-al.\ \cite{induction-is-enough} construct all finitary inductive-inductive types
-in Agda using only UIP and function extensionality. Examples of
-inductive-inductive types are constructed without using UIP by Hugunin
-\cite{jasper}.
+%% Streicher's initiality proof \cite{streicher2012semantics} is a direct
+%% construction of a concrete QIIT: that of the syntax of a type theory. He uses
+%% preterms, typing relations and quotients to construct the initial model of type
+%% theory in a set-theoretic metalanguage. A recent formalization of the same
+%% result for a larger type theory was done by Brunerie et al.\ \cite{brunerie} in
+%% Agda with UIP, function extensionality and quotients. Lafont et
+%% al.\ \cite{induction-is-enough} construct all finitary inductive-inductive types
+%% in Agda using only UIP and function extensionality. Examples of
+%% inductive-inductive types are constructed without using UIP by Hugunin
+%% \cite{jasper}.
 
 Higher inductive types (HITs) are generalizations of QIITs in settings with
 proof-relevant identity types. They were introduced before QIITs
@@ -1639,16 +1639,60 @@ Our notion of displayed CwF is an extension of displayed categories
 \section{Conclusions and further work}
 \label{sec:conclusion}
 
+An important motivation of the current work was to use QIITs as a framework for
+algebraic theories, with the metatheory of type theories in mind as a key
+application. We would prefer QIITs to
+\begin{itemize}
+\item Be formally precise.
+\item Not gloss over issues of size.
+\item Be rich enough to cover most type theories in the wild, including the theory
+      of QIIT signatures.
+\item Be direct enough, so that signatures for type theories can
+      be written out without excessive encoding overhead.
+\item Be suitable for practical implementation in proof assistants.
+\item Be reducible to a minimal set of basic type formers.
+\end{itemize}
 
+With the current work, we have improved the state of QIITs with respect to
+the above criteria. However, a number of open research problems remain.
 
-Existence of the theory of signatures:
+With regards to the expressiveness of QIIT signatures, we do not yet
+support sort equations, i.e. equations of elements of $\Tm\,\Gamma\,U$ in
+signatures. Sort equations are included in Cartmell's generalized algebraic
+theories \cite{gat}, and they appear to be highly useful for giving an algebraic
+representation for Russell-style universes and cumulative universes
+\cite{sterling2019algebraic}. We leave this for future work, but we note that
+the current isofibration-based semantics does not work in the presence of strict
+sort equations, since they are not invariant under isomorphism; instead, sort
+equations are compatible with the stricter semantics of
+\cite{kaposi2019constructing}.
 
-\cite[Section 9]{lumsdaineShulman} shows that infinitary QIITs are not
-constructible in type theory without choice, so the existence of the
-theory of signatures is a non-conservative extension of extensional
-type theory. The setoid model supports an example QIT which branches
-over an arbitrary setoid, and this suggests that it might support the
-theory of signatures as well.
+While we have made an effort to shape the syntax and semantics of QIITs to
+be amenable to implementation in proof assistants, much needs to be done before
+we can have a practical implementation. For one, we would need to consider QIITs
+in a type theory where transports along equality proofs compute, and would need
+to work out computing transports for QIITs. Cubical Agda has recently made
+strides in implementing HITs \cite{vezzosicubical}, but as of now it does not
+support computing transports on indexed inductive types.
+
+With regards to the reduction of QIITs to simple type formers, the
+reduction of infinitary QIITs appears to be more challenging than the finitary
+case. \cite[Section 9]{lumsdaineShulman} shows that infinitary QIITs are not
+constructible in type theory without choice, so such QIITs are a
+non-conservative extension of extensional type theory. In the finitary case, a
+generalization of the approach in \cite{induction-is-enough} seems promising ;
+this amounts to a Streicher-style initial algebra construction
+\cite{streicher2012semantics} for the theory of finitary QIIT signatures. In
+particular, Brunerie et al. \cite{brunerie} has formalized in Agda this
+construction for a comparable type theory, using UIP, function extensionality,
+propositional extensionality and simple quotient types.
+
+Another line of possible future work would be to explore a more general
+functorial style of semantics for QIITs. So far, we considered set-based
+1-categorical semantics, which is what we need when we want to reason
+inductively about syntaxes of type theories. However, it would be fruitful to
+consider algebras in structured categories other than the category of sets.
+
 
 %% Acknowledgments
 \begin{acks}
