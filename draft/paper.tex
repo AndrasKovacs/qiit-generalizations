@@ -447,7 +447,7 @@ We use cumulativity to reduce bureaucratic overhead when dealing with
 constructions at different universe levels. The internal $\Subtype$ is used in
 Section \ref{sec:termmodels} to prove cumulativity for general QIIT
 algebras. For example, consider natural number algebras at level $i$, given as
-the $\Sigma$-type $NatAlg_i :\equiv(Nat : \Set_i)\times Nat\times(Nat \ra
+the $\Sigma$-type $NatAlg_i :=(Nat : \Set_i)\times Nat\times(Nat \ra
 Nat)$. It follows from the subtyping rules that $i \leq j$ implies $NatAlg_{i}
 \leq NatAlg_{j}$. However, cumulativity for arbitrary QIIT algebras does not
 follow judgmentally; it can only be proven by induction on signatures, hence
@@ -534,7 +534,7 @@ extension, $\Pii$ and $\lami$, e.g.\ as $(\emptycon\,\ext (a : U) \ext (t :
   & \blank\appitt\blank && :
       \Tm\,\Gamma\,(\Pii\,a\,B)\ra
       (u : \Tm\,\Gamma\,(\El\,a)) \ra \Tm\,\Gamma\,(B[\id, u])\\
-  & t\appitt u && :\equiv (\appi\,t)[\id, u]
+  & t\appitt u && := (\appi\,t)[\id, u]
 \end{alignat*}
 We abbreviate non-dependent inductive $\Pii$ as $\blank\arri\blank$, and
 likewise we use $\blank\arre\blank$ and $\blank\arrinf\blank$ for non-dependent
@@ -542,17 +542,17 @@ external and infinitary functions.
 
 %% We use abbreviations for non-dependent function types:
 %% \begin{alignat*}{3}
-%%   & A\arri B && :\equiv \Pi\,A\,(B[\p])\\
-%%   & A \arre\,B &&:\equiv \Pie\,A\,(\lambda\,\_.\,B) \\
-%%   & A \arrinf\,B &&:\equiv \Piinf\,A\,(\lambda\,\_.\,B)
-%% $A\arri B :\equiv \Pi\,A\,(B[\p])$, and $A \arre\,B :\equiv \Pie\,A\,(\lambda\,\_.\,B)$, and likewise
-%% $A \arrinf\,B :\equiv \Piinf\,A\,(\lambda\,\_.\,B)$.
+%%   & A\arri B && := \Pi\,A\,(B[\p])\\
+%%   & A \arre\,B &&:= \Pie\,A\,(\lambda\,\_.\,B) \\
+%%   & A \arrinf\,B &&:= \Piinf\,A\,(\lambda\,\_.\,B)
+%% $A\arri B := \Pi\,A\,(B[\p])$, and $A \arre\,B := \Pie\,A\,(\lambda\,\_.\,B)$, and likewise
+%% $A \arrinf\,B := \Piinf\,A\,(\lambda\,\_.\,B)$.
 
 \begin{definition}[Notion of signature]\label{def:signature}
 A QIIT signature at level $j$ is a context in an arbitrary $M : \ToS_{i,j}$
 model. We define the type of such signatures as follows:
 \[
-  \Sig_j :\equiv (i : \mathbb{N})\ra(M : \ToS_{i,j})\ra \Con_M
+  \Sig_j := (i : \mathbb{N})\ra(M : \ToS_{i,j})\ra \Con_M
 \]
 
 Here, $j$ refers to the level of external types appearing in the signature, in
@@ -566,7 +566,7 @@ not in any cETT universe.
     can be chosen as $0$.}
 \begin{alignat*}{3}
   & \NatSig : \Sig_0 \\
-  & \NatSig :\equiv \lambda (i :\mathbb{N})(M : \ToS_{i,0}).\\
+  & \NatSig := \lambda (i :\mathbb{N})(M : \ToS_{i,0}).\\
   & \hspace{1em}(\emptycon_M\,\ext_M\, (N : \U_M) \,\ext_M\,(zero : \El_M\,N)\\
   & \hspace{2.67em}\ext_M (suc : N\arri_M\El_M\,N))
 \end{alignat*}
@@ -589,7 +589,7 @@ of $\Pii$ types. This allows, for example, a signature for trees branching with
 arbitrary small types. This is a signature at level 1, since we have $\Set_0$ as
 a $\Pie$ domain type.
 \begin{alignat*}{3}
-& \mathsf{TreeSig} :\equiv \\
+& \mathsf{TreeSig} := \\
 & \hspace{1em}\emptycon \ext (Tree : \U)\\
 & \hspace{1.35em}\ext (node : \Pie\,\Set_0\,(\lambda A.\,(A\,\arrinf\,Tree)\arri\El\,Tree))
 \end{alignat*}
@@ -598,7 +598,7 @@ a $\Pie$ domain type.
 %% \begin{example}{Sort equations}. An interesting example is the term lifting
 %% rule for cETT (omitting everything except term lifting):
 %% \begin{alignat*}{3}
-%%   & cETTSig :\equiv \\
+%%   & cETTSig := \\
 %%   & ...\,\ext\,Tm{\Lift} : \Pii\,(\Gamma : Con)\,(\Pii\,(A : Ty{\appitt}\Gamma)((\IdU\,(Tm{\appitt}\Gamma{\appitt}A)\,(Tm{\appitt}\Gamma{\appitt}(\Lift_j{\appitt}A))))
 %% \end{alignat*}
 %% \end{example}
@@ -606,7 +606,7 @@ a $\Pie$ domain type.
 \begin{example}{Recursive equations}. Again, the universe is closed under $\Id$, which allows us to write equations
 in $\Pii$ domains. A minimal (and trivial) example:
 \begin{alignat*}{3}
-  & \mathsf{RecEqSig} :\equiv\\
+  & \mathsf{RecEqSig} :=\\
   & \hspace{0.5em}\emptycon\,\ext (A : \U) \ext (a : \El\,A)\ext (f : \Pii\,(x : A)\,(\Id\,A\,x\,a\arri\El\,A))
 \end{alignat*}
 More interesting (and complicated) examples for recursive equations are boundary
@@ -714,7 +714,7 @@ $\Kfam$ as \emph{fl-structure}.
 Given $\bGamma : \flCwF_i$, we have the following predicate on contexts:
 \begin{alignat*}{3}
   & \Inductive : \Con_{\bGamma} \ra \Set_i \\
-  & \Inductive\,\Gamma :\equiv (A : \Ty_{\bGamma}\,\Gamma)\ra \Tm_{\bGamma}\,\Gamma\,A
+  & \Inductive\,\Gamma := (A : \Ty_{\bGamma}\,\Gamma)\ra \Tm_{\bGamma}\,\Gamma\,A
 \end{alignat*}
 \end{definition}
 
@@ -831,9 +831,9 @@ underlying functions and for preservation morphisms.
 For $\boldsymbol{\sigma \circ \delta}$, the underlying functions are given by
 function composition, and the preservation morphisms are given as follows:
 \begin{alignat*}{3}
-  & (\boldsymbol{\sigma \circ \delta})_{\emptycon}^{-1} :\equiv
+  & (\boldsymbol{\sigma \circ \delta})_{\emptycon}^{-1} :=
     \bsigma\,\bdelta_{\emptycon}^{-1} \circ \bdelta_{\emptycon}^{-1} \\
-  & (\boldsymbol{\sigma \circ \delta})_{\ext}^{-1} :\equiv
+  & (\boldsymbol{\sigma \circ \delta})_{\ext}^{-1} :=
     \bsigma\,\bdelta_{\ext}^{-1} \circ \bdelta_{\ext}^{-1}
 \end{alignat*}
 
@@ -975,39 +975,39 @@ We aim to define $\boldsymbol{\blank[\blank] : \Ty\,\Delta \ra
 and $\boldsymbol{A[\sigma\circ\delta]} = \boldsymbol{A[\sigma][\delta]}$. The
 underlying sets are given by simple composition:
 \begin{alignat*}{3}
-  & \Con_{\boldsymbol{A[\sigma]}}\,\ulGamma && :\equiv \Con_{\bA}\,(\bsigma\,\ulGamma)\\
-  & \Sub_{\boldsymbol{A[\sigma]}}\,\Gamma\,\Delta\,\ulsigma && :\equiv
+  & \Con_{\boldsymbol{A[\sigma]}}\,\ulGamma && := \Con_{\bA}\,(\bsigma\,\ulGamma)\\
+  & \Sub_{\boldsymbol{A[\sigma]}}\,\Gamma\,\Delta\,\ulsigma && :=
     \Sub_{\bA}\,\Gamma\,\Delta\,(\bsigma\,\ulsigma)\\
-  & \Ty_{\boldsymbol{A[\sigma]}}\,\Gamma\,\ulA && :\equiv
+  & \Ty_{\boldsymbol{A[\sigma]}}\,\Gamma\,\ulA && :=
       \Ty_{\bA}\,\Gamma\,(\bsigma\,\ulA)\\
-  & \Tm_{\boldsymbol{A[\sigma]}}\,\Gamma\,A\,\ult && :\equiv
+  & \Tm_{\boldsymbol{A[\sigma]}}\,\Gamma\,A\,\ult && :=
       \Tm_{\bA}\,\Gamma\,A\,(\bsigma\,\ult)
 \end{alignat*}
 
-Moreover, $\id_{\boldsymbol{A[\sigma]}} :\equiv \id_{\bA}$,
-$\sigma\circ_{\boldsymbol{A[\sigma]}}\delta :\equiv \sigma\circ_{\bA}\delta$,
+Moreover, $\id_{\boldsymbol{A[\sigma]}} := \id_{\bA}$,
+$\sigma\circ_{\boldsymbol{A[\sigma]}}\delta := \sigma\circ_{\bA}\delta$,
 and likewise substitution components are given by corresponding substitution
 components in $\bA$.
 
 Context and type formers are given by coercing $\bA$
 structures along $\bsigma$ preservation isomorphisms. For example:
 \begin{alignat*}{3}
-  &\emptycon_{\boldsymbol{A[\sigma]}} && :\equiv
+  &\emptycon_{\boldsymbol{A[\sigma]}} && :=
     \coe\,\bsigma_{\emptycon}^{-1}\,\emptycon_{\bA}\\
-  &\Gamma\ext_{\boldsymbol{A[\sigma]}}A && :\equiv
+  &\Gamma\ext_{\boldsymbol{A[\sigma]}}A && :=
     \coe\,\bsigma_{\ext}^{-1}\,(\Gamma\ext_{\bA} A)\\
-  &\Id_{\boldsymbol{A[\sigma]}}\,t\,u && :\equiv
+  &\Id_{\boldsymbol{A[\sigma]}}\,t\,u && :=
     \coe\,\bsigma_{\Id}^{-1}\,(\Id_{\bA}\,t\,u)
 \end{alignat*}
 
 Term and substitution formers are given by composing $\coh$-lifted
 isomorphisms with term and substitution formers from $\bA$. For example:
 \begin{alignat*}{3}
-  & \epsilon_{\boldsymbol{A[\sigma]}} && :\equiv
+  & \epsilon_{\boldsymbol{A[\sigma]}} && :=
     \coh\,\bsigma_{\emptycon}^{-1}\,\emptycon_{\bA} \circ \epsilon_{\bA}\\
-  & \p_{\boldsymbol{A[\sigma]}} && :\equiv
+  & \p_{\boldsymbol{A[\sigma]}} && :=
     \p_{\bA} \circ (\coh\,\bsigma_{\ext}^{-1}\,(\Gamma\ext A))^{-1}\\
-  & \appK_{\boldsymbol{A[\sigma]}}\,t && :\equiv
+  & \appK_{\boldsymbol{A[\sigma]}}\,t && :=
     \appK_{\bA}\,((\coh\,\bsigma_{\K}\,(\K\,\Delta))^{-1}\circ t)
 \end{alignat*}
 Equations for term and type substitution follow from naturality of preservation
@@ -1016,7 +1016,7 @@ $\bA$.
 
 Iso-cleaving is given iso-cleaving in $\bA$ and the action of $\bsigma$ on
 isomorphisms, e.g.\ we have $\coe_{\boldsymbol{A[\sigma]}}\,\ulsigma\,\Gamma
-:\equiv \coe_{\bA}\,(\bsigma\,\ulsigma)\,\Gamma$.
+:= \coe_{\bA}\,(\bsigma\,\ulsigma)\,\Gamma$.
 
 Functoriality of type substitution, i.e.\ $\boldsymbol{A[\id]} = \bA$ and
 $\boldsymbol{A[\sigma\circ\delta]} = \boldsymbol{A[\sigma][\delta]}$, follows
@@ -1077,9 +1077,9 @@ $\boldsymbol{\blank[\blank] : \Tm\,\Delta\,A \ra (\sigma : \Sub\,\Gamma\,\Delta)
 $\boldsymbol{\blank\circ\blank}$ in Section \ref{sec:idcomp}. Underlying functions
 are given by function composition, and preservation morphisms are also similar:
 \begin{alignat*}{3}
-  & (\boldsymbol{t[\sigma]})_{\emptycon}^{-1} :\equiv
+  & (\boldsymbol{t[\sigma]})_{\emptycon}^{-1} :=
     \bt\,\bsigma_{\emptycon}^{-1} \circ \bt_{\emptycon}^{-1} \\
-  & (\boldsymbol{t[\sigma]})_{\ext}^{-1} :\equiv
+  & (\boldsymbol{t[\sigma]})_{\ext}^{-1} :=
     \bt\,\bsigma_{\ext}^{-1} \circ \bt_{\ext}^{-1}
 \end{alignat*}
 
@@ -1097,19 +1097,19 @@ $\Sigma$-type. It is a straightforward extension of total categories in
 
 $\boldsymbol{\p : \Sub\,(\Gamma\ext A)\,\Gamma}$ is a strict morphism given by
 taking a first projection for each component. $\boldsymbol{\q : \Tm\,(\Gamma\ext
-  A)\,(A[\p])}$ is likewise a strict flCwF section given by second projections. Substitution extension $\boldsymbol{\sigma,\,t}$ is given by pointwise combining $\bsigma$ and $\bt$ with metatheoretic $\Sigma$ pairing, e.g.\ $\Con_{\boldsymbol{(\sigma,t)}}\,\ulGamma :\equiv (\bsigma\,\ulGamma,\,\bt\,\ulGamma)$.
+  A)\,(A[\p])}$ is likewise a strict flCwF section given by second projections. Substitution extension $\boldsymbol{\sigma,\,t}$ is given by pointwise combining $\bsigma$ and $\bt$ with metatheoretic $\Sigma$ pairing, e.g.\ $\Con_{\boldsymbol{(\sigma,t)}}\,\ulGamma := (\bsigma\,\ulGamma,\,\bt\,\ulGamma)$.
 
 \subsection{Universe}
 \label{sec:universe}
 
-\begin{definition} For a level $i$, we write $\bSet_i$ for the flCwF of sets where $\Con_{\bSet_i} :\equiv \Set_i$ and $\Sub_{\bSet_i}\,\Gamma\,\Delta :\equiv \Gamma \ra \Delta$.
+\begin{definition} For a level $i$, we write $\bSet_i$ for the flCwF of sets where $\Con_{\bSet_i} := \Set_i$ and $\Sub_{\bSet_i}\,\Gamma\,\Delta := \Gamma \ra \Delta$.
 \end{definition}
 
 We define $\boldsymbol{\U : \Ty\,\Gamma}$ as the isofibration which is
 constantly $\bSet_i$. A constant isofibration does not actually depend on the
 base flCwF, and has trivial iso-cleaving where $\coe$-s are identity
-functions. Hence, we have $\Con_{\bU}\,\ulGamma :\equiv \Set_i$ and
-$\Sub_{\bU}\,\Gamma\,\Delta\,\ulsigma :\equiv \Gamma \ra \Delta$.
+functions. Hence, we have $\Con_{\bU}\,\ulGamma := \Set_i$ and
+$\Sub_{\bU}\,\Gamma\,\Delta\,\ulsigma := \Gamma \ra \Delta$.
 
 \emph{Remark.} The type $\bTm\,\bGamma\,\bU$ is strictly equal to
 $\bSub\,\bGamma\,\bSet_i$, so it is helpful to think about semantic elements of
@@ -1121,10 +1121,10 @@ We define $\boldsymbol{\El : \Tm\,\Gamma\,\U \ra \Ty\,\Gamma}$ as discrete
 isofibration formation. For $\boldsymbol{a : \Tm\,\Gamma\,\U}$, the underlying
 sets of $\bEl\,\ba$ are the following:
 \begin{alignat*}{3}
-  & \Con_{\bEl\,\ba}\,\ulGamma && :\equiv \ba\,\ulGamma\\
-  & \Sub_{\bEl\,\ba}\,\Gamma\,\Delta\,\ulsigma && :\equiv \ba\,\ulsigma\,\Gamma = \Delta\\
-  & \Ty_{\bEl\,\ba}\,\Gamma\,\ulA && :\equiv \ba\,\ulA\,\Gamma\\
-  & \Tm_{\bEl\,\ba}\,\Gamma\,A\,\ult && :\equiv \ba\,\ult\,\Gamma = A
+  & \Con_{\bEl\,\ba}\,\ulGamma && := \ba\,\ulGamma\\
+  & \Sub_{\bEl\,\ba}\,\Gamma\,\Delta\,\ulsigma && := \ba\,\ulsigma\,\Gamma = \Delta\\
+  & \Ty_{\bEl\,\ba}\,\Gamma\,\ulA && := \ba\,\ulA\,\Gamma\\
+  & \Tm_{\bEl\,\ba}\,\Gamma\,A\,\ult && := \ba\,\ult\,\Gamma = A
 \end{alignat*}
 Hence, in $\bEl\,\ba$, $\Sub$ and $\Tm$ are propositional. We use the
 isomorphisms $\ba_{\emptycon} : \ba\,\emptycon \simeq \top$ and $\ba_{\ext} :
@@ -1132,11 +1132,11 @@ isomorphisms $\ba_{\emptycon} : \ba\,\emptycon \simeq \top$ and $\ba_{\ext} :
 \ba\,\ulGamma)\times(\ba\,\ulA\,\Gamma)$ to define empty context and context
 extension:
 \begin{alignat*}{3}
-  & \emptycon_{\bEl\,\ba} && :\equiv \ba_{\emptycon}^{-1}\,\tt\\
-  & (\Gamma\ext_{\bEl\,\ba} A) && :\equiv \ba_{\ext}^{-1}\,(\Gamma,\,A)
+  & \emptycon_{\bEl\,\ba} && := \ba_{\emptycon}^{-1}\,\tt\\
+  & (\Gamma\ext_{\bEl\,\ba} A) && := \ba_{\ext}^{-1}\,(\Gamma,\,A)
 \end{alignat*}
 We likewise use preservation isomorphisms to define $\K$, $\Id$ and $\Sigma$.
-Context coercion is $\coe\,\ulsigma\,\Gamma :\equiv \ba\,\ulsigma\,\Gamma$. Type coercion, for $A : \ba\,\ulA\,\Gamma$ is given as $\coe\,\ult\,A :\equiv \ba\,\ult\,(\ba_{\ext}^{-1}\,(\Gamma,\,A))$.
+Context coercion is $\coe\,\ulsigma\,\Gamma := \ba\,\ulsigma\,\Gamma$. Type coercion, for $A : \ba\,\ulA\,\Gamma$ is given as $\coe\,\ult\,A := \ba\,\ult\,(\ba_{\ext}^{-1}\,(\Gamma,\,A))$.
 
 \subsection{Inductive Function Space}
 
@@ -1152,15 +1152,15 @@ locally cartesian closed and does not support a general $\Pi$ type
 Contexts are products of $\bB$-contexts, and types are products of $\bB$-types,
 indexed respectively by contexts and types of $\bEl\,\ba$.
 \begin{alignat*}{3}
-  & \Con_{(\bPii\,\ba\,\bB)}\,\ulGamma &&:\equiv (\gamma : \ba\,\ulGamma)\ra \Con_{\bB}\,(\ulGamma, \gamma)\\
-  & \Ty_{(\bPii\,\ba\,\bB)}\,\Gamma\,\ulA &&:\equiv (\gamma : \ba\,\ulGamma)(a : \ba\,\ulA\,\gamma)\ra \Ty_{\bB}\,(\Gamma\,\gamma)\,(\ulA, a)
+  & \Con_{(\bPii\,\ba\,\bB)}\,\ulGamma &&:= (\gamma : \ba\,\ulGamma)\ra \Con_{\bB}\,(\ulGamma, \gamma)\\
+  & \Ty_{(\bPii\,\ba\,\bB)}\,\Gamma\,\ulA &&:= (\gamma : \ba\,\ulGamma)(a : \ba\,\ulA\,\gamma)\ra \Ty_{\bB}\,(\Gamma\,\gamma)\,(\ulA, a)
 \end{alignat*}
 Note that since $\bB$ is over the total $\boldsymbol{(\Gamma\ext\El\,a)}$,
 $\Con_{\bB}$ has a $\Sigma$-typed argument, and likewise the last argument
 of every $\bB$ component.  We could define substitutions similarly, as
 products of substitutions:
 \begin{alignat*}{3}
-  & \Sub_{(\bPii\,\ba\,\bB)}\,\Gamma\,\Delta\,\ulsigma :\equiv
+  & \Sub_{(\bPii\,\ba\,\bB)}\,\Gamma\,\Delta\,\ulsigma :=
   (\gamma : \ba\,\ulGamma)(\delta : \ba\,\ulDelta)
   (\sigma : \Sub_{(\bEl\,\ba)}\,\gamma\,\delta\,\ulsigma)\\
   &\hspace{6.5em}\ra \Sub_{\bB}\,(\Gamma\,\gamma)\,(\Delta\,\delta)\,(\ulsigma, \sigma)
@@ -1169,7 +1169,7 @@ This would work, but we know that $\Sub_{(\bEl\,\ba)}\,\gamma\,\delta\,\ulsigma$
 as $\ba\,\ulsigma\,\gamma = \delta$, so we can eliminate $\sigma$ by singleton contraction,
 and use the following equivalent definition:
 \begin{alignat*}{3}
-  & \Sub_{(\bPii\,\ba\,\bB)}\,\Gamma\,\Delta\,\ulsigma :\equiv
+  & \Sub_{(\bPii\,\ba\,\bB)}\,\Gamma\,\Delta\,\ulsigma :=
   (\gamma : \ba\,\ulGamma)\ra\Sub_{\bB}\,(\Gamma\,\gamma)\,(\Delta\,(\ba\,\ulsigma\,\gamma)\,(\ulsigma, \refl)
 \end{alignat*}
 The benefit of the contracted definition is that it computes preservation laws
@@ -1182,9 +1182,9 @@ $\bPii\,\ba\,\bB$, all other structure is given pointwise by $\bB$-structure.
 Iso-cleaving is given by transporting indices backwards in $\bEl\,\ba$ and outputs forwards
 in $\bB$:
 \begin{alignat*}{3}
-  & \coe\,\ulsigma\,\Gamma &&:\equiv
+  & \coe\,\ulsigma\,\Gamma &&:=
     \lambda\,\gamma.\,\coe_{\bB}\,(\ulsigma,\refl)\,(\Gamma\,(\ba\,(\ulsigma^{-1})\,\gamma))\\
-  & \coe\,\ult\,A &&:\equiv
+  & \coe\,\ult\,A &&:=
     \lambda\,\gamma\,a.\,\coe_{\bB}\,(\ult,\refl)\,(A\,(\ba\,(\ult^{-1})\,(\ba_{\ext}^{-1}(\gamma,a))))
 \end{alignat*}
 Likewise, $\coh$-s are given by backwards-forwards $\coh$-s.
@@ -1208,20 +1208,20 @@ For $A : \Set_j$ and $\bb : A \ra \bTm\,\bGamma\,\bU$, we aim to define
 $\bPiinf\,A\,\bb \boldsymbol{:} \bTm\,\bGamma\,\bU$. The underlying functions
 are:
 \begin{alignat*}{3}
-  & (\bPiinf\,A\,\bb)\,\ulGamma    &&:\equiv (a : A)\ra \bb\,a\,\ulGamma\\
-  & (\bPiinf\,A\,\bb)\,\ulsigma    &&:\equiv \lambda\,a.\, \bb\,a\,\ulsigma\\
-  & (\bPiinf\,A\,\bb)\,\ulA\       &&:\equiv \lambda\,\Gamma.\,(a : A)\ra \bb\,a\,\ulA\,(\Gamma\, a)\\
-  & (\bPiinf\,A\,\bb)\,\ult        &&:\equiv \lambda\,a.\, \bb\,a\,\ult
+  & (\bPiinf\,A\,\bb)\,\ulGamma    &&:= (a : A)\ra \bb\,a\,\ulGamma\\
+  & (\bPiinf\,A\,\bb)\,\ulsigma    &&:= \lambda\,a.\, \bb\,a\,\ulsigma\\
+  & (\bPiinf\,A\,\bb)\,\ulA\       &&:= \lambda\,\Gamma.\,(a : A)\ra \bb\,a\,\ulA\,(\Gamma\, a)\\
+  & (\bPiinf\,A\,\bb)\,\ult        &&:= \lambda\,a.\, \bb\,a\,\ult
 \end{alignat*}
 The preservation morphisms are as follows. Note that $\emptycon_{\bU} = \top$ and $\ext_{\bU}$ is
 metatheoretic $\Sigma$.
 \begin{alignat*}{3}
   &(\bPiinf\,A\,\bb)_{\emptycon}^{-1} && : \top\ra (\bPiinf\,A\,\bb)\,\emptycon\\
   %% &                               && : \top\ra (a : A) \ra \bb\,a\,\emptycon\\
-  &(\bPiinf\,A\,\bb)_{\emptycon}^{-1} && :\equiv \lambda\,\_\,a.\,(\bb\,a)_{\emptycon}^{-1}\,\tt\\
+  &(\bPiinf\,A\,\bb)_{\emptycon}^{-1} && := \lambda\,\_\,a.\,(\bb\,a)_{\emptycon}^{-1}\,\tt\\
   &(\bPiinf\,A\,\bb)_{\ext}^{-1} && : (\Gamma : (\bPiinf\,A\,\bb)\,\ulGamma)\times((\bPiinf\,A\,\bb)\,\ulA\,\Gamma)\\
   & && \hspace{0.5em}\ra (\bPiinf\,A\,\bb)\,(\ulGamma \ext \ulA)\\
-  & (\bPiinf\,A\,\bb)_{\ext}^{-1} && :\equiv \lambda\,(\Gamma,A)\,a.\,(\bb\,a)_{\ext}^{-1}(\Gamma\,a,\,A\,a)
+  & (\bPiinf\,A\,\bb)_{\ext}^{-1} && := \lambda\,(\Gamma,A)\,a.\,(\bb\,a)_{\ext}^{-1}(\Gamma\,a,\,A\,a)
 \end{alignat*}
 
 The preservation of $\emptycon$ and $\blank\ext\blank$ here is in fact the main
@@ -1241,8 +1241,8 @@ For $\bt$ and $\bu$ in $\bTm\,\bGamma\,(\bEl\,\ba)$, we define $\bId\,\bt\,\bu
 \boldsymbol{:} \bTm\,\bGamma\,\bU$ as expressing pointwise equality of weak
 sections.
 \begin{alignat*}{3}
-& (\bId\,\bt\,\bu)\,\ulGamma &&:\equiv \bt\,\ulGamma = \bu\,\ulGamma\\
-& (\bId\,\bt\,\bu)\,\ulA     && :\equiv \lambda\,e.\, \bt\,\ulA = \bu\,\ulA
+& (\bId\,\bt\,\bu)\,\ulGamma &&:= \bt\,\ulGamma = \bu\,\ulGamma\\
+& (\bId\,\bt\,\bu)\,\ulA     && := \lambda\,e.\, \bt\,\ulA = \bu\,\ulA
 \end{alignat*}
 Above, $\bt\,\ulA = \bu\,\ulA$ is well-typed because of $e :
 \bt\,\ulGamma = \bu\,\ulGamma$. For substitutions, we have to complete a square
@@ -1364,10 +1364,10 @@ in the interpretations for contexts, substitution, types, term, and we only have
 actions on contexts in the interpretations of term and substitution
 formers. Hence, we have:
 \begin{alignat*}{3}
-  & \Con_{\bA} && :\equiv \Set_{\max(i+1, j)} \\
-  & \Sub_{\bA}\,\Gamma\,\Delta && :\equiv \Gamma \ra \Delta\\
-  & \Ty_{\bA}\,\Gamma && :\equiv \Gamma \ra \Set_{\max(i+1, j)}\\
-  & \Tm_{\bA}\,\Gamma\,A && :\equiv (\gamma : \Gamma) \ra A\,\gamma
+  & \Con_{\bA} && := \Set_{\max(i+1, j)} \\
+  & \Sub_{\bA}\,\Gamma\,\Delta && := \Gamma \ra \Delta\\
+  & \Ty_{\bA}\,\Gamma && := \Gamma \ra \Set_{\max(i+1, j)}\\
+  & \Tm_{\bA}\,\Gamma\,A && := (\gamma : \Gamma) \ra A\,\gamma
 \end{alignat*}
 Now, for some $\Gamma : \Con_{\syn_j}$, the type of $\Gamma$-algebras at level
 $i$ is given by $\llb\Gamma\rrb_{\bA}$, where we implicitly lift $\syn_j :
@@ -1383,10 +1383,10 @@ $\bA$. This model, analogously to $\bA$, is given by restricting $\bM_{i,j}$ to
 the \emph{third} components everywhere, corresponding to types or actions on
 types. Hence, we have:
 \begin{alignat*}{3}
-  & \Con_{\bD}\,\ulGamma && :\equiv \ulGamma \ra \Set_{\max(i+1, j)} \\
-  & \Sub_{\bD}\,\Gamma\,\Delta\,\ulsigma && :\equiv (\ulgamma : \ulGamma) \ra \Gamma\,\gamma \ra \Delta(\llb\ulsigma\rrb_{\bA}\,\ulgamma)\\
-  & \Ty_{\bD}\,\Gamma\,\ulA && :\equiv (\ulgamma : \ulGamma) \ra \Gamma\,\ulgamma \ra \llb\ulA\rrb_{\bA}\,\ulgamma \ra \Set_{\max(i+1, j)}\\
-  & \Tm_{\bD}\,\Gamma\,A\,\ult && :\equiv (\ulgamma : \ulGamma)(\gamma : \Gamma\,\ulGamma)
+  & \Con_{\bD}\,\ulGamma && := \ulGamma \ra \Set_{\max(i+1, j)} \\
+  & \Sub_{\bD}\,\Gamma\,\Delta\,\ulsigma && := (\ulgamma : \ulGamma) \ra \Gamma\,\gamma \ra \Delta(\llb\ulsigma\rrb_{\bA}\,\ulgamma)\\
+  & \Ty_{\bD}\,\Gamma\,\ulA && := (\ulgamma : \ulGamma) \ra \Gamma\,\ulgamma \ra \llb\ulA\rrb_{\bA}\,\ulgamma \ra \Set_{\max(i+1, j)}\\
+  & \Tm_{\bD}\,\Gamma\,A\,\ult && := (\ulgamma : \ulGamma)(\gamma : \Gamma\,\ulGamma)
     \ra A\,\ulgamma\,\gamma\,(\llb\ult\rrb_{\bA}\,\ulgamma)
 \end{alignat*}
 \end{definition}
@@ -1415,7 +1415,7 @@ $\llb\Gamma\rrb_{\bS} = \Tm_{\llb\Gamma\rrb_{\bM}}$.
 The basic idea is that initial algebras can be built from the terms of $\syn_j$.
 For example, consider the syntactic signature for natural numbers:
 \[
-\NatSig :\equiv \emptycon\ext(N : \U)\ext(zero : \El\,N)\ext (suc : N
+\NatSig := \emptycon\ext(N : \U)\ext(zero : \El\,N)\ext (suc : N
 \arri \El\,N)
 \]
 The type $\Tm_{\syn}\,\NatSig\,(\El_{\syn}\,N)$ is isomorphic to the usual type
@@ -1428,12 +1428,12 @@ $\Set$ model.
 For each syntactic signature $\ulOmega : \SynSig_j$, we define a displayed $\ToS$
 model over $\syn_j$, named $\bT_{\ulOmega}$. The underlying sets are as follows:
 \begin{alignat*}{3}
-  & \Con_{\bT_{\ulOmega}}\,\ulGamma &&:\equiv \Sub\,\ulOmega\,\ulGamma \ra \llb\ulGamma\rrb_{\bA}\\
-  & \Sub_{\bT_{\ulOmega}}\,\Gamma\,\Delta\,\ulsigma &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)
+  & \Con_{\bT_{\ulOmega}}\,\ulGamma &&:= \Sub\,\ulOmega\,\ulGamma \ra \llb\ulGamma\rrb_{\bA}\\
+  & \Sub_{\bT_{\ulOmega}}\,\Gamma\,\Delta\,\ulsigma &&:= (\ulnu : \Sub\,\ulOmega\,\ulGamma)
   \ra \Delta\,(\ulsigma\circ\nu) \simeq \llb\ulsigma\rrb_{\bA}\,(\Gamma\,\ulnu)\\
-  & \Ty_{\bT_{\ulOmega}}\,\Gamma\,\ulA &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma) \ra
+  & \Ty_{\bT_{\ulOmega}}\,\Gamma\,\ulA &&:= (\ulnu : \Sub\,\ulOmega\,\ulGamma) \ra
     \Tm\,\ulOmega\,(\ulA[\ulnu]) \ra \llb\ulA\rrb_{\bA}\,(\Gamma\,\ulnu)\\
-  & \Tm_{\bT_{\ulOmega}}\,\Gamma\,A\,\ult &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
+  & \Tm_{\bT_{\ulOmega}}\,\Gamma\,A\,\ult &&:= (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
     \llb\ulA\rrb_{\bA}\,\ulnu\,(\ult[\ulnu]) \simeq_{\id} \llb\ult\rrb_{\bA} (\Gamma\,\ulnu)
 \end{alignat*}
 
@@ -1451,11 +1451,11 @@ universe is interpreted as follows:
 \begin{alignat*}{3}
   & \U_{\bT_{\ulOmega}} : (\ulnu : \Sub\,\ulOmega\,\ulGamma)(\ult : \Tm\,\ulOmega\,\U)\ra
               \Set_{j+1}\\
-  & \U_{\bT_{\ulOmega}}\,\ulnu\,\ult :\equiv \Tm\,\ulOmega\,(\El\,\ult)\\
+  & \U_{\bT_{\ulOmega}}\,\ulnu\,\ult := \Tm\,\ulOmega\,(\El\,\ult)\\
   & \El_{\bT_{\ulOmega}}\,a : (\ulnu : \Sub\,\ulOmega\,\ulGamma)
              (\ult : \Tm\,\ulOmega\,(\El\,(\ula[\ulnu])))\ra
               \llb\ula\rrb_{\bA}\,(\Gamma\,\ulnu)\\
-  & \El_{\bT_{\ulOmega}}\,a\,\ulnu\,\ult :\equiv (a\,\ulnu)\,\ult
+  & \El_{\bT_{\ulOmega}}\,a\,\ulnu\,\ult := (a\,\ulnu)\,\ult
 \end{alignat*}
 
 Hence, a syntactic $\ult : \Tm\,\ulOmega\,\U$ is interpreted as a set of terms
@@ -1477,7 +1477,7 @@ algebra is isomorphic to a set of terms.
 
 Inductive functions are interpreted by transport along such isomorphism:
 \[
-  \Pii_{\bT_{\ulOmega}}\,a\,B\,\ulnu\,\ult :\equiv \lambda\,\alpha.\,
+  \Pii_{\bT_{\ulOmega}}\,a\,B\,\ulnu\,\ult := \lambda\,\alpha.\,
          B\,(\ulnu,\,(a\,\ulnu)^{-1}\,\alpha)\,(\ult\,\appitt\,((a\,\ulnu)^{-1}\,\alpha))
 \]
 
@@ -1529,12 +1529,12 @@ $\ToS_{l, j}$. In the following, we notate the level of algebras computed by
   $\llb\blank\rrb_{\bA}$ with an extra index, as in
   $\llb\ulGamma\rrb_{\bA_k}$. The underlying sets of the model are as follows.
 \begin{alignat*}{3}
-  & \Con\,\ulGamma && :\equiv \Subtype\,\llb\ulGamma\rrb_{\bA_k}\,\llb\ulGamma\rrb_{\bA_l}\\
-  & \Sub\,\Gamma\,\Delta\,\ulsigma && :\equiv (\gamma : \llb\ulGamma\rrb_{\bA_k})\ra
+  & \Con\,\ulGamma && := \Subtype\,\llb\ulGamma\rrb_{\bA_k}\,\llb\ulGamma\rrb_{\bA_l}\\
+  & \Sub\,\Gamma\,\Delta\,\ulsigma && := (\gamma : \llb\ulGamma\rrb_{\bA_k})\ra
   \llb\ulsigma\rrb_{\bA_k}\,\gamma = \llb\ulsigma\rrb_{\bA_l}\,\gamma\\
-  & \Ty\,\Gamma\,\ulA &&:\equiv (\gamma : \llb\ulGamma\rrb_{\bA_k})\ra
+  & \Ty\,\Gamma\,\ulA &&:= (\gamma : \llb\ulGamma\rrb_{\bA_k})\ra
       \Subtype\,(\llb\ulA\rrb_{\bA_k}\,\gamma)\,(\llb\ulA\rrb_{\bA_l}\,\gamma)\\
-  & \Tm\,\Gamma\,A\,\ult &&:\equiv (\gamma : \llb\ulGamma\rrb_{\bA_k})\ra
+  & \Tm\,\Gamma\,A\,\ult &&:= (\gamma : \llb\ulGamma\rrb_{\bA_k})\ra
      \llb\ult\rrb_{\bA_k}\,\gamma = \llb\ult\rrb_{\bA_l}\,\gamma
 \end{alignat*}
 The rest of the model is straightforward to define. Now, it follows from the
@@ -1553,16 +1553,16 @@ the cumulativity of $\ulOmega$ here to lift the term algebra appropriately.
 We aim to show that $\gamma$ has a section. We define a displayed model over $\syn_j$ lifted
 to $\ToS_{k, j}$, which we name $\bI_{\ulOmega}$. The underlying sets are:
 \begin{alignat*}{3}
-  & \Con_{\bI_{\ulOmega}}\,\ulGamma &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
+  & \Con_{\bI_{\ulOmega}}\,\ulGamma &&:= (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
   \llb\ulGamma\rrb_{\bS}\,(\llb\ulnu\rrb_{\bA}\,(\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id))\,\gamma\\
-  & \Sub_{\bI_{\ulOmega}}\,\Gamma\,\Delta\,\ulsigma && :\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
+  & \Sub_{\bI_{\ulOmega}}\,\Gamma\,\Delta\,\ulsigma && := (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
     \Delta\,(\ulsigma\circ\ulnu) = \llb\ulsigma\rrb_{\bS}\,(\Gamma\,\ulnu)\\
-  & \Ty_{\bI_{\ulOmega}}\,\Gamma\,\ulA &&:\equiv
+  & \Ty_{\bI_{\ulOmega}}\,\Gamma\,\ulA &&:=
   (\ulnu : \Sub\,\ulOmega\,\ulGamma)(t : \Tm\,\ulOmega\,(\ulA[\ulnu]))\\
   & && \hspace{1.2em}\ra
   \llb\ulA\rrb_{\bS}\,(\llb\ult\rrb_{\bA}\,(\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id))\,
   (\llb\ult\rrb_{\bD}\,\gamma)\,(\Gamma\,\ulnu)\\
-  & \Tm_{\bI_{\ulOmega}}\,\Gamma\,A\,\ult &&:\equiv A\,\ulnu\,(\ult[\ulnu]) = \llb\ult\rrb_{\bS}\,(\Gamma\,\ulnu)
+  & \Tm_{\bI_{\ulOmega}}\,\Gamma\,A\,\ult &&:= A\,\ulnu\,(\ult[\ulnu]) = \llb\ult\rrb_{\bS}\,(\Gamma\,\ulnu)
 \end{alignat*}
 
 Here, there is no essential change compared to \cite{kaposi2019constructing},
