@@ -268,10 +268,23 @@ of interest because there are many commonly used mathematical structures, which
 can be conveniently described as QIITs in type theory, but cannot be defined as
 less general inductive types, or doing so incurs large encoding overhead.
 
-Categories are a prime example for a structure which is described by a quotient
-inductive-inductive signature. Signatures for QIITs allow having multiple sorts,
-with later ones indexed over previous ones, and equations as well. We need both
-features in order to write down the signature of categories.
+Categories are a prime example for a structure which is described by a
+quotient inductive-inductive signature. Signatures for QIITs allow
+having multiple sorts, with later ones indexed over previous ones, and
+equations as well. We need both features in order to write down the
+following signature of categories.
+\begin{alignat*}{3}
+  & Ob  && : \U \\
+  & Mor && : Ob\ra Ob\ra\U \\
+  & \blank\circ\blank && : Mor\,J\,K\ra Mor\,I\,J\ra Mor\,I\,K \\
+  & id && : Mor\,I\,I \\
+  & ass && : (f\circ g)\circ h = f\circ(g\circ h) \\
+  & idl && : id\circ f = f \\
+  & idr && : f\circ id = f
+\end{alignat*}
+The sort $Mor$ is indexed twice over the sort $Ob$, $ass$, $idl$ and
+$idr$ express equations between the constructors $\blank\circ\blank$
+and $id$.
 
 The benefit of having a QIIT signature is getting a model theory ``for free'',
 from the metatheory of QIITs. This model theory includes a category of algebras
@@ -284,9 +297,39 @@ Algebraic notions of models of type theories are examples for this. Here,
 initial models represent syntax, and initiality corresponds to induction on
 syntax. Several variants have been used, from contextual categories \cite{gat}
 and comprehension categories \cite{jacobs1993comprehension} to categories with
-families \cite{Dybjer96internaltype}. Additionally, real, surreal \cite{HoTTbook}
-and ordinal numbers \cite{lumsdaineShulman} can be defined as \emph{infinitary}
-QIITs, which are represented as possibly infinitely branching inductive trees.
+families \cite{Dybjer96internaltype} (CwF).
+%
+Whereas the initial category can be given by first defining the type
+of objects (the empty type) and then defining morphisms as a separate
+inductive family, for the initial CwF one has to define $Ob$, $Mor$
+and two extra sorts $Ty$ and $Tm$ \emph{inductive-inductively}, at the
+same time. This is because there is a constructor of $Ob$ which refers
+to $Ty$, constructors of $Ty$ refer to $Ob$ and $Sub$, and so on. This
+is illustrated by the following excerpt of the signature for CwFs
+extending the above signature for categories.
+\begin{alignat*}{3}
+  & Ty && : Ob\ra \U \\
+  & empty  && : Ob \\
+  & ext && : (I:Ob)\ra Ty\,I\ra Ob \\
+  & \blank[\blank] && : Ty\,J\ra Mor\,I\,J\ra Ty\,I
+\end{alignat*}
+
+While signatures for type theory usually only contain finitary
+constructors, important examples of QIITs have infinitary
+constructors, such as the following signature for infinitaly branching
+trees where the order of subtrees does not matter.
+\begin{alignat*}{3}
+  & Tree && : \U \\
+  & leaf  && : Tree \\
+  & node && : (\N\ra Tree)\ra Tree \\
+  & perm && : (g :\N\ra Tree)(f : \N\ra\N)\ra \mathsf{isIso}\,f\ra \\
+  & && \hspace{0.8em} node\,g = node (g\circ f)
+\end{alignat*}
+Here $node$ and $perm$ are infinitary constructurs, $perm$ expresses
+that reordering subtrees by a permutation (a $\N\ra\N$ function which
+is an isomorphism) does not matter.
+
+Real-world examples examples of infinitary QIITs include the real, surreal numbers \cite{HoTTbook}, ordinal numbers \cite{lumsdaineShulman} and the partiality monad \cite{partiality}.
 
 %% The main motivation of the current paper is to generalize previously formalized
 %% \cite{kaposi2019constructing} QIITs so that they accommodate more algebraic
