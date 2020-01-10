@@ -1326,49 +1326,55 @@ each syntactic signature. This is a rephrasing of the $\blank^{\A}$,
 $\blank^{\D}$ and $\blank^{\S}$ interpretations in
 \cite{kaposi2019constructing}.
 
-\begin{definition}[The $\Set$ model of $\ToS$] For each $j$, we have $\bA : \ToS_{j+1, j}$, which can be given by restricting the $\bM$ model
+\begin{definition}[The $\Set$ model of $\ToS$] For each $i$ and $j$, we have $\bA : \ToS_{\max(i+1, j)+1, j}$, which can be given by restricting the $\bM_{i,j}$ model
 of Section \ref{sec:semantics} so that we only have the first $\Con$ components
 in the interpretations for contexts, substitution, types, term, and we only have
 actions on contexts in the interpretations of term and substitution
 formers. Hence, we have:
 \begin{alignat*}{3}
-  & \Con_{\bA} && :\equiv \Set_{j+2} \\
+  & \Con_{\bA} && :\equiv \Set_{\max(i+1, j)} \\
   & \Sub_{\bA}\,\Gamma\,\Delta && :\equiv \Gamma \ra \Delta\\
-  & \Ty_{\bA}\,\Gamma && :\equiv \Gamma \ra \Set_{j+2}\\
+  & \Ty_{\bA}\,\Gamma && :\equiv \Gamma \ra \Set_{\max(i+1, j)}\\
   & \Tm_{\bA}\,\Gamma\,A && :\equiv (\gamma : \Gamma) \ra A\,\gamma
 \end{alignat*}
-Now, for $\Gamma : \Con_{\syn}$, the type of $\Gamma$-algebras is given by
-$\llb\Gamma\rrb_{\bA}$. E.g.\, $\llb\NatSig\rrb_{\bA}$ yields a left-nested
-$\Sigma$-type of pointed sets with an endofunction. Also, $\llb\Gamma\rrb_{\bM}$
-extends $\llb\Gamma\rrb_{\bA}$ to an flCwF of $\Gamma$-algebras.
+Now, for some $\Gamma : \Con_{\syn_j}$, the type of $\Gamma$-algebras at level
+$i$ is given by $\llb\Gamma\rrb_{\bA}$, where we implicitly lift $\syn_j :
+\ToS_{j+1, j}$ to $\ToS_{\max(i+1,j)+1, j}$. E.g.\, $\llb\NatSig\rrb_{\bA}$
+yields a left-nested $\Sigma$-type of pointed sets with an endofunction. Also,
+$\llb\Gamma\rrb_{\bM}$ extends $\llb\Gamma\rrb_{\bA}$ to an flCwF of
+$\Gamma$-algebras.
 \end{definition}
 
 \begin{definition}[Logical predicate model of $\ToS$ over the $\Set$ model]
-For each $j$ level we have $\bD$, which is a displayed $\ToS$ model over $\bA$
-at level $j$. This model, analogously to $\bA$, is given by restricting $\bM$ to
+For each $i$ and $j$ level we have $\bD$, which is a displayed $\ToS$ model over
+$\bA$. This model, analogously to $\bA$, is given by restricting $\bM_{i,j}$ to
 the \emph{third} components everywhere, corresponding to types or actions on
 types. Hence, we have:
 \begin{alignat*}{3}
-  & \Con_{\bD}\,\ulGamma && :\equiv \ulGamma \ra \Set_{j+2} \\
+  & \Con_{\bD}\,\ulGamma && :\equiv \ulGamma \ra \Set_{\max(i+1, j)} \\
   & \Sub_{\bD}\,\Gamma\,\Delta\,\ulsigma && :\equiv (\ulgamma : \ulGamma) \ra \Gamma\,\gamma \ra \Delta(\llb\ulsigma\rrb_{\bA}\,\ulgamma)\\
-  & \Ty_{\bD}\,\Gamma\,\ulA && :\equiv (\ulgamma : \ulGamma) \ra \Gamma\,\ulgamma \ra \llb\ulA\rrb_{\bA}\,\ulgamma \ra \Set_{j+2}\\
+  & \Ty_{\bD}\,\Gamma\,\ulA && :\equiv (\ulgamma : \ulGamma) \ra \Gamma\,\ulgamma \ra \llb\ulA\rrb_{\bA}\,\ulgamma \ra \Set_{\max(i+1, j)}\\
   & \Tm_{\bD}\,\Gamma\,A\,\ult && :\equiv (\ulgamma : \ulGamma)(\gamma : \Gamma\,\ulGamma)
     \ra A\,\ulgamma\,\gamma\,(\llb\ult\rrb_{\bA}\,\ulgamma)
 \end{alignat*}
 \end{definition}
 
-For $\Gamma : \SynSig_j$, the type of displayed $\Gamma$-algebras over some
-$\ulgamma : \llb\Gamma\rrb_{\bA}$ is given by $\llb\Gamma\rrb_{\bD}\,\ulgamma$. In
-other words, $\llb\Gamma\rrb_{\bD}$ yields the notion of types in the flCwF of
-$\Gamma$-algebras given by $\llb\Gamma\rrb_{\bM}$.
+For $\Gamma : \SynSig_j$, the type of displayed $\Gamma$-algebras at level $i$
+over some $\ulgamma : \llb\Gamma\rrb_{\bA}$ is given by
+$\llb\Gamma\rrb_{\bD}\,\ulgamma$. Here, we also implicitly lift $\Gamma$ to live
+in the appropriately sized $\syn$. In other words, $\llb\Gamma\rrb_{\bD}$ yields
+the notion of types in the flCwF of $\Gamma$-algebras given by
+$\llb\Gamma\rrb_{\bM}$.
 
 \begin{definition}[Displayed algebra section model of $\ToS$] Analogously to
-$\bA$ and $\bD$, we define $\bS$ as a displayed $\ToS$ model over the total
-model of $\bD$, which is given by restricting $\bM$ to the fourth components,
-corresponding to interpretations of terms and actions on terms.
+$\bA$ and $\bD$, for each $i$ and $j$ levels we define $\bS$ as a displayed
+  $\ToS$ model over the total model of $\bD$, which is given by restricting
+  $\bM_{i,j}$ to the fourth components, corresponding to interpretations of terms and
+  actions on terms.
 
-For $\ulgamma : \llb\Gamma\rrb_{\bA}$ and $\gamma : \llb\Gamma\rrb_{\bD}\,\ulgamma$,
-the type of $\Gamma$-sections is computed as $\llb\Gamma\rrb_{\bS}\,\ulgamma\,\gamma$.
+For $\ulgamma : \llb\Gamma\rrb_{\bA}$ and $\gamma :
+\llb\Gamma\rrb_{\bD}\,\ulgamma$, the type of $\Gamma$-sections at level $i$ is
+computed as $\llb\Gamma\rrb_{\bS}\,\ulgamma\,\gamma$.
 \end{definition}
 
 \subsection{Term Algebras}
@@ -1471,50 +1477,58 @@ underlying sets in the term algebra are all in $\Set_{j+1}$. Hence, the term
 algebra for $\NatSig : \SynSig_0$ has an underlying set in $\Set_{j+1}$. This is
 a bit inconvenient, since normally we would have natural number in $\Set_0$. Our
 current term model construction cannot avoid this level bump, since $\syn_j$ is
-necessarily a large type, and we do not have a way to construct a small set from
+necessarily large, and we do not have a way to construct a small set from
 a large set of terms. Perhaps this would be possible with a \emph{resizing rule}
 \cite{voevodsky2011resizing}. Also, if we only consider closed finitary QIITs,
 with no possibility of referring to external types in signatures, then we can
 modify the current term model construction so that we always build sets in
 $\Set_0$. This would cover natural numbers and most dependent type theories.
 
+\subsection{Cumulativity of Algebras}
+
+We would like to show that term algebras are initial, but we want to do this
+\emph{on all universe levels}, i.e.\ that terms algebras are initial when lifted
+to any higher level. This requires showing that $\Gamma$-algebras are
+cumulative. We do this by induction on syntactic signatures.
+
+\begin{definition}[Cumulativity model] We assume $j$, $k$ and $l$ levels such that $j+1 \leq k$, $j+1 \leq l$ and $k \leq l$. We define a displayed model over $\syn_j : \ToS_{j+1, j}$ lifted to
+$\ToS_{l, j}$. In the following, we notate the level of algebras computed by
+  $\llb\blank\rrb_{\bA}$ as an extra index, as in
+  $\llb\ulGamma\rrb_{\bA_k}$. The underlying sets of the model are as follows.
+\begin{alignat*}{3}
+  & \Con\,\ulGamma && :\equiv \Subtype\,\llb\ulGamma\rrb_{\bA_k}\,\llb\ulGamma\rrb_{\bA_l}\\
+  & \Sub\,\Gamma\,\Delta\,\ulsigma && :\equiv (\gamma : \llb\ulGamma\rrb_{\bA_k})\ra
+  \llb\ulsigma\rrb_{\bA_k}\,\gamma = \llb\ulsigma\rrb_{\bA_l}\,\gamma\\
+  & \Ty\,\Gamma\,\ulA &&:\equiv (\gamma : \llb\ulGamma\rrb_{\bA_k})\ra
+      \Subtype\,(\llb\ulA\rrb_{\bA_k}\,\gamma)\,(\llb\ulA\rrb_{\bA_l}\,\gamma)\\
+  & \Tm\,\Gamma\,A\,\ult &&:\equiv (\gamma : \llb\ulGamma\rrb_{\bA_k})\ra
+     \llb\ult\rrb_{\bA_k}\,\gamma = \llb\ult\rrb_{\bA_l}\,\gamma
+\end{alignat*}
+The rest of the model is straightforward to define. Now, it follows from the
+induction assumption for $\syn$ and the reflection rule for $\Subtype$ in
+Section \ref{sec:cumulativity}, that $\llb\ulGamma\rrb_{\bA_k} \leq
+\llb\ulGamma\rrb_{\bA_l}$.
+
+\end{definition}
+
+
 \subsection{Term Algebras Support Induction}
-
-
-
-%% We assume $\ulOmega : \SynSig_j$.
-%% We abbreviate the term algebra
-%% $\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id$ as
-
-%% $\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id$ as b
-%% $\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id$ as
-
-
-
-
-
-
-
-
-
 
 \section{Related Work}
 \label{sec:relatedwork}
 
-Cartmell \cite{gat} defines generalised algebraic theories (GATs)
-using type theoretic syntax. Compared to our QII signatures, his
-signatures support sort equations but do not cover infinitary
-constructors or recursive equations. A way to encode sort equations in
-our signatures is using isomorphisms instead of equalities. It seems
-that infinitary constructors and sort equations are not compatible in
-a setting with UIP. In contrast to our algebraic definition,
-Cartmell's signatures are given by presyntax, named variables and
-typing relations. He also does not construct categories of algebras
-explicitly, but is concerned with showing that the classifying
-category for GATs is that of contextual categories.
+Cartmell \cite{gat} defines generalized algebraic theories (GATs) using type
+theoretic syntax. Compared to our QII signatures, his signatures support sort
+equations but do not cover infinitary constructors or recursive equations. A way
+to encode sort equations in our signatures is using isomorphisms instead of
+equalities. In contrast to our algebraic definition, Cartmell's signatures are
+given by presyntax, named variables and typing relations, there is no
+explicit model theory provided for signatures, and no explicit term model
+construction. Cartmell focuses instead on showing that contextual categories
+serve as classifying categories for GATs.
 
 A more semantic approach to QIITs is given by Altenkirch et al.\
-\cite{gabe}. They generalise the usual functorial semantics of
+\cite{gabe}. They generalize the initial algebra semantics of
 inductive types to QIITs by considering towers of functors and
 building complete categories of algebras from such towers. Their
 notion of signature does not enforce strict positivity, hence
@@ -1522,36 +1536,35 @@ describes a larger class of QII signatures. The equivalence of
 initiality and induction is showed, but initial algebras are not
 constructed.
 
-Kaposi et al's work \cite{kaposi2019constructing} is the most direct
-precursor of our work. They don't consider infinitary constructors or
-constructors with recursive equations which make their semantics much
-simpler.
+Kaposi et al's work \cite{kaposi2019constructing} is the direct precursor of our
+work. They don not consider infinitary constructors or constructors with
+recursive equations, which make their semantics considerably simpler. They also
+do not provide a model theory of signatures, instead they assume signatures
+as an ad-hoc QIIT.
 
 Streicher's initiality proof \cite{streicher2012semantics} is a direct
-construction of a concrete QIIT: that of the syntax of type theory. He
-uses preterms, typing relations and quotients to construct the initial
-model of type theory in a set-theoretic metalanguage. A recent
-formalisation of the same result for a larger type theory was done by
-Brunerie et al.\ \cite{brunerie} in Agda with UIP, function
-extensionality and quotients. Lafont et al.\
-\cite{induction-is-enough} construct all finitary inductive-inductive
-types in Agda using only UIP and function extensionality. Examples of
+construction of a concrete QIIT: that of the syntax of type theory. He uses
+preterms, typing relations and quotients to construct the initial model of type
+theory in a set-theoretic metalanguage. A recent formalisation of the same
+result for a larger type theory was done by Brunerie et al.\ \cite{brunerie} in
+Agda with UIP, function extensionality and quotients. Lafont et
+al.\ \cite{induction-is-enough} construct all finitary inductive-inductive types
+in Agda using only UIP and function extensionality. Examples of
 inductive-inductive types are constructed without using UIP by Hugunin
 \cite{jasper}.
 
-Higher inductive types (HITs) are generalisations of QIITs in settings
-with proof-relevant identity types, in fact, they were introduced
-before QIITs \cite{HoTTbook}. \cite{niels} is a description of a
-subset of HITs. \cite{hiit} describes a syntax for higher
-inductive-inductive types using a theory of signatures similar to ours,
-however does not construct categories of algebras or show
-initiality. Semantics for different subclasses of HITs are given by
+Higher inductive types (HITs) are generalisations of QIITs in settings with
+proof-relevant identity types. They were introduced before QIITs
+\cite{HoTTbook}. \cite{niels} is a description of a subset of HITs. \cite{hiit}
+describes a syntax for higher inductive-inductive types using a theory of
+signatures similar to ours, however does not construct categories of algebras or
+show initiality. Semantics for different subclasses of HITs are given by
 \cite{lumsdaineShulman,10.1145/3209108.3209130,nielsmsc,sojakova,moeneclaey}. Cubical
 type theories were shown to support HITs in a computational way
 \cite{niels,hiit}.
 
-Our notion of displayed CwF is an extension of displayed category
-\cite{displayedcats} however in a setting with UIP.
+Our notion of displayed CwF is an extension of displayed categories
+\cite{displayedcats}, although in a setting with UIP.
 
 \section{Conclusions and further work}
 \label{sec:conclusion}
