@@ -144,6 +144,8 @@
 \newcommand{\bM}{\boldsymbol{\mathsf{M}}}
 \newcommand{\bT}{\boldsymbol{\mathsf{T}}}
 \newcommand{\bS}{\boldsymbol{\mathsf{S}}}
+\newcommand{\bP}{\boldsymbol{\mathsf{P}}}
+\newcommand{\bD}{\boldsymbol{\mathsf{D}}}
 
 \newcommand{\ul}[1]{\underline{#1}}
 \newcommand{\ulGamma}{\ul{\Gamma}}
@@ -1316,6 +1318,59 @@ We can convert a signature to a syntactic one by interpreting it in some
 $\syn_j$ model, and we can convert in the other direction by using ToS-induction
 to interpret a $\Gamma : \Con_{\syn_j}$ in an arbitrary ToS model.
 
+\subsection{Useful Model Fragments of $\bM$}
+
+First, we need to describe three model fragments of $\bM$, which can be
+respectively used to compute notions of algebras, displayed algebras and
+sections for each syntactic signature. This is a rephrasing of the
+$\blank^{\A}$, $\blank^{\D}$ and $\blank^{\S}$ interpretations in
+\cite{kaposi2019constructing}.
+
+\begin{definition}[The $\Set$ model of $\ToS$] For each $j$, we have $\bA : \ToS_{j+1, j}$, which can be given by restricting the $\bM$ model
+of Section \ref{sec:semantics} so that we only have the first $\Con$ components
+in the interpretations for contexts, substitution, types, term, and we only have
+actions on contexts in the interpretations of term and substitution
+formers. Hence, we have:
+\begin{alignat*}{3}
+  & \Con_{\bA} && :\equiv \Set_{j+2} \\
+  & \Sub_{\bA}\,\Gamma\,\Delta && :\equiv \Gamma \ra \Delta\\
+  & \Ty_{\bA}\,\Gamma && :\equiv \Gamma \ra \Set_{j+2}\\
+  & \Tm_{\bA}\,\Gamma\,A && :\equiv (\gamma : \Gamma) \ra A\,\gamma
+\end{alignat*}
+Now, for $\Gamma : \Con_{\syn}$, the type of $\Gamma$-algebras is given by
+$\llb\Gamma\rrb_{\bA}$. E.g.\, $\llb\NatSig\rrb_{\bA}$ yields a left-nested
+$\Sigma$-type of pointed sets with an endofunction. Also, $\llb\Gamma\rrb_{\bM}$
+extends $\llb\Gamma\rrb_{\bA}$ to an flCwF of $\Gamma$-algebras.
+\end{definition}
+
+\begin{definition}[Logical predicate model of $\ToS$ over the $\Set$ model]
+For each $j$ level we have $\bD$, which is a displayed $\ToS$ model over $\bA$
+at level $j$. This model, analogously to $\bA$, is given by restricting $\bM$ to
+the \emph{third} components everywhere, corresponding to types or actions on
+types. Hence, we have:
+\begin{alignat*}{3}
+  & \Con_{\bD}\,\ulGamma && :\equiv \ulGamma \ra \Set_{j+2} \\
+  & \Sub_{\bD}\,\Gamma\,\Delta\,\ulsigma && :\equiv (\ulgamma : \ulGamma) \ra \Gamma\,\gamma \ra \Delta(\llb\ulsigma\rrb_{\bA}\,\ulgamma)\\
+  & \Ty_{\bD}\,\Gamma\,\ulA && :\equiv (\ulgamma : \ulGamma) \ra \Gamma\,\ulgamma \ra \llb\ulA\rrb_{\bA}\,\ulgamma \ra \Set_{j+2}\\
+  & \Tm_{\bD}\,\Gamma\,A\,\ult && :\equiv (\ulgamma : \ulGamma)(\gamma : \Gamma\,\ulGamma)
+    \ra A\,\ulgamma\,\gamma\,(\llb\ult\rrb_{\bA}\,\ulgamma)
+\end{alignat*}
+\end{definition}
+
+For $\Gamma : \SynSig_j$, the type of displayed $\Gamma$-algebras over some
+$\ulgamma : \llb\Gamma\rrb_{\bA}$ is given by $\llb\Gamma\rrb_{\bD}\,\ulgamma$. In
+other words, $\llb\Gamma\rrb_{\bD}$ yields the notion of types in the flCwF of
+$\Gamma$-algebras given by $\llb\Gamma\rrb_{\bM}$.
+
+\begin{definition}[Displayed algebra section model of $\ToS$] Analogously to
+$\bA$ and $\bD$, we define $\bS$ as a displayed $\ToS$ model over the total
+model of $\bD$, which is given by restricting $\bM$ to the fourth components,
+corresponding to interpretations of terms and actions on terms.
+
+For $\ulgamma : \llb\Gamma\rrb_{\bA}$ and $\gamma : \llb\Gamma\rrb_{\bD}\,\ulgamma$,
+the type of $\Gamma$-sections is computed as $\llb\Gamma\rrb_{\bS}\,\ulgamma\,\gamma$.
+\end{definition}
+
 \subsection{Term Algebras}
 
 The basic idea is that initial algebras can be built from the terms of $\syn_j$.
@@ -1330,67 +1385,50 @@ iterated usage of $zero$ and $suc$. We will build a term algebra for each
 signature in this manner. First, we describe the interpretation of $\syn$ in the
 $\Set$ model.
 
-\begin{definition}[The $\Set$ model of $\ToS$] For each $j$, we have $\bS : \ToS_{j+1, j}$, which can be given by restricting the $\bM$ model
-of Section \ref{sec:semantics} so that we only have the first $\Con$ components
-in the interpretations for contexts, substitution, types, term, and we only have
-actions on contexts in the interpretations of term and substitution
-formers. Hence, we have:
-\begin{alignat*}{3}
-  & \Con_{\bS} && :\equiv \Set_{j+2} \\
-  & \Sub_{\bS}\,\Gamma\,\Delta && :\equiv \Gamma \ra \Delta\\
-  & \Ty_{\bS}\,\Gamma && :\equiv \Gamma \ra \Set_{j+2}\\
-  & \Tm_{\bS}\,\Gamma\,A && :\equiv (\gamma : \Gamma) \ra A\,\gamma
-\end{alignat*}
-Now, for $\Gamma : \Con_{\syn}$, the type of $\Gamma$-algebras is given by
-$\llb\Gamma\rrb_{\bS}$. E.g.\, $\llb\NatSig\rrb_{\bS}$ yields a left-nested
-$\Sigma$-type of pointed sets with an endofunction. Also, $\llb\Gamma\rrb_{\bM}$
-extends $\llb\Gamma\rrb_{\bS}$ to an flCwF of $\Gamma$-algebras.
-\end{definition}
-
 \begin{definition}[Term algebra construction]
 For each syntactic signature $\ulOmega : \SynSig_j$, we define a displayed $\ToS$
-model over $\syn_j$, named $\bT$. The underlying sets are as follows:
+model over $\syn_j$, named $\bT_{\ulOmega}$. The underlying sets are as follows:
 \begin{alignat*}{3}
-  & \Con_{\bT}\,\ulGamma &&:\equiv \Sub\,\ulOmega\,\ulGamma \ra \llb\ulGamma\rrb_{\bS}\\
-  & \Sub_{\bT}\,\Gamma\,\Delta\,\ulsigma &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)
-  \ra \Delta\,(\ulsigma\circ\nu) \simeq \llb\ulsigma\rrb_{\bS}\,(\Gamma\,\ulnu)\\
-  & \Ty_{\bT}\,\Gamma\,\ulA &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma) \ra
-    \Tm\,\ulOmega\,(\ulA[\ulnu]) \ra \llb\ulA\rrb_{\bS}\,(\Gamma\,\ulnu)\\
-  & \Tm_{\bT}\,\Gamma\,A\,\ult &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
-    \llb\ulA\rrb_{\bS}\,\ulnu\,(\ult[\ulnu]) \simeq_{\id} \llb\ult\rrb_{\bS} (\Gamma\,\ulnu)
+  & \Con_{\bT_{\ulOmega}}\,\ulGamma &&:\equiv \Sub\,\ulOmega\,\ulGamma \ra \llb\ulGamma\rrb_{\bA}\\
+  & \Sub_{\bT_{\ulOmega}}\,\Gamma\,\Delta\,\ulsigma &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)
+  \ra \Delta\,(\ulsigma\circ\nu) \simeq \llb\ulsigma\rrb_{\bA}\,(\Gamma\,\ulnu)\\
+  & \Ty_{\bT_{\ulOmega}}\,\Gamma\,\ulA &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma) \ra
+    \Tm\,\ulOmega\,(\ulA[\ulnu]) \ra \llb\ulA\rrb_{\bA}\,(\Gamma\,\ulnu)\\
+  & \Tm_{\bT_{\ulOmega}}\,\Gamma\,A\,\ult &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
+    \llb\ulA\rrb_{\bA}\,\ulnu\,(\ult[\ulnu]) \simeq_{\id} \llb\ult\rrb_{\bA} (\Gamma\,\ulnu)
 \end{alignat*}
 
-Above, the $\simeq$ in the definition of $\Sub_{\bT}$ is a context isomorphism
+Above, the $\simeq$ in the definition of $\Sub_{\bT_{\ulOmega}}$ is a context isomorphism
 in $\llb\ulDelta\rrb_{\bM}$, which is the flCwF of $\ulDelta$-algebras. The
-$\simeq_{\id}$ in $\Ty_{\bT}$ is a vertical context isomorphism in the displayed
+$\simeq_{\id}$ in $\Ty_{\bT_{\ulOmega}}$ is a vertical context isomorphism in the displayed
 flCwF given by $\llb\ulA\rrb_{\bM}$.
 
-So far, the underlying sets in $\bT$ are similar to what was given in
+So far, the underlying sets in $\bT_{\ulOmega}$ are similar to what was given in
 \cite{kaposi2019constructing} in the construction of term algebras, but there is
 an important difference: in ibid.\, strict equalities are used instead of
 isomorphisms. In our case, isomorphisms are necessary once again because of
 infinitary functions types and our identity type; we shall see this shortly. The
 universe is interpreted as follows:
 \begin{alignat*}{3}
-  & \U_{\bT} : (\ulnu : \Sub\,\ulOmega\,\ulGamma)(\ult : \Tm\,\ulOmega\,\U)\ra
+  & \U_{\bT_{\ulOmega}} : (\ulnu : \Sub\,\ulOmega\,\ulGamma)(\ult : \Tm\,\ulOmega\,\U)\ra
               \Set_{j+1}\\
-  & \U_{\bT}\,\ulnu\,\ult :\equiv \Tm\,\ulOmega\,(\El\,\ult)\\
-  & \El_{\bT}\,a : (\ulnu : \Sub\,\ulOmega\,\ulGamma)
+  & \U_{\bT_{\ulOmega}}\,\ulnu\,\ult :\equiv \Tm\,\ulOmega\,(\El\,\ult)\\
+  & \El_{\bT_{\ulOmega}}\,a : (\ulnu : \Sub\,\ulOmega\,\ulGamma)
              (\ult : \Tm\,\ulOmega\,(\El\,(\ula[\ulnu])))\ra
-              \llb\ula\rrb_{\bS}\,(\Gamma\,\ulnu)\\
-  & \El_{\bT}\,a\,\ulnu\,\ult :\equiv (a\,\ulnu)\,\ult
+              \llb\ula\rrb_{\bA}\,(\Gamma\,\ulnu)\\
+  & \El_{\bT_{\ulOmega}}\,a\,\ulnu\,\ult :\equiv (a\,\ulnu)\,\ult
 \end{alignat*}
 
 Hence, a syntactic $\ult : \Tm\,\ulOmega\,\U$ is interpreted as a set of terms
 with type $\El\,\ult$. In the interpretation of $\El$, note that
 \[
-  a\,\ulnu : \U_{\bT}\,\ulnu\,(\ula[\ulnu]) \simeq_{\id}
-                 \llb\ula\rrb_{\bS}\,(\Gamma\,\ulnu)
+  a\,\ulnu : \U_{\bT_{\ulOmega}}\,\ulnu\,(\ula[\ulnu]) \simeq_{\id}
+                 \llb\ula\rrb_{\bA}\,(\Gamma\,\ulnu)
 \]
 hence
 \[
 a\,\ulnu : \Tm\,\ulOmega\,(\El\,(\ula[\ulnu])) \simeq_{\id}
-           \llb\ula\rrb_{\bS}\,(\Gamma\,\ulnu)
+           \llb\ula\rrb_{\bA}\,(\Gamma\,\ulnu)
 \]
 The $\simeq_{\id}$ above is just an isomorphism of sets, since it lives in
 $\llb\U\rrb_{\bM}$ which was given as the flCwF of sets in Section
@@ -1400,35 +1438,59 @@ algebra is isomorphic to a set of terms.
 
 Inductive functions are interpreted by transport along such isomorphism:
 \[
-  \Pii_{\bT}\,a\,B\,\ulnu\,\ult :\equiv \lambda\,\alpha.\,
+  \Pii_{\bT_{\ulOmega}}\,a\,B\,\ulnu\,\ult :\equiv \lambda\,\alpha.\,
          B\,(\ulnu,\,(a\,\ulnu)^{-1}\,\alpha)\,(\ult\,\appitt\,((a\,\ulnu)^{-1}\,\alpha))
 \]
 
 For the infinitary function space, we need the following, where $\simeq_{\id}$ is
 again set isomorphism.
 \begin{alignat*}{3}
-  & \Piinf_{\bT}\,A\,b\,\ulnu : \Tm\,\ulOmega\,(\El\,(\Piinf\,A\,(\lambda\,\alpha.\,(b\,\alpha)[\ulnu])))\\
-  & \hspace{4.2em}\simeq_{\id} ((\alpha : A) \ra \llb\alpha\rrb_{\bS}\,(\Gamma\,\ulnu))
+  & \Piinf_{\bT_{\ulOmega}}\,A\,b\,\ulnu : \Tm\,\ulOmega\,(\El\,(\Piinf\,A\,(\lambda\,\alpha.\,(b\,\alpha)[\ulnu])))\\
+  & \hspace{4.2em}\simeq_{\id} ((\alpha : A) \ra \llb\alpha\rrb_{\bA}\,(\Gamma\,\ulnu))
 \end{alignat*}
 This can be given using the natural isomorphism consisting of $\appinf$ and
 $\laminf$. However, the sides are not strictly equal. For the identity type, we
 build the following isomorphism using equality reflection.
 \begin{alignat*}{3}
-  & \Id_{\bT}\,a\,t\,u\,\ulnu : \Tm\,\ulOmega\,(\El\,(\Id\,(\ula[\ulnu])\,(\ult[\ulnu])\,(\ulu[\ulnu]))\\
-  & \hspace{4.2em}\simeq_{\id} (\llb\ult\rrb_{\bS}\,(\Gamma\,\ulnu) =   \llb\ulu\rrb_{\bS}\,(\Gamma\,\ulnu))
+  & \Id_{\bT_{\ulOmega}}\,a\,t\,u\,\ulnu : \Tm\,\ulOmega\,(\El\,(\Id\,(\ula[\ulnu])\,(\ult[\ulnu])\,(\ulu[\ulnu]))\\
+  & \hspace{4.2em}\simeq_{\id} (\llb\ult\rrb_{\bA}\,(\Gamma\,\ulnu) =   \llb\ulu\rrb_{\bA}\,(\Gamma\,\ulnu))
 \end{alignat*}
 
-We omit the rest of the definition of $\bT$. The interpretations of equations in
+We omit the rest of the definition of $\bT_{\ulOmega}$. The interpretations of equations in
 the CwF and fl-structure parts become fairly technical, and we also need to
 utilize iso-cleaving to interpret type substitution and substitution
 laws. However, the basic shape of the model remains similar to
 \cite{kaposi2019constructing}.
-
-
-
-
-
 \end{definition}
+
+Now, we can build the term algebra for $\ulOmega$ by taking
+$\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id$, which has type $\llb\ulOmega\rrb_{\bA}$.
+
+\emph{Remark.} If we start with a syntactic signature at level $j$, then the
+underlying sets in the term algebra are all in $\Set_{j+1}$. Hence, the term
+algebra for $\NatSig : \SynSig_0$ has an underlying set in $\Set_{j+1}$. This is
+a bit inconvenient, since normally we would have natural number in $\Set_0$. Our
+current term model construction cannot avoid this level bump, since $\syn_j$ is
+necessarily a large type, and we do not have a way to construct a small set from
+a large set of terms. Perhaps this would be possible with a \emph{resizing rule}
+\cite{voevodsky2011resizing}. Also, if we only consider closed finitary QIITs,
+with no possibility of referring to external types in signatures, then we can
+modify the current term model construction so that we always build sets in
+$\Set_0$. This would cover natural numbers and most dependent type theories.
+
+\subsection{Term Algebras Support Induction}
+
+
+
+%% We assume $\ulOmega : \SynSig_j$.
+%% We abbreviate the term algebra
+%% $\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id$ as
+
+%% $\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id$ as b
+%% $\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id$ as
+
+
+
 
 
 
@@ -1452,6 +1514,7 @@ cubical type theories\cite{cubicalhits,10.1145/3290314}, semantics for
 subclasses of HITs
 \cite{lumsdaineShulman,10.1145/3209108.3209130,nielsmsc,sojakova,moeneclaey}
 Construction of example IITs without UIP: Jasper \cite{jasper}.
+
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -1498,4 +1561,3 @@ EUTypes CA15123.
 
 
 %% write about limitations!
-p

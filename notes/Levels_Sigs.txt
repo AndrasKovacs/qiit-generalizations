@@ -821,3 +821,7 @@ Syntax:
   for each i
     assume tos : ToS(i, i+1)
     assume ind : Ty tos
+
+Term model
+
+  for each
