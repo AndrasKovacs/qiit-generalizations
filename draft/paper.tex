@@ -146,6 +146,7 @@
 \newcommand{\bS}{\boldsymbol{\mathsf{S}}}
 \newcommand{\bP}{\boldsymbol{\mathsf{P}}}
 \newcommand{\bD}{\boldsymbol{\mathsf{D}}}
+\newcommand{\bI}{\boldsymbol{\mathsf{I}}}
 
 \newcommand{\ul}[1]{\underline{#1}}
 \newcommand{\ulGamma}{\ul{\Gamma}}
@@ -282,11 +283,7 @@ following signature of categories.
   & idl && : id\circ f = f \\
   & idr && : f\circ id = f
 \end{alignat*}
-The sort $Mor$ is indexed twice over the sort $Ob$, $ass$, $idl$ and
-$idr$ express equations between the constructors $\blank\circ\blank$
-and $id$.
-
-The benefit of having a QIIT signature is getting a model theory ``for free'',
+The benefit of having a QII signature is getting a model theory ``for free'',
 from the metatheory of QIITs. This model theory includes a category of algebras
 which has an initial object and also some additional structure. For the
 signature of categories, we get the empty category as the initial object, but it
@@ -313,11 +310,9 @@ extending the above signature for categories.
   & ext && : (I:Ob)\ra Ty\,I\ra Ob \\
   & \blank[\blank] && : Ty\,J\ra Mor\,I\,J\ra Ty\,I
 \end{alignat*}
-
-While signatures for type theory usually only contain finitary
-constructors, important examples of QIITs have infinitary
-constructors, such as the following signature for infinitaly branching
-trees where the order of subtrees does not matter.
+While signatures for type theory usually only contain finitary constructors,
+some QIITs have infinitary constructors, such as the following signature for
+countable branching trees where the order of subtrees does not matter.
 \begin{alignat*}{3}
   & Tree && : \U \\
   & leaf  && : Tree \\
@@ -330,12 +325,6 @@ that reordering subtrees by a permutation (a $\N\ra\N$ function which
 is an isomorphism) does not matter.
 
 Real-world examples examples of infinitary QIITs include the real, surreal numbers \cite{HoTTbook}, ordinal numbers \cite{lumsdaineShulman} and the partiality monad \cite{partiality}.
-
-%% The main motivation of the current paper is to generalize previously formalized
-%% \cite{kaposi2019constructing} QIITs so that they accommodate more algebraic
-%% formulations of type theories, and more aspects of their practical
-%% metatheory. As a side effect of fulfilling this goal, infinitary QIITs such as
-%% Cauchy real numbers \cite{TODO} are covered as well.
 
 \subsection{Contributions}
 The current paper extends the syntax and semantics of QIITs as previously described
@@ -357,7 +346,7 @@ in the literature \cite{kaposi2019constructing, gabe, dijkstra2017quotient}. We 
   \item
   \textbf{Recursive equations}, i.e. equations appearing as assumptions
   of constructors. These have occurred previously in syntaxes of cubical type
-  theories, as boundary conditions\cite{TODO}.
+  theories, as boundary conditions \cite{cohen2016cubical, angiuli2016computational, angiuli2018cartesian}.
 \end{enumerate}
 
 To provide semantics, we show that for each signature, there is a CwF (category
@@ -1326,9 +1315,9 @@ to assume the existence of such algebras.
   \ref{sec:cumulativity}. \qed
 \end{lemma}
 
-\textbf{Assumption.} For each level $j$ and $j'$ such that $j+1 \leq j'$, we
+\textbf{Assumption.} For each level $j$ and $k$ such that $j+1 \leq k$, we
 assume the existence of $\syn_j : \ToS_{j+1,j}$, and we assume that $\syn_j$,
-considered as an element of $\ToS_{j',j}$ by Lemma \ref{lemma:cumulativity}, is
+considered as an element of $\ToS_{k,j}$ by Lemma \ref{lemma:cumulativity}, is
 inductive in the sense of Definition \ref{def:induction}.
 
 We explain this assumption. The syntax for the theory of signatures is
@@ -1385,7 +1374,7 @@ $i$ is given by $\llb\Gamma\rrb_{\bA}$, where we implicitly lift $\syn_j :
 \ToS_{j+1, j}$ to $\ToS_{\max(i+1,j)+1, j}$. E.g.\, $\llb\NatSig\rrb_{\bA}$
 yields a left-nested $\Sigma$-type of pointed sets with an endofunction. Also,
 $\llb\Gamma\rrb_{\bM}$ extends $\llb\Gamma\rrb_{\bA}$ to an flCwF of
-$\Gamma$-algebras.
+$\Gamma$-algebras, and $\llb\Gamma\rrb_{\bA} = \Con_{\llb\Gamma\rrb_{\bM}}$.
 \end{definition}
 
 \begin{definition}[Logical predicate model of $\ToS$ over the $\Set$ model]
@@ -1407,17 +1396,18 @@ over some $\ulgamma : \llb\Gamma\rrb_{\bA}$ is given by
 $\llb\Gamma\rrb_{\bD}\,\ulgamma$. Here, we also implicitly lift $\Gamma$ to live
 in the appropriately sized $\syn$. In other words, $\llb\Gamma\rrb_{\bD}$ yields
 the notion of types in the flCwF of $\Gamma$-algebras given by
-$\llb\Gamma\rrb_{\bM}$.
+$\llb\Gamma\rrb_{\bM}$, so we have $\llb\Gamma\rrb_{\bD} = \Ty_{\llb\Gamma\rrb_{\bM}}$.
 
 \begin{definition}[Displayed algebra section model of $\ToS$] Analogously to
 $\bA$ and $\bD$, for each $i$ and $j$ levels we define $\bS$ as a displayed
-  $\ToS$ model over the total model of $\bD$, which is given by restricting
-  $\bM_{i,j}$ to the fourth components, corresponding to interpretations of terms and
-  actions on terms.
+$\ToS$ model over the total model of $\bD$, which is given by restricting
+$\bM_{i,j}$ to the fourth components, corresponding to interpretations of terms and
+actions on terms.
 
 For $\ulgamma : \llb\Gamma\rrb_{\bA}$ and $\gamma :
 \llb\Gamma\rrb_{\bD}\,\ulgamma$, the type of $\Gamma$-sections at level $i$ is
-computed as $\llb\Gamma\rrb_{\bS}\,\ulgamma\,\gamma$.
+computed as $\llb\Gamma\rrb_{\bS}\,\ulgamma\,\gamma$, and we have
+$\llb\Gamma\rrb_{\bS} = \Tm_{\llb\Gamma\rrb_{\bM}}$.
 \end{definition}
 
 \subsection{Term Algebras}
@@ -1517,8 +1507,8 @@ $\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id$, which has type $\llb\ulOmega\rrb_{\bA}
 
 \emph{Remark.} If we start with a syntactic signature at level $j$, then the
 underlying sets in the term algebra are all in $\Set_{j+1}$. Hence, the term
-algebra for $\NatSig : \SynSig_0$ has an underlying set in $\Set_{j+1}$. This is
-a bit inconvenient, since normally we would have natural number in $\Set_0$. Our
+algebra for $\NatSig : \SynSig_0$ has an underlying set in $\Set_1$. This is
+a bit inconvenient, since normally we would have natural numbers in $\Set_0$. Our
 current term model construction cannot avoid this level bump, since $\syn_j$ is
 necessarily large, and we do not have a way to construct a small set from
 a large set of terms. Perhaps this would be possible with a \emph{resizing rule}
@@ -1531,12 +1521,12 @@ $\Set_0$. This would cover natural numbers and most dependent type theories.
 
 We would like to show that term algebras are initial, but we want to do this
 \emph{on all universe levels}, i.e.\ that terms algebras are initial when lifted
-to any higher level. This requires showing that $\Gamma$-algebras are
+to any higher level. This requires showing that QII algebras are
 cumulative. We do this by induction on syntactic signatures.
 
 \begin{definition}[Cumulativity model] We assume $j$, $k$ and $l$ levels such that $j+1 \leq k$, $j+1 \leq l$ and $k \leq l$. We define a displayed model over $\syn_j : \ToS_{j+1, j}$ lifted to
 $\ToS_{l, j}$. In the following, we notate the level of algebras computed by
-  $\llb\blank\rrb_{\bA}$ as an extra index, as in
+  $\llb\blank\rrb_{\bA}$ with an extra index, as in
   $\llb\ulGamma\rrb_{\bA_k}$. The underlying sets of the model are as follows.
 \begin{alignat*}{3}
   & \Con\,\ulGamma && :\equiv \Subtype\,\llb\ulGamma\rrb_{\bA_k}\,\llb\ulGamma\rrb_{\bA_l}\\
@@ -1551,11 +1541,48 @@ The rest of the model is straightforward to define. Now, it follows from the
 induction assumption for $\syn$ and the reflection rule for $\Subtype$ in
 Section \ref{sec:cumulativity}, that $\llb\ulGamma\rrb_{\bA_k} \leq
 \llb\ulGamma\rrb_{\bA_l}$.
-
 \end{definition}
 
-
 \subsection{Term Algebras Support Induction}
+
+\begin{definition} We assume $j$ and $k$ such that $j + 1 \leq k$, and we also assume
+$\ulOmega : \SynSig_j$ and $\gamma :
+\llb\ulOmega\rrb_{\bD_k}\,(\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id)$.  Hence, $\gamma$ is
+a displayed $\ulOmega$-algebra over the term algebra, at level $k$. We are using
+the cumulativity of $\ulOmega$ here to lift the term algebra appropriately.
+We aim to show that $\gamma$ has a section. We define a displayed model over $\syn_j$ lifted
+to $\ToS_{k, j}$, which we name $\bI_{\ulOmega}$. The underlying sets are:
+\begin{alignat*}{3}
+  & \Con_{\bI_{\ulOmega}}\,\ulGamma &&:\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
+  \llb\ulGamma\rrb_{\bS}\,(\llb\ulnu\rrb_{\bA}\,(\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id))\,\gamma\\
+  & \Sub_{\bI_{\ulOmega}}\,\Gamma\,\Delta\,\ulsigma && :\equiv (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
+    \Delta\,(\ulsigma\circ\ulnu) = \llb\ulsigma\rrb_{\bS}\,(\Gamma\,\ulnu)\\
+  & \Ty_{\bI_{\ulOmega}}\,\Gamma\,\ulA &&:\equiv
+  (\ulnu : \Sub\,\ulOmega\,\ulGamma)(t : \Tm\,\ulOmega\,(\ulA[\ulnu]))\\
+  & && \hspace{1.2em}\ra
+  \llb\ulA\rrb_{\bS}\,(\llb\ult\rrb_{\bA}\,(\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id))\,
+  (\llb\ult\rrb_{\bD}\,\gamma)\,(\Gamma\,\ulnu)\\
+  & \Tm_{\bI_{\ulOmega}}\,\Gamma\,A\,\ult &&:\equiv A\,\ulnu\,(\ult[\ulnu]) = \llb\ult\rrb_{\bS}\,(\Gamma\,\ulnu)
+\end{alignat*}
+
+Here, there is no essential change compared to \cite{kaposi2019constructing},
+and we follow ibid. in the definition of $\bI_{\ulOmega}$. The reason is that although we
+have weakened strict algebra equality to isomorphism, in the current
+construction we only have to show equalities of substitutions and terms, which
+we do not need to weaken (and they cannot be sensibly weakened anyway).
+\end{definition}
+
+\begin{theorem}[Initiality of term algebras] For each $j$ and $k$ such that $j + 1 \leq k$, and $\ulOmega : \SynSig_j$, the term algebra given by $\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id$ is initial at level $k$.
+\end{theorem}
+\begin{proof}
+For each $\gamma :
+\llb\ulOmega\rrb_{\bD_k}\,(\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id)$, we have
+$\llb\ulOmega\rrb_{\bI_{\ulOmega}}\,\id :
+\llb\ulGamma\rrb_{\bS}\,(\llb\ulOmega\rrb_{\bT_{\ulOmega}}\,\id)\,\gamma$. Hence,
+term algebras are inductive in the sense of Definition \ref{def:induction}, and
+by Theorem \ref{thm:initialind} they are also initial.
+\end{proof}
+
 
 \section{Related Work}
 \label{sec:relatedwork}
@@ -1579,16 +1606,16 @@ describes a larger class of QII signatures. The equivalence of
 initiality and induction is showed, but initial algebras are not
 constructed.
 
-Kaposi et al's work \cite{kaposi2019constructing} is the direct precursor of our
-work. They don not consider infinitary constructors or constructors with
-recursive equations, which make their semantics considerably simpler. They also
-do not provide a model theory of signatures, instead they assume signatures
-as an ad-hoc QIIT.
+The work of Kaposi et al. \cite{kaposi2019constructing} is the direct precursor
+of our work. They do not consider infinitary constructors or constructors with
+recursive equations, which makes their semantics considerably simpler. They also
+do not provide a model theory of signatures, instead they assume signatures as
+an ad-hoc QIIT.
 
 Streicher's initiality proof \cite{streicher2012semantics} is a direct
-construction of a concrete QIIT: that of the syntax of type theory. He uses
+construction of a concrete QIIT: that of the syntax of a type theory. He uses
 preterms, typing relations and quotients to construct the initial model of type
-theory in a set-theoretic metalanguage. A recent formalisation of the same
+theory in a set-theoretic metalanguage. A recent formalization of the same
 result for a larger type theory was done by Brunerie et al.\ \cite{brunerie} in
 Agda with UIP, function extensionality and quotients. Lafont et
 al.\ \cite{induction-is-enough} construct all finitary inductive-inductive types
@@ -1596,7 +1623,7 @@ in Agda using only UIP and function extensionality. Examples of
 inductive-inductive types are constructed without using UIP by Hugunin
 \cite{jasper}.
 
-Higher inductive types (HITs) are generalisations of QIITs in settings with
+Higher inductive types (HITs) are generalizations of QIITs in settings with
 proof-relevant identity types. They were introduced before QIITs
 \cite{HoTTbook}. \cite{niels} is a description of a subset of HITs. \cite{hiit}
 describes a syntax for higher inductive-inductive types using a theory of
@@ -1633,32 +1660,3 @@ EUTypes CA15123.
 \bibliography{references}
 
 \end{document}
-
-%% B : Set j
-
-%% (A : Set_i) -> B
-
-%% A : Seti
-%% B : Set j
-%% (x : A) -> B : Set(max i j)
-
-%% (Con : Setj)x
-%% (Ty  : Con -> Setj)x
-
-%% (Pie : (A : Seti) -> (A -> Ty Gamma) -> Ty Gamma
-%% : Set(max(suci, j))
-
-%% : Set(max(sucj, max(suci,j)))
-%%    max(1+j, max(1+i, j))
-%%  = max(1+i, 1+j)
-
-%% REVISE LEVELS!!
-
-%% syntax levels:
-
-  %% ToS(i, 1+i) : Set(max(1+i, 2+i))
-
-%% REWRITE metatheory
-
-
-%% write about limitations!
