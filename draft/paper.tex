@@ -274,6 +274,8 @@ quotient inductive-inductive signature. Signatures for QIITs allow
 having multiple sorts, with later ones indexed over previous ones, and
 equations as well. We need both features in order to write down the
 following signature of categories.
+\begingroup
+\allowdisplaybreaks
 \begin{alignat*}{3}
   & Ob  && : \U \\
   & Mor && : Ob\ra Ob\ra\U \\
@@ -283,6 +285,7 @@ following signature of categories.
   & idl && : id\circ f = f \\
   & idr && : f\circ id = f
 \end{alignat*}
+\endgroup
 The benefit of having a QII signature is getting a model theory ``for free'',
 from the metatheory of QIITs. This model theory includes a category of algebras
 which has an initial object and also some additional structure. For the
