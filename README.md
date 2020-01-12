@@ -1,5 +1,7 @@
 # qiit-generalizations
 
+__[See draft here.](draft/paper.pdf)__
+
 The goal here is to write a paper about generalizing [quotient inductive-inductive types](https://dl.acm.org/citation.cfm?doid=3302515.3290315) to support:
 - Large parameters; consider W-types, for example, which are parameterized by an external set of shapes and an external family of positions.
 - Infinitary constructors. Again W-types are a classic example.
