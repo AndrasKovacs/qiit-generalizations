@@ -1,9 +1,11 @@
 # qiit-generalizations
 
+__[See draft here.](draft/paper.pdf)__
+
 The goal here is to write a paper about generalizing [quotient inductive-inductive types](https://dl.acm.org/citation.cfm?doid=3302515.3290315) to support:
 - Large parameters; consider W-types, for example, which are parameterized by an external set of shapes and an external family of positions.
 - Infinitary constructors. Again W-types are a classic example.
-- Sort equations, or equalities between type constructors. They were permitted in Cartmell's [generarlized algebraic theories](https://www.sciencedirect.com/science/article/pii/0168007286900539?via%3Dihub). They are not widely used though, declaring Russell-style universes is the canonical example. 
+- Sort equations, or equalities between type constructors. They were permitted in Cartmell's [generalized algebraic theories](https://www.sciencedirect.com/science/article/pii/0168007286900539?via%3Dihub). They are not widely used though, declaring Russell-style universes is the canonical example. 
 - Recursive equations, i.e. equalities appearing as fields/hypotheses in a constructor. For recent examples, these appear in cubical type theories as boundary conditions.
 
 ## Content which is already mostly done
