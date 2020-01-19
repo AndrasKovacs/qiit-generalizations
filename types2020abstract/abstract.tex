@@ -1,0 +1,147 @@
+
+\documentclass{easychair}
+
+\usepackage{doc}
+
+\newcommand{\easychair}{\textsf{easychair}}
+\newcommand{\miktex}{MiK{\TeX}}
+\newcommand{\texniccenter}{{\TeX}nicCenter}
+\newcommand{\makefile}{\texttt{Makefile}}
+\newcommand{\latexeditor}{LEd}
+
+\newcommand{\ToS}{\mathsf{ToS}}
+\newcommand{\U}{\mathsf{U}}
+
+\title{Generalizations of Quotient Inductive-Inductive Types %
+  \thanks{Both authors author were supported by the European Union, co-financed
+    by the European Social Fund (EFOP-3.6.3-VEKOP-16-2017-00002). The second
+    author was supported by by the National Research, Development and Innovation
+    Fund of Hungary, financed under the Thematic Excellence Programme funding
+    scheme, Project no.\ ED\_18-1-2019-0030 (Application-specific highly
+    reliable IT solutions). }}
+
+\author{
+Andr\'as Kov\'acs
+\and
+Ambrus Kaposi
+}
+
+% Institutes for affiliations are also joined by \and,
+\institute{
+  E\"otv\"os Lor\'and University,
+  Budapest, Hungary \\
+  \email{kovacsandras|akaposi@inf.elte.hu}
+}
+
+\authorrunning{Kov\'acs, Kaposi}
+\titlerunning{Generalizations of Quotient Inductive-Inductive Types}
+\pagenumbering{gobble}
+\begin{document}
+
+\maketitle
+
+Quotient inductive-inductive types (QIITs) are the most general class of
+inductive types studied thus far in a set-truncated setting, i.e.\ in the
+presence of uniqueness of identity proofs (UIP). In the current work, we develop
+QIITs further, focusing on applications in practical metatheory of type
+theories. We extend previous work on QIITs \cite{kaposi2019constructing} with
+the following:
+\begin{enumerate}
+  \item
+  \textbf{Large constructors, large elimination} and algebras at different
+  universe levels. This fills in an important formal gap; large models are
+  routinely used in the metatheory of type theories, but they have not been
+  presented explicitly in previous QIIT literature.
+  \item
+  \textbf{Infinitary constructors}.
+  This covers real, surreal \cite{HoTTbook} and ordinal numbers. Additionally,
+  the theory which describes QII signatures is itself a large and infinitary
+  QIIT, which allows the theory of signatures to describe its own signature
+  (modulo universe levels), and provide its own model theory. This was not
+  possible previously in \cite{kaposi2019constructing}, where only finitary
+  QIITs were described.
+  \item
+  \textbf{Recursive equations}, i.e. equations appearing as assumptions of
+  constructors. These have occurred previously in syntaxes of cubical type
+  theories, as boundary conditions \cite{cohen2016cubical,
+    angiuli2016computational, angiuli2018cartesian}.
+  \item
+  \textbf{Sort equations}. Sort equations were included in Cartmell's
+  generalized algebraic theories (GATs) \cite{gat}, which overlap significantly
+  with finitary QIITs. Sort equations appear to be useful for algebraic
+  presentations of Russell-style and cumulative universes
+  \cite{sterling2019algebraic}.
+\end{enumerate}
+
+\textbf{Self-describing signatures}. In the current work, we
+would also like to streamline and make more rigorous the specification of
+signatures. Previous descriptions of GATs \cite{gat, sterling2019algebraic} used
+raw syntax with well-formedness relations to describe signatures, which is
+rather unwieldy to formally handle. Also, the precursor of the current work
+\cite{kaposi2019constructing} used an ad-hoc QIIT to describe signatures, which
+did not have a model theory worked out, and its existence was simply assumed.
+
+In contrast, equipped with large elimination and self-description, we are able
+to specify signatures and develop a model theory for signatures, without ever
+using raw syntax or assuming the existence of a particular QIIT. We do the
+following in order.
+\begin{enumerate}
+  \item
+  We specify a notion of model for the theory of signatures (ToS); this is a
+  category with family (CwF) extended with several type formers, allowing to
+  represent a signature as a typing context, with types specifying various
+  constructors.
+  \item We say that a signature is a context in an \emph{arbitrary} model, i.e.
+  a function with type $(M : \mathsf{ToS})\to\mathsf{Con}_M$. This can be
+  viewed as a fragment of a Church-encoding; here we do not care about
+  encoding the whole syntax of ToS, nor the initiality of the syntax, we only
+  need a representation of signatures and the ability to interpret a signature in
+  a $\mathsf{ToS}$-model.
+  \item We give a semantics for signatures, as a particular $M : \mathsf{ToS}$
+    model which interprets each CwF context $\Gamma$ as a structured category of
+    $\Gamma$-algebras.
+  \item We give a (large, infinitary) signature for $\mathsf{ToS}$ itself, such
+    that interpreting the signature in the semantic model yields a structured
+    category of $\mathsf{ToS}$-algebras.
+\end{enumerate}
+In the above construction, everything is appropriately indexed with universe
+levels (we omit the details), and there is a ``bump'' of levels at every
+instance of self-description.
+
+\textbf{Extending semantics to infinitary constructors and sort equations.}
+Previously in \cite{kaposi2019constructing}, contexts in $\ToS$ were interpreted
+as CwFs of algebras with extra structure, substitutions as strict morphisms of
+such CwFs, and types as displayed CwFs. Infinitary constructors force a major
+change: substitutions are interpreted as weak CwF morphisms, and types as CwF
+isofibrations, which are displayed CwFs with an additional lifting structure of
+isomorphisms. In short, this means that the semantics of infinitary constructors
+can be only given mutually with a form of invariance under algebra
+isomorphisms. Recursive equations similarly require this kind of semantics.
+
+However, strict sort equations are not invariant under isomorphisms. For
+example, if we have an isomorphism in $\mathbf{Set}\times\mathbf{Set}$ between
+$(A, B)$ and $(A', B')$, and we also know that $A = B$ strictly, then it is not
+necessarily the case that $A' = B'$. This means that a strict semantics for sort
+equations is incompatible with the isofibration semantics for infinitary
+constructors. Our current solution is to simply keep the troublesome features
+apart. Hence we have
+\begin{enumerate}
+\item A theory of signatures supporting recursive equations and infinitary
+  constructors, but no sort equations. This $\ToS$ can describe itself, and by a
+  term model construction we can reduce all described QIITs to an assumed syntax
+  of $\ToS$. The term model construction is more involved than in
+  \cite{kaposi2019constructing}.
+\item A theory of signatures supporting sort equations, but no recursive
+  equations and infinitary constructors. This $\ToS$ is infinitary and has no
+  sort equations, so we can give it a model theory as an infinitary QIIT. The
+  QIITs described here support a stricter semantics which is not invariant under
+  isomorphisms, and we also have a term model construction. Here, the semantics
+  and the term models are straightforward extensions of
+  \cite{kaposi2019constructing}.
+\end{enumerate}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+
+\end{document}
