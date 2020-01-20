@@ -77,7 +77,7 @@ the following:
 would also like to streamline and make more rigorous the specification of
 signatures. Previous descriptions of GATs \cite{gat, sterling2019algebraic} used
 raw syntax with well-formedness relations to describe signatures, which is
-rather unwieldy to formally handle. Also, the precursor of the current work
+rather unwieldy to handle formally. Also, the precursor of the current work
 \cite{kaposi2019constructing} used an ad-hoc QIIT to describe signatures, which
 did not have a model theory worked out, and its existence was simply assumed.
 
@@ -87,14 +87,14 @@ using raw syntax or assuming the existence of a particular QIIT. We do the
 following in order.
 \begin{enumerate}
   \item
-  We specify a notion of model for the theory of signatures (ToS); this is a
+  We specify a notion of model for the theory of signatures ($\ToS$); this is a
   category with family (CwF) extended with several type formers, allowing to
   represent a signature as a typing context, with types specifying various
   constructors.
   \item We say that a signature is a context in an \emph{arbitrary} model, i.e.
   a function with type $(M : \mathsf{ToS})\to\mathsf{Con}_M$. This can be
   viewed as a fragment of a Church-encoding; here we do not care about
-  encoding the whole syntax of ToS, nor the initiality of the syntax, we only
+  encoding the whole syntax of $\ToS$, nor the initiality of the syntax, we only
   need a representation of signatures and the ability to interpret a signature in
   a $\mathsf{ToS}$-model.
   \item We give a semantics for signatures, as a particular $M : \mathsf{ToS}$
