@@ -2,12 +2,17 @@
 \documentclass{easychair}
 
 \usepackage{doc}
+\usepackage{scalerel}
+\usepackage{amsfonts}
 
 \newcommand{\easychair}{\textsf{easychair}}
 \newcommand{\miktex}{MiK{\TeX}}
 \newcommand{\texniccenter}{{\TeX}nicCenter}
 \newcommand{\makefile}{\texttt{Makefile}}
 \newcommand{\latexeditor}{LEd}
+\newcommand{\emptycon}{\scaleobj{.75}\bullet}
+\newcommand{\ext}{\triangleright}
+\newcommand{\arri}{\Rightarrow}
 
 \newcommand{\ToS}{\mathsf{ToS}}
 \newcommand{\U}{\mathsf{U}}
@@ -73,7 +78,7 @@ the following:
   \cite{sterling2019algebraic}.
 \end{enumerate}
 
-\textbf{Self-describing signatures}. In the current work, we
+\subsubsection*{Self-describing signatures} In the current work, we
 would also like to streamline and make more rigorous the specification of
 signatures. Previous descriptions of GATs \cite{gat, sterling2019algebraic} used
 raw syntax with well-formedness relations to describe signatures, which is
@@ -92,30 +97,42 @@ following in order.
   represent a signature as a typing context, with types specifying various
   constructors.
   \item We say that a signature is a context in an \emph{arbitrary} model, i.e.
-  a function with type $(M : \mathsf{ToS})\to\mathsf{Con}_M$. This can be
-  viewed as a fragment of a Church-encoding; here we do not care about
-  encoding the whole syntax of ToS, nor the initiality of the syntax, we only
-  need a representation of signatures and the ability to interpret a signature in
-  a $\mathsf{ToS}$-model.
+    a function with type $(M : \mathsf{ToS})\to\mathsf{Con}_M$. This can be
+    viewed as a fragment of a Church-encoding; here we do not care about
+    encoding the whole syntax of ToS, nor the initiality of the syntax, we only
+    need a representation of signatures and the ability to interpret a signature
+    in a $\mathsf{ToS}$-model. For example, the signature for natural number
+    algebras is a function
+    \[
+    \lambda(M : \mathsf{ToS}).\,(\emptycon_M\,\ext_M\,(N : \mathsf{U}_M)\,\ext_M\,(zero : \mathsf{El}_M\,N)\,\ext_M\,(suc : N\arri_M\,\mathsf{El}_M\,N))
+    \]
+    which maps every model $M$ to a typing context in $M$, consisting of the
+    declaration of a sort and two constructors.
+
   \item We give a semantics for signatures, as a particular $M : \mathsf{ToS}$
     model which interprets each CwF context $\Gamma$ as a structured category of
-    $\Gamma$-algebras.
+    $\Gamma$-algebras. E.g.\ for the signature of natural numbers, we get a
+    structured category of $\mathbb{N}$-algebras, with
+    $\mathbb{N}$-homomorphisms as morphisms.
   \item We give a (large, infinitary) signature for $\mathsf{ToS}$ itself, such
     that interpreting the signature in the semantic model yields a structured
-    category of $\mathsf{ToS}$-algebras.
+    category of $\mathsf{ToS}$-algebras. From this, we acquire notions of
+    \emph{recursion} and \emph{induction}, hence we gain the ability to define
+    further constructions by induction on an assumed initial model of the theory
+    of signatures.
 \end{enumerate}
 In the above construction, everything is appropriately indexed with universe
 levels (we omit the details), and there is a ``bump'' of levels at every
 instance of self-description.
 
-\textbf{Extending semantics to infinitary constructors and sort equations.}
+\subsubsection*{Extending semantics to infinitary constructors and sort equations.}
 Previously in \cite{kaposi2019constructing}, contexts in $\ToS$ were interpreted
 as CwFs of algebras with extra structure, substitutions as strict morphisms of
 such CwFs, and types as displayed CwFs. Infinitary constructors force a major
-change: substitutions are interpreted as weak CwF morphisms, and types as CwF
-isofibrations, which are displayed CwFs with an additional lifting structure of
-isomorphisms. In short, this means that the semantics of infinitary constructors
-can be only given mutually with a form of invariance under algebra
+change: substitutions must be interpreted as weak CwF morphisms, and types as
+CwF isofibrations, which are displayed CwFs with an additional lifting structure
+for isomorphisms. In short, this means that the semantics of infinitary
+constructors can be only given mutually with a form of invariance under algebra
 isomorphisms. Recursive equations similarly require this kind of semantics.
 
 However, strict sort equations are not invariant under isomorphisms. For
@@ -129,12 +146,13 @@ apart. Hence we have
 \item A theory of signatures supporting recursive equations and infinitary
   constructors, but no sort equations. This $\ToS$ can describe itself, and by a
   term model construction we can reduce all described QIITs to an assumed syntax
-  of $\ToS$. The term model construction is more involved than in
-  \cite{kaposi2019constructing}.
+  of the same $\ToS$. This term model construction is also weakened (i.e.\ it is
+  up to algebra isomorphisms), hence it is significantly more complicated than
+  in \cite{kaposi2019constructing}.
 \item A theory of signatures supporting sort equations, but no recursive
   equations and infinitary constructors. This $\ToS$ is infinitary and has no
-  sort equations, so we can give it a model theory as an infinitary QIIT. The
-  QIITs described here support a stricter semantics which is not invariant under
+  sort equations, so we can give it a model theory as an infinitary QIIT. This
+  $\ToS$ supports a stricter semantics which is not invariant under
   isomorphisms, and we also have a term model construction. Here, the semantics
   and the term models are straightforward extensions of
   \cite{kaposi2019constructing}.
