@@ -100,6 +100,7 @@
 \newcommand{\Subtype}{\mathsf{Subtype}}
 \newcommand{\subtype}{\mathsf{subtype}}
 \newcommand{\NatSig}{\mathsf{NatSig}}
+\newcommand{\mi}[1]{\mathit{#1}}
 
 \newcommand{\Sg}{\Sigma}
 \newcommand{\flCwF}{\mathsf{flCwF}}
@@ -277,13 +278,13 @@ following signature of categories.
 \begingroup
 \allowdisplaybreaks
 \begin{alignat*}{3}
-  & Ob  && : \U \\
-  & Mor && : Ob\ra Ob\ra\U \\
-  & \blank\circ\blank && : Mor\,J\,K\ra Mor\,I\,J\ra Mor\,I\,K \\
-  & id && : Mor\,I\,I \\
-  & ass && : (f\circ g)\circ h = f\circ(g\circ h) \\
-  & idl && : id\circ f = f \\
-  & idr && : f\circ id = f
+  & \mi{Ob}  && : \U \\
+  & \mi{Mor} && : \mi{Ob}\ra \mi{Ob}\ra\U \\
+  & \blank\circ\blank && : \mi{Mor}\,J\,K\ra \mi{Mor}\,I\,J\ra \mi{Mor}\,I\,K \\
+  & \mi{id} && : \mi{Mor}\,I\,I \\
+  & \mi{ass} && : (f\circ g)\circ h = f\circ(g\circ h) \\
+  & \mi{idl} && : \mi{id}\circ f = f \\
+  & \mi{idr} && : f\circ \mi{id} = f
 \end{alignat*}
 \endgroup
 The benefit of having a QII signature is getting a model theory ``for free'',
@@ -297,31 +298,32 @@ Algebraic notions of models of type theories are examples for this. Here,
 initial models represent syntax, and initiality corresponds to induction on
 syntax. Several variants have been used, from contextual categories \cite{gat}
 and comprehension categories \cite{jacobs1993comprehension} to categories with
-families \cite{Dybjer96internaltype} (CwF).
+families \cite{internaltt} (CwF).
 
 Whereas the initial category can be given by first defining the type of objects
 (the empty type) and then defining morphisms separately, for an initial model of
-a type theory given as a CwF one has to define $Ob$, $Mor$ and two extra sorts
-$Ty$ and $Tm$ \emph{inductive-inductively}, at the same time. This is because
-there is a constructor of $Ob$ which refers to $Ty$, constructors of $Ty$ refer
-to $Ob$ and $Sub$, and so on. This is illustrated by the following excerpt of
-the signature for CwFs extending the previous signature for categories.
+a type theory given as a CwF one has to define $\mi{Ob}$, $\mi{Mor}$ and two
+extra sorts $\mi{Ty}$ and $\mi{Tm}$ \emph{inductive-inductively}, at the same
+time. This is because there is a constructor of $\mi{Ob}$ which refers to
+$\mi{Ty}$, constructors of $\mi{Ty}$ refer to $\mi{Ob}$ and $\mi{Sub}$, and so
+on. This is illustrated by the following excerpt of the signature for CwFs
+extending the previous signature for categories.
 \begin{alignat*}{3}
-  & Ty && : Ob\ra \U \\
-  & empty  && : Ob \\
-  & ext && : (I:Ob)\ra Ty\,I\ra Ob \\
-  & \blank[\blank] && : Ty\,J\ra Mor\,I\,J\ra Ty\,I
+  & \mi{Ty}        && : \mi{Ob}\ra \U \\
+  & \mi{empty}     && : \mi{Ob} \\
+  & \mi{ext}       && : (I:\mi{Ob})\ra \mi{Ty}\,I\ra \mi{Ob} \\
+  & \blank[\blank] && : \mi{Ty}\,J\ra \mi{Mor}\,I\,J\ra \mi{Ty}\,I
 \end{alignat*}
 While signatures for type theories usually only contain finitary constructors,
 some QIITs have infinitary constructors, such as the following signature for
 countably branching trees where the order of subtrees does not matter,
 i.e.\ trees with permuted subtrees in a branch are equal.
 \begin{alignat*}{3}
-  & Tree && : \U \\
-  & leaf  && : Tree \\
-  & node && : (\N\ra Tree)\ra Tree \\
-  & perm && : (g :\N\ra Tree)(f : \N\ra\N)\ra \mathsf{isIso}\,f\ra \\
-  & && \hspace{0.8em} node\,g = node\,(g\circ f)
+  & \mi{Tree} && : \U \\
+  & \mi{leaf}  && : \mi{Tree} \\
+  & \mi{node} && : (\N\ra \mi{Tree})\ra \mi{Tree} \\
+  & \mi{perm} && : (g :\N\ra \mi{Tree})(f : \N\ra\N)\ra \mathsf{isIso}\,f\ra \\
+  & && \hspace{0.8em} \mi{node}\,g = \mi{node}\,(g\circ f)
 \end{alignat*}
 Additional examples for infinitary QIITs are real, surreal numbers
 \cite{HoTTbook}, ordinal numbers \cite{lumsdaineShulman} and the partiality
@@ -329,7 +331,7 @@ monad \cite{partiality}.
 
 \subsection{Contributions}
 The current paper extends the syntax and semantics of QIITs as previously described
-in the literature \cite{kaposi2019constructing, gabe, dijkstra2017quotient}. We add the following features:
+in the literature \cite{kaposi2019constructing, qiits, dijkstra2017quotient}. We add the following features:
 \begin{enumerate}
   \item
   \textbf{Large constructors, large elimination} and algebras at different
@@ -347,7 +349,7 @@ in the literature \cite{kaposi2019constructing, gabe, dijkstra2017quotient}. We 
   \item
   \textbf{Recursive equations}, i.e. equations appearing as assumptions
   of constructors. These have occurred previously in syntaxes of cubical type
-  theories, as boundary conditions \cite{cohen2016cubical, angiuli2016computational, angiuli2018cartesian}.
+  theories, as boundary conditions \cite{cchm, angiuli2016computational, angiuli2018cartesian}.
 \end{enumerate}
 
 To provide semantics, we show that for each signature, there is a CwF (category
@@ -386,16 +388,15 @@ in the following.
 
 \subsection{Core Extensional Theory}
 
-We have Russell-style predicative universes $\Set_i$ indexed by natural
-numbers, dependent functions as $(x : A)\ra B$, and dependent pairs as $(x :
-A)\times B$ with projections $\proj1$ and $\proj2$. We sometimes leave
-parameters implicit in dependent function types, e.g.\ write $\id : A \ra A$
-instead of $\id : (A : \Set_i)\ra A \ra A$. We also use subscripts as a field
-projection notation for iterated pairs. For example, for $t : (A : \Set_i)
-\times (B : \Set_i) \times (f : A \ra B)$, we use $B_t$ to denote the projection
-of the second component. Sometimes we omit the subscript if it is clear from
-context. When we write ``exists'' in this paper, we always mean chosen structure
-given by a $\Sigma$-type.
+We have Russell-style predicative universes $\Set_i$ indexed by natural numbers,
+dependent functions as $(x : A)\ra B$, and dependent pairs as $(x : A)\times
+B$. We sometimes leave parameters implicit in dependent function types,
+e.g.\ write $\id : A \ra A$ instead of $\id : (A : \Set_i)\ra A \ra A$. We also
+use subscripts as a field projection notation for iterated pairs. For example,
+for $t : (A : \Set_i) \times (B : \Set_i) \times (f : A \ra B)$, we use $B_t$ to
+denote the projection of the second component. Sometimes we omit the subscript
+if it is clear from context. When we write ``exists'' in this paper, we always
+mean chosen structure given by a $\Sigma$-type.
 
 Both for function types and $\Sigma$, the output universe level is given as the
 maximum of the levels of the constituent types, e.g.\ $(x : A)\ra B : \Set_{\max(i,j)}$
@@ -448,11 +449,11 @@ We use cumulativity to reduce bureaucratic overhead when dealing with
 constructions at different universe levels. The internal $\Subtype$ is used in
 Section \ref{sec:termmodels} to prove cumulativity for general QIIT
 algebras. For example, consider natural number algebras at level $i$, given as
-the $\Sigma$-type $NatAlg_i :=(Nat : \Set_i)\times Nat\times(Nat \ra
-Nat)$. It follows from the subtyping rules that $i \leq j$ implies $NatAlg_{i}
-\leq NatAlg_{j}$. However, cumulativity for arbitrary QIIT algebras does not
-follow judgmentally; it can only be proven by induction on signatures, hence
-the need for $\Subtype$.
+the $\Sigma$-type $\mi{NatAlg}_i :=(\mi{Nat} : \Set_i)\times
+\mi{Nat}\times(\mi{Nat} \ra \mi{Nat})$. It follows from the subtyping rules that
+$i \leq j$ implies $NatAlg_{i} \leq \mi{NatAlg}_{j}$. However, cumulativity for
+arbitrary QIIT algebras does not follow judgmentally; it can only be proven by
+induction on signatures, hence the need for $\Subtype$.
 
 Internal subtyping is not included in \cite{timany2018cumulative}, but it can be
 justified by the set-theoretic model given there.
@@ -512,7 +513,7 @@ inverse $\lami$.
 
 \textbf{Infinitary function space} $\Piinf : (A : \Set_j)\ra(A \ra
 \Tm\,\Gamma\,\U)\ra \Tm\,\Gamma\,\U$, with $\appinf :
-\Tm\,\Gamma\,(\El\,(\Pie\,A\,b))\ra((x : A)\ra \Tm\,\Gamma\,(\El\,(b\,x)))$ and
+\Tm\,\Gamma\,(\El\,(\Piinf\,A\,b))\ra((x : A)\ra \Tm\,\Gamma\,(\El\,(b\,x)))$ and
 its inverse $\laminf$.
 
 \textbf{An identity type} $\Id : (a : \Tm\,\Gamma\,\U)\ra
@@ -568,8 +569,8 @@ not in any cETT universe.
 \begin{alignat*}{3}
   & \NatSig : \Sig_0 \\
   & \NatSig := \lambda (i :\mathbb{N})(M : \ToS_{i,0}).\\
-  & \hspace{1em}(\emptycon_M\,\ext_M\, (N : \U_M) \,\ext_M\,(zero : \El_M\,N)\\
-  & \hspace{2.67em}\ext_M (suc : N\arri_M\El_M\,N))
+  & \hspace{1em}(\emptycon_M\,\ext_M\, (N : \U_M) \,\ext_M\,(\mi{zero} : \El_M\,N)\\
+  & \hspace{2.67em}\ext_M (\mi{suc} : N\arri_M\El_M\,N))
 \end{alignat*}
 \end{example}
 
@@ -591,8 +592,8 @@ arbitrary small types. This is a signature at level 1, since we have $\Set_0$ as
 a $\Pie$ domain type.
 \begin{alignat*}{3}
 & \mathsf{TreeSig} := \\
-& \hspace{1em}\emptycon \ext (Tree : \U)\\
-& \hspace{1.35em}\ext (node : \Pie\,\Set_0\,(\lambda A.\,(A\,\arrinf\,Tree)\arri\El\,Tree))
+& \hspace{1em}\emptycon \ext (\mi{Tree} : \U)\\
+& \hspace{1.35em}\ext (\mi{node} : \Pie\,\Set_0\,(\lambda A.\,(A\,\arrinf\,\mi{Tree})\arri\El\,\mi{Tree}))
 \end{alignat*}
 \end{example}
 
@@ -611,7 +612,7 @@ in $\Pii$ domains. A minimal (and trivial) example:
   & \hspace{0.5em}\emptycon\,\ext (A : \U) \ext (a : \El\,A)\ext (f : \Pii\,(x : A)\,(\Id\,A\,x\,a\arri\El\,A))
 \end{alignat*}
 More interesting (and complicated) examples for recursive equations are boundary
-conditions in various cubical type theories \cite{cohen2016cubical, angiuli2016computational, angiuli2018cartesian}. Note that our $\Id$
+conditions in various cubical type theories \cite{cchm, angiuli2016computational, angiuli2018cartesian}. Note that our $\Id$
 allows iterated equations as well, but these are all trivial in the semantics,
 where we assume UIP.
 \end{example}
@@ -642,7 +643,7 @@ substitutions are appropriate structure-preserving functors. Then, each signatur
 as a structured category of algebras.
 
 Our semantics has a ``type-theoretic'' flavor, which is inspired by the cubical
-set model of Martin-Löf type theory by Bezem et al. \cite{cubical}. The core idea
+set model of Martin-Löf type theory by Bezem et al. \cite{cubicalmodel}. The core idea
 is to avoid strictness issues by starting from basic ingredients which are already
 strict enough. Hence, instead of modeling types as certain slices and
 substitution by pullback, we model types as displayed categories with extra
@@ -664,7 +665,7 @@ categories (of algebras). The level $i$ marks the level of all internal sorts in
 an algebra, and the level $j$ marks the level of all external sets in function
 domains. Hence, every algebra has level $\max(i+1,j)$. The bump is only needed
 for $i$, since algebras merely contain elements of $A : \Set_j$ types, while
-inductive sets are themselves elements of $\Set_i$. For example, $NatAlg_i :
+inductive sets are themselves elements of $\Set_i$. For example, $\mi{NatAlg}_i :
 \Set_{\max(i+1,0)} : \Set_{\max(i+1, 0)+1}$.
 
 
@@ -758,7 +759,9 @@ $\Ty\,\Gamma$, which sends $A$ to $A[\sigma]$ and $t :
 \subsection{Substitutions}
 \label{sec:substitutions}
 
-A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a functor between underlying categories, which additionally maps types to types and terms to terms, and satisfies the following mere property:
+A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a
+functor between underlying categories, which also maps types to types and terms
+to terms, and satisfies the following mere properties:
   \begin{enumerate}
     \item $\bsigma\,(A[\sigma]) = (\bsigma\,A)\,[\bsigma\,\sigma]$
     \item $\bsigma\,(t[\sigma]) = (\bsigma\,t)\,[\bsigma\,\sigma]$
@@ -771,7 +774,7 @@ In short, $\bsigma$ preserves substitution strictly and preserves empty context
 and context extension up to isomorphism. We notate the evident isomorphisms as
 $\bsigma_{\emptycon} : \bsigma\,\emptycon \simeq \emptycon$ and $\bsigma_{\ext}
 : \bsigma\,(\Gamma\,\ext\,A)\,\simeq\,\bsigma\,\Gamma\,\ext\,\bsigma\,A$. Our
-notion of weak morphism is the same as in \cite{birkedal2018modal}, when
+notion of weak morphism is the same as in \cite{birkedal2020modal}, when
 restricted to CwFs.
 
 Note that the definition we just gave lives in $\Set_{\max(i+1,j)}$, but by
@@ -1143,7 +1146,7 @@ isofibrations, indexed by a discrete domain. The discreteness is essential: with
 a general $\bA \boldsymbol{:} \bTy\,\bGamma$ domain, $\bPii$ would not be
 definable because of variance issues. Indeed, the category of categories is not
 locally cartesian closed and does not support a general $\Pi$ type
-\cite{johnstone2002sketches}.
+\cite[Section A1.5]{johnstone2002sketches}.
 
 Contexts are products of $\bB$-contexts, and types are products of $\bB$-types,
 indexed respectively by contexts and types of $\bEl\,\ba$.
@@ -1344,11 +1347,13 @@ signatures.
 
 We can convert a signature to a syntactic one by interpreting it in $\syn_j$,
 and we can convert in the other direction by using ToS-induction to interpret a
-$\Gamma : \Con_{\syn_j}$ in an arbitrary ToS model.
+$\Gamma : \Con_{\syn_j}$ in an arbitrary ToS model. This is merely a logical
+equivalence, external to cETT (because of unvierse polymorphism), and not an
+isomorphism.
 
 \subsection{Useful Model Fragments of $\bM$}
 
-In the following, We will need three model fragments of $\bM$, which can be used
+In the following, we will need three model fragments of $\bM$, which can be used
 to compute notions of algebras, displayed algebras and sections respectively for
 each syntactic signature. This is a rephrasing of the $\blank^{\A}$,
 $\blank^{\D}$ and $\blank^{\S}$ interpretations in
@@ -1380,9 +1385,9 @@ the $\Ty$ components everywhere, corresponding to types or actions on
 types. Hence, we have:
 \begin{alignat*}{3}
   & \Con_{\bD}\,\ulGamma && = \ulGamma \ra \Set_{\max(i+1, j)} \\
-  & \Sub_{\bD}\,\Gamma\,\Delta\,\ulsigma && = (\ulgamma : \ulGamma) \ra \Gamma\,\gamma \ra \Delta\,(\ulsigma\,\ulgamma)\\
+  & \Sub_{\bD}\,\Gamma\,\Delta\,\ulsigma && = (\ulgamma : \ulGamma) \ra \Gamma\,\ulgamma \ra \Delta\,(\ulsigma\,\ulgamma)\\
   & \Ty_{\bD}\,\Gamma\,\ulA && = (\ulgamma : \ulGamma) \ra \Gamma\,\ulgamma \ra \ulA\,\ulgamma \ra \Set_{\max(i+1, j)}\\
-  & \Tm_{\bD}\,\Gamma\,A\,\ult && = (\ulgamma : \ulGamma)(\gamma : \Gamma\,\ulGamma)
+  & \Tm_{\bD}\,\Gamma\,A\,\ult && = (\ulgamma : \ulGamma)(\gamma : \Gamma\,\ulgamma)
     \ra A\,\ulgamma\,\gamma\,(\ult\,\ulgamma)
 \end{alignat*}
 \end{definition}
@@ -1411,12 +1416,12 @@ $\llb\Gamma\rrb_{\bS} = \Tm_{\llb\Gamma\rrb_{\bM}}$.
 The basic idea is that initial algebras can be built from the terms of $\syn_j$.
 For example, consider the syntactic signature for natural numbers:
 \[
-\NatSig := \emptycon\ext(N : \U)\ext(zero : \El\,N)\ext (suc : N
+\NatSig := \emptycon\ext(N : \U)\ext(\mi{zero} : \El\,N)\ext (\mi{suc} : N
 \arri \El\,N)
 \]
 The type $\Tm_{\syn}\,\NatSig\,(\El_{\syn}\,N)$ is isomorphic to the usual type
 of natural numbers, since, intuitively, such terms can only be built from
-iterated usage of $zero$ and $suc$. We build a term algebra for each
+iterated usage of $\mi{zero}$ and $\mi{suc}$. We build a term algebra for each
 signature in this manner.
 
 \begin{definition}[Term algebra construction]
@@ -1425,7 +1430,7 @@ model over $\syn_j$, named $\bT_{\ulOmega}$. The underlying sets are as follows:
 \begin{alignat*}{3}
   & \Con_{\bT_{\ulOmega}}\,\ulGamma &&:= \Sub\,\ulOmega\,\ulGamma \ra \llb\ulGamma\rrb_{\bA}\\
   & \Sub_{\bT_{\ulOmega}}\,\Gamma\,\Delta\,\ulsigma &&:= (\ulnu : \Sub\,\ulOmega\,\ulGamma)
-  \ra \Delta\,(\ulsigma\circ\nu) \simeq \llb\ulsigma\rrb_{\bA}\,(\Gamma\,\ulnu)\\
+  \ra \Delta\,(\ulsigma\circ\ulnu) \simeq \llb\ulsigma\rrb_{\bA}\,(\Gamma\,\ulnu)\\
   & \Ty_{\bT_{\ulOmega}}\,\Gamma\,\ulA &&:= (\ulnu : \Sub\,\ulOmega\,\ulGamma) \ra
     \Tm\,\ulOmega\,(\ulA[\ulnu]) \ra \llb\ulA\rrb_{\bA}\,(\Gamma\,\ulnu)\\
   & \Tm_{\bT_{\ulOmega}}\,\Gamma\,A\,\ult &&:= (\ulnu : \Sub\,\ulOmega\,\ulGamma)\ra
@@ -1619,7 +1624,7 @@ an ad-hoc QIIT.
 
 Higher inductive types (HITs) are generalizations of QIITs in settings with
 proof-relevant identity types. They were introduced before QIITs
-\cite{HoTTbook}. \cite{niels} is a description of a subset of HITs. \cite{hiit}
+\cite{HoTTbook}. \cite{hitsinprogramming} is a description of a subset of HITs. \cite{hiit}
 describes a syntax for higher inductive-inductive types using a theory of
 signatures similar to ours, however does not construct categories of algebras or
 show initiality. Semantics for different subclasses of HITs are given by
@@ -1669,15 +1674,14 @@ to work out computing transports for QIITs. Cubical Agda has recently made
 strides in implementing HITs \cite{vezzosicubical}, but as of now it does not
 support computing transports on indexed inductive types.
 
-With regards to the reduction of QIITs to simple type formers, the
-reduction of infinitary QIITs appears to be more challenging than the finitary
+With regards to the reduction of QIITs to simple type formers, the reduction of
+infinitary QIITs appears to be more challenging than the finitary
 case. \cite[Section 9]{lumsdaineShulman} shows that infinitary QIITs are not
-constructible in type theory without choice, so such QIITs are a
-non-conservative extension of extensional type theory. In the finitary case, a
-generalization of the approach in \cite{induction-is-enough} seems promising ;
-this amounts to a Streicher-style initial algebra construction
+constructible from inductive types and simple quotients with relations. In the
+finitary case, a generalization of the approach in \cite{induction-is-enough}
+seems promising ; this amounts to a Streicher-style initial algebra construction
 \cite{streicher2012semantics} for the theory of finitary QIIT signatures. In
-particular, Brunerie et al. \cite{brunerie} has formalized in Agda this
+particular, Brunerie et al. \cite{brunerie} have formalized in Agda this
 construction for a comparable type theory, using UIP, function extensionality,
 propositional extensionality and simple quotient types.
 
