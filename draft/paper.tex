@@ -298,36 +298,34 @@ initial models represent syntax, and initiality corresponds to induction on
 syntax. Several variants have been used, from contextual categories \cite{gat}
 and comprehension categories \cite{jacobs1993comprehension} to categories with
 families \cite{Dybjer96internaltype} (CwF).
-%
-Whereas the initial category can be given by first defining the type
-of objects (the empty type) and then defining morphisms as a separate
-inductive family, for the initial CwF one has to define $Ob$, $Mor$
-and two extra sorts $Ty$ and $Tm$ \emph{inductive-inductively}, at the
-same time. This is because there is a constructor of $Ob$ which refers
-to $Ty$, constructors of $Ty$ refer to $Ob$ and $Sub$, and so on. This
-is illustrated by the following excerpt of the signature for CwFs
-extending the previous signature for categories.
+
+Whereas the initial category can be given by first defining the type of objects
+(the empty type) and then defining morphisms separately, for an initial model of
+a type theory given as a CwF one has to define $Ob$, $Mor$ and two extra sorts
+$Ty$ and $Tm$ \emph{inductive-inductively}, at the same time. This is because
+there is a constructor of $Ob$ which refers to $Ty$, constructors of $Ty$ refer
+to $Ob$ and $Sub$, and so on. This is illustrated by the following excerpt of
+the signature for CwFs extending the previous signature for categories.
 \begin{alignat*}{3}
   & Ty && : Ob\ra \U \\
   & empty  && : Ob \\
   & ext && : (I:Ob)\ra Ty\,I\ra Ob \\
   & \blank[\blank] && : Ty\,J\ra Mor\,I\,J\ra Ty\,I
 \end{alignat*}
-While signatures for type theory usually only contain finitary constructors,
+While signatures for type theories usually only contain finitary constructors,
 some QIITs have infinitary constructors, such as the following signature for
-countable branching trees where the order of subtrees does not matter.
+countably branching trees where the order of subtrees does not matter,
+i.e.\ trees with permuted subtrees in a branch are equal.
 \begin{alignat*}{3}
   & Tree && : \U \\
   & leaf  && : Tree \\
   & node && : (\N\ra Tree)\ra Tree \\
   & perm && : (g :\N\ra Tree)(f : \N\ra\N)\ra \mathsf{isIso}\,f\ra \\
-  & && \hspace{0.8em} node\,g = node (g\circ f)
+  & && \hspace{0.8em} node\,g = node\,(g\circ f)
 \end{alignat*}
-Here $node$ and $perm$ are infinitary constructurs, $perm$ expresses
-that reordering subtrees by a permutation (a $\N\ra\N$ function which
-is an isomorphism) does not matter.
-
-Real-world examples examples of infinitary QIITs include the real, surreal numbers \cite{HoTTbook}, ordinal numbers \cite{lumsdaineShulman} and the partiality monad \cite{partiality}.
+Additional examples for infinitary QIITs are real, surreal numbers
+\cite{HoTTbook}, ordinal numbers \cite{lumsdaineShulman} and the partiality
+monad \cite{partiality}.
 
 \subsection{Contributions}
 The current paper extends the syntax and semantics of QIITs as previously described
@@ -716,7 +714,7 @@ $\Kfam$ as \emph{fl-structure}.
 Given $\bGamma : \flCwF_i$, we have the following predicate on contexts:
 \begin{alignat*}{3}
   & \Inductive : \Con_{\bGamma} \ra \Set_i \\
-  & \Inductive\,\Gamma := (A : \Ty_{\bGamma}\,\Gamma)\ra \Tm_{\bGamma}\,\Gamma\,A
+  & \Inductive\,\Gamma := (A : \Ty_{\boldsymbol{\Gamma}}\,\Gamma)\ra \Tm_{\bGamma}\,\Gamma\,A
 \end{alignat*}
 \end{definition}
 
@@ -760,7 +758,7 @@ $\Ty\,\Gamma$, which sends $A$ to $A[\sigma]$ and $t :
 \subsection{Substitutions}
 \label{sec:substitutions}
 
-A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a functor between underlying categories, which additionally maps types to types and terms to terms, and satisfies the following:
+A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a functor between underlying categories, which additionally maps types to types and terms to terms, and satisfies the following mere property:
   \begin{enumerate}
     \item $\bsigma\,(A[\sigma]) = (\bsigma\,A)\,[\bsigma\,\sigma]$
     \item $\bsigma\,(t[\sigma]) = (\bsigma\,t)\,[\bsigma\,\sigma]$
@@ -769,12 +767,12 @@ A \emph{weak flCwF morphism} $\boldsymbol{\sigma : \Sub\,\Gamma\,\Delta}$ is a f
   \end{enumerate}
 
 
-In short, $\bsigma$ preserves substitution strictly and preserves
-empty context and context extension up to isomorphism. We notate the evident
-isomorphisms as $\bsigma_{\emptycon} :
-\bsigma\,\emptycon \simeq \emptycon$ and $\bsigma_{\ext}
-:
-\bsigma\,(\Gamma\,\ext\,A)\,\simeq\,\bsigma\,\Gamma\,\ext\,\bsigma\,A$. Our notion of weak morphism is the same as in \cite{birkedal2018modal}, when restricted to CwFs.
+In short, $\bsigma$ preserves substitution strictly and preserves empty context
+and context extension up to isomorphism. We notate the evident isomorphisms as
+$\bsigma_{\emptycon} : \bsigma\,\emptycon \simeq \emptycon$ and $\bsigma_{\ext}
+: \bsigma\,(\Gamma\,\ext\,A)\,\simeq\,\bsigma\,\Gamma\,\ext\,\bsigma\,A$. Our
+notion of weak morphism is the same as in \cite{birkedal2018modal}, when
+restricted to CwFs.
 
 Note that the definition we just gave lives in $\Set_{\max(i+1,j)}$, but by
 cumulativity it is also in $\Set_{\max(i+1,j)+1}$, as required by our $\bM_{i,j}
@@ -989,9 +987,7 @@ underlying sets are given by simple composition:
 Moreover, $\id_{\boldsymbol{A[\sigma]}} := \id_{\bA}$,
 $\sigma\circ_{\boldsymbol{A[\sigma]}}\delta := \sigma\circ_{\bA}\delta$, and
 likewise components for substitution are given by corresponding components in
-$\bA$.
-
-Context and type formers are given by coercing $\bA$
+$\bA$. Context and type formers are given by coercing $\bA$
 structures along $\bsigma$ preservation isomorphisms. For example:
 \begin{alignat*}{3}
   &\emptycon_{\boldsymbol{A[\sigma]}} && :=
@@ -1073,7 +1069,6 @@ leave to future work the investigation of such asymmetrical (or
 ``modal'') logical predicate translations.
 
 \subsection{Term Substitution}
-
 $\boldsymbol{\blank[\blank] : \Tm\,\Delta\,A \ra (\sigma : \Sub\,\Gamma\,\Delta)
   \ra \Tm\,\Gamma\,(A[\sigma])}$ is given similarly to
 $\boldsymbol{\blank\circ\blank}$ in Section \ref{sec:idcomp}. Underlying functions
@@ -1084,7 +1079,6 @@ are given by function composition, and preservation morphisms are also similar:
   & (\boldsymbol{t[\sigma]})_{\ext}^{-1} :=
     \bt\,\bsigma_{\ext}^{-1} \circ \bt_{\ext}^{-1}
 \end{alignat*}
-
 We also have the same decomposition of derived isomorphisms as in Lemma
 \ref{lem:idcomppres}. We do not have to show functoriality of term substitution
 here, since that is derivable in any CwF, see e.g. \cite{kaposi2019constructing}.
