@@ -1,0 +1,146 @@
+Response to review 1:
+
+- "it would improve the paper to give more of an intuitive understanding"
+
+We agree and will try to find space for this. A possible intuitive explanation
+is that in KKA the universe U was empty, and all substitutions were "neutral",
+i.e. semantic subsitutions were functors which permute, duplicate or forget
+components of algebras, or freely reinterpret components, and all such functors
+strictly preserve limits. In the current paper, U is not empty, it's closed
+under identity and infinitary function types, which don't just simply reshuffle
+structure and hence preserve limits only weakly.
+
+- "As stated this is only a "logical equivalence,""
+
+We will note this. Isomorphism is probably not feasible, while impredicative
+Church codings work to some extent (see "Impredicative encodings of HITs" by
+Awodey et al.), they don't support large elimination, and we need interpretation of
+signatures in large models.
+
+
+Response to review 2:
+
+- "it would be good to have a story how to work with QIITs in practice"
+
+We didn't elaborate QIIT usage and applications because of space constraints.
+However, we don't think "escaping from quotients" is an issue in practice. We
+can print quotients as a propositionally truncated strings, which work just as
+well as printing untruncated strings. Likewise with first digits of real
+numbers. We agree though that working with quotients requires at least some
+deliberation and rephrasing.
+
+- "El (Π^{inf} A b) = Π^{ext} A (El ∘ b)"
+
+This equation plausibly holds in the M model, we have not included/checked it
+because it is not really important with respect to practical usage of signatures.
+
+- (A : Ty_Γ₀ Γ) → Tm_Γ₀ Γ A
+
+We'll try to add more illustration. Here probably the best would be to note the
+following:
+
+  Con_Γ        type of Γ-algebras
+  Sub_Γ Γ Δ    type of homomorphisms from Γ to Δ
+  Ty_Γ Γ       type of displayed algebras over Γ
+  Tm_Γ Γ A     type of dependent morphisms from Γ to A
+
+If Γ₀ is the CwF of Nat-algebras, then Γ : Con_Γ₀ is a particular Nat-algebra
+(N, z, s), A has type (Nᴾ : N → Set) × (zᴾ : Nᴾ z) × (sᴾ : (n : N) → Nᴾ n → Nᵖ
+(s n)) and Tm_Γ₀ Γ A is a type which is equal to (Nˢ : (n : N) → Nᴾ n) × (Nˢ z =
+zᴾ) × ((n : N) → Nˢ (s n) = sᴾ n (Nˢ n)). It could be illustrative as well to
+see how "initiality" looks like in the same setting:
+
+  Initial Γ := (Δ : Con_Γ) → isContr (Sub_Γ Γ Δ)
+
+"Inductive" is a dependently typed analogue of "Initial" in the sense that there
+is a dependent morphism (Tm Γ A) from an inductive object Γ to any A dependent
+object over it.
+
+
+Response to review 3:
+
+- "Bootstrapping how exactly?"
+
+The benefit of bootstrapping is that the only ToS-related thing which we have to
+manually invent is the notion of ToS model in def 3.1, and notions of
+ToS-induction, ToS-morphism, etc. are computed by the semantics of ToSSig. The
+induction principle for ToS is rather huge (it says that every displayed ToS
+algebra has a section), and it was a bit unsatisfactory in the previous
+"Constructing QIITs" paper that it was ad-hoc assumed/invented.
+
+- "the signature ToSSig helps you
+   with the notion of ToS-induction, but what is the concrete link with
+   the assumed initial model syn in Section 6?"
+
+The concrete link is that we need a notion of initiality before we can assume an
+*initial* ToS model. The M interpretation of ToSSig computes (among other
+things) this. ToSSig is defined in a way so that the Con part of its M
+interpretation yields exactly the notion of ToS algebra from def 3.1, so that we
+get an flCwF where objects are ToS algebras and morphisms are strict ToS
+morphisms.
+
+- "Why finite limit CwFs?"
+
+The equivalence of induction and initiality (which we reference from
+"Constructing QIITs") requires some (not all) components of CwF + identity +
+constant families. We add all CwF+Id+K+Sigma components so that we get the
+structure which is (bi)equivalent to finitely complete categories. There are also
+many potentially useful/interesting constructions on such CwFs in the works of
+Dybjer, Clairambault & Castellan, so we think that it's worth to support this
+structure. We'll try to make this motivation clearer
+
+- "Making sense of Section 6"
+- "but the flCwF structure seems to be missing"
+
+There is no fl-structure involved here, we define three (displayed) models of
+ToS, the set model, the logical predicate model and the section model. We agree
+that it is hard to parse what is happening here, as ToS is a CwF with extra
+structure (def 3.1), but in M, the interpretation of each context is also a CwF
+with extra structure (flCwF), so we have "a structured CwF of structured
+CwFs". This part is explained and illustrated in detail in the previous
+"Constructing QIITs" work, we should direct the reader there more clearly in the
+text (sadly we don't have space for similar exposition here)
+
+- "That size issue again"
+
+We can actually eliminate into any type from the (Nat : Set₁) given by the term
+model: while the induction principle from Thm 6.10 requires as input a displayed
+Nat-algebra at level 1, by cumulativity it is enough to provide a disp. algebra at
+level 0. This should work for any particular QIIT. We only
+included the general cumulativity proof for plain algebras in def 6.8 and omitted it
+for displayed algebras. The displayed case is a bit more fiddly, because we need to handle
+cases where the base algebra is at a different level than the displayed algebra itself.
+Levels are rather painful, we made an effort to keep the universe setup as simple as
+possible, and we made a point to avoid "heterogeneously" leveled constructions such as this.
+We'll try to note this in the paper.
+
+- "The category example in Section 1 is not very convincing"
+
+The Cat signature itself requires (finitary) QII features to specify, and it's a
+very prominent structure. It happens to be the case that the initial Cat is easy
+to construct, but we don't think that detracts from its value as an example; also,
+our M semantics provides a bunch of structure unrelated to initial algebras.
+
+- "Smaller comments & typos"
+
+We will try to improve based on these comments
+
+- "Could the usual parametricity arguments be used to show that your
+  "Church-encoded" definition of signatures in fact is initial?"
+
+Definitely not internally to cETT, because of the universe polymorphism, but
+even without that it's probably not feasible; see "Impredicative encodings of
+HITs" by Awodey et al. We don't really need the Church-encoding to be nice and
+well-behaved in this paper, we only need a way to write down signatures and
+interpret them in a model, similarly to how programmers use "finally tagless"
+encodings.
+
+
+--------------------------------------------------------------------------------
+
+
+TODO:
+- intuitive expl for isofib semantics necessity
+- directing readers to CQIITs in sec 6
+- improve based on review 3 "Smaller comments"
+- response to displayed algebra cumulativity
