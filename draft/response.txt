@@ -24,10 +24,9 @@ Response to review 2:
 
 We didn't elaborate QIIT usage and applications because of space constraints.
 However, we don't think "escaping from quotients" is an issue in practice. We
-can print quotients as a propositionally truncated strings, which work just as
-well as printing untruncated strings. Likewise with first digits of real
-numbers. We agree though that working with quotients requires at least some
-deliberation and rephrasing.
+can print quotients as propositionally truncated strings, which works just as
+well as printing untruncated strings. We agree though that working with
+quotients requires at least some deliberation and rephrasing.
 
 - "El (Π^{inf} A b) = Π^{ext} A (El ∘ b)"
 
@@ -48,7 +47,7 @@ If Γ₀ is the CwF of Nat-algebras, then Γ : Con_Γ₀ is a particular Nat-alg
 (N, z, s), A has type (Nᴾ : N → Set) × (zᴾ : Nᴾ z) × (sᴾ : (n : N) → Nᴾ n → Nᵖ
 (s n)) and Tm_Γ₀ Γ A is a type which is equal to (Nˢ : (n : N) → Nᴾ n) × (Nˢ z =
 zᴾ) × ((n : N) → Nˢ (s n) = sᴾ n (Nˢ n)). It could be illustrative as well to
-see how "initiality" looks like in the same setting:
+see how initiality looks like in the same setting:
 
   Initial Γ := (Δ : Con_Γ) → isContr (Sub_Γ Γ Δ)
 
@@ -64,9 +63,8 @@ Response to review 3:
 The benefit of bootstrapping is that the only ToS-related thing which we have to
 manually invent is the notion of ToS model in def 3.1, and notions of
 ToS-induction, ToS-morphism, etc. are computed by the semantics of ToSSig. The
-induction principle for ToS is rather huge (it says that every displayed ToS
-algebra has a section), and it was a bit unsatisfactory in the previous
-"Constructing QIITs" paper that it was ad-hoc assumed/invented.
+induction principle for ToS is rather huge, and it was a bit unsatisfactory in
+the previous "Constructing QIITs" paper that it was ad-hoc assumed/invented.
 
 - "the signature ToSSig helps you
    with the notion of ToS-induction, but what is the concrete link with
@@ -87,7 +85,7 @@ constant families. We add all CwF+Id+K+Sigma components so that we get the
 structure which is (bi)equivalent to finitely complete categories. There are also
 many potentially useful/interesting constructions on such CwFs in the works of
 Dybjer, Clairambault & Castellan, so we think that it's worth to support this
-structure. We'll try to make this motivation clearer
+structure. We'll try to make this motivation clearer.
 
 - "Making sense of Section 6"
 - "but the flCwF structure seems to be missing"
@@ -105,14 +103,15 @@ text (sadly we don't have space for similar exposition here)
 
 We can actually eliminate into any type from the (Nat : Set₁) given by the term
 model: while the induction principle from Thm 6.10 requires as input a displayed
-Nat-algebra at level 1, by cumulativity it is enough to provide a disp. algebra at
-level 0. This should work for any particular QIIT. We only
-included the general cumulativity proof for plain algebras in def 6.8 and omitted it
-for displayed algebras. The displayed case is a bit more fiddly, because we need to handle
-cases where the base algebra is at a different level than the displayed algebra itself.
-Levels are rather painful, we made an effort to keep the universe setup as simple as
-possible, and we made a point to avoid "heterogeneously" leveled constructions such as this.
-We'll try to note this in the paper.
+Nat-algebra at level 1 or more, by cumulativity it is enough to make the
+induction motive return in Set₀. This should work for any particular QIIT. We
+only included the general cumulativity proof for plain algebras in def 6.8 and
+omitted it for displayed algebras. The displayed case is a bit more fiddly,
+because we need to handle cases where the base algebra is at a different level
+than the displayed algebra itself.  Levels are rather painful, we made an effort
+to keep the universe setup as simple as possible, and we purposefully avoided
+"heterogeneously" leveled constructions such as this.  We'll try to note this in
+the paper.
 
 - "The category example in Section 1 is not very convincing"
 
@@ -141,6 +140,9 @@ encodings.
 
 TODO:
 - intuitive expl for isofib semantics necessity
+- flCwf motivation clearer
 - directing readers to CQIITs in sec 6
 - improve based on review 3 "Smaller comments"
 - response to displayed algebra cumulativity
+
+Set₀
