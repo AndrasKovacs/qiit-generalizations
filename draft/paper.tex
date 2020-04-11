@@ -278,8 +278,8 @@ following signature of categories.
 \begingroup
 \allowdisplaybreaks
 \begin{alignat*}{3}
-  & \mi{Ob}  && : \U \\
-  & \mi{Mor} && : \mi{Ob}\ra \mi{Ob}\ra\U \\
+  & \mi{Ob}  && : \Set \\
+  & \mi{Mor} && : \mi{Ob}\ra \mi{Ob}\ra\Set \\
   & \blank\circ\blank && : \mi{Mor}\,J\,K\ra \mi{Mor}\,I\,J\ra \mi{Mor}\,I\,K \\
   & \mi{id} && : \mi{Mor}\,I\,I \\
   & \mi{ass} && : (f\circ g)\circ h = f\circ(g\circ h) \\
@@ -300,52 +300,64 @@ syntax. Several variants have been used, from contextual categories \cite{gat}
 and comprehension categories \cite{jacobs1993comprehension} to categories with
 families \cite{internaltt} (CwF).
 
-Whereas the initial category can be given by first defining the type of objects
-(the empty type) and then defining morphisms separately, for an initial model of
-a type theory given as a CwF one has to define $\mi{Ob}$, $\mi{Mor}$ and two
-extra sorts $\mi{Ty}$ and $\mi{Tm}$ \emph{inductive-inductively}, at the same
-time. This is because there is a constructor of $\mi{Ob}$ which refers to
-$\mi{Ty}$, constructors of $\mi{Ty}$ refer to $\mi{Ob}$ and $\mi{Sub}$, and so
-on. This is illustrated by the following excerpt of the signature for CwFs
-extending the previous signature for categories.
-\begin{alignat*}{3}
-  & \mi{Ty}        && : \mi{Ob}\ra \U \\
-  & \mi{empty}     && : \mi{Ob} \\
-  & \mi{ext}       && : (I:\mi{Ob})\ra \mi{Ty}\,I\ra \mi{Ob} \\
-  & \blank[\blank] && : \mi{Ty}\,J\ra \mi{Mor}\,I\,J\ra \mi{Ty}\,I
-\end{alignat*}
-While signatures for type theories usually only contain finitary constructors,
-some QIITs have infinitary constructors, such as the following signature for
-countably branching trees where the order of subtrees does not matter,
-i.e.\ trees with permuted subtrees in a branch are equal.
-\begin{alignat*}{3}
-  & \mi{Tree} && : \U \\
-  & \mi{leaf}  && : \mi{Tree} \\
-  & \mi{node} && : (\N\ra \mi{Tree})\ra \mi{Tree} \\
-  & \mi{perm} && : (g :\N\ra \mi{Tree})(f : \N\ra\N)\ra \mathsf{isIso}\,f\ra \\
-  & && \hspace{0.8em} \mi{node}\,g = \mi{node}\,(g\circ f)
-\end{alignat*}
-Additional examples for infinitary QIITs are real, surreal numbers
-\cite{HoTTbook}, ordinal numbers \cite{lumsdaineShulman} and the partiality
-monad \cite{partiality}.
+A prime motivation of the current work is to further develop QIITs as a
+framework for the metatheory of type theories, to cover more theories and
+support more applications. To this end, we extend the syntax and semantics of
+QIITs as previously described in the literature \cite{kaposi2019constructing,
+  qiits, dijkstra2017quotient}.
 
-\subsection{Contributions}
-The current paper extends the syntax and semantics of QIITs as previously described
-in the literature \cite{kaposi2019constructing, qiits, dijkstra2017quotient}. We add the following features:
+
+%% Whereas the initial category can be given by first defining the type of objects
+%% (the empty type) and then defining morphisms separately, for an initial model of
+%% a type theory given as a CwF, one has to define $\mi{Ob}$, $\mi{Mor}$ and two
+%% extra sorts $\mi{Ty}$ and $\mi{Tm}$ \emph{inductive-inductively}, at the same
+%% time. This is illustrated by the following excerpt of the signature for CwFs
+%% extending the previous signature for categories.
+%% \begin{alignat*}{3}
+%%   & \mi{Ty}        && : \mi{Ob}\ra \Set \\
+%%   & \mi{U}         && : \mi{Ty\,i} \\
+%%   & \mi{empty}     && : \mi{Ob} \\
+%%   & \mi{ext}       && : (I:\mi{Ob})\ra \mi{Ty}\,I\ra \mi{Ob} \\
+%%   & \blank[\blank] && : \mi{Ty}\,J\ra \mi{Mor}\,I\,J\ra \mi{Ty}\,I
+%% \end{alignat*}
+%% While signatures for type theories usually only contain finitary constructors,
+%% some QIITs have infinitary constructors, such as the following signature for
+%% countably branching trees where the order of the subtrees does not matter,
+%% i.e.\ permuting subtrees yields an equal tree.
+%% \begin{alignat*}{3}
+%%   & \mi{Tree} && : \U \\
+%%   & \mi{leaf}  && : \mi{Tree} \\
+%%   & \mi{node} && : (\N\ra \mi{Tree})\ra \mi{Tree} \\
+%%   & \mi{perm} && : (g :\N\ra \mi{Tree})(f : \N\ra\N)\ra \mathsf{isIso}\,f\ra \\
+%%   & && \hspace{0.8em} \mi{node}\,g = \mi{node}\,(g\circ f)
+%% \end{alignat*}
+%% Additional examples for infinitary QIITs are real, surreal numbers
+%% \cite{HoTTbook}, ordinal numbers \cite{lumsdaineShulman} and the partiality
+%% monad \cite{partiality}.
+
+%% \subsection{Contributions}
+%% The current paper extends the syntax and semantics of QIITs as previously described
+%% in the literature \cite{kaposi2019constructing, qiits, dijkstra2017quotient}. We add the following features:
+
 \begin{enumerate}
   \item
   \textbf{Large constructors, large elimination} and algebras at different
   universe levels. This fills in an important formal gap; large models are
   routinely used in the metatheory of type theories, but they have not been
-  presented explicitly in previous QIIT literature.
+  presented explicitly in previous QIIT literature. For example, interpreting
+  syntactic contexts as sets already requires a notion of large models.
   \item
   \textbf{Infinitary constructors}.
-  Of special note here is that the theory of QIIT signatures is itself large and
-  infinitary, thus it can ``eat itself'', i.e.\ include its own signature and
-  provide its own metatheory. This was not possible previously in
-  \cite{kaposi2019constructing}, where only finitary QIITs were described. In
-  this paper we use self-representation to bootstrap the model theory of
-  signatures, without having to assume any pre-existing internal syntax.
+  This allows specification of infinitely branching trees. Examples of
+  infinitary QIITs in previous works include real, surreal numbers
+  \cite{HoTTbook}, ordinal numbers \cite{lumsdaineShulman} and a partiality
+  monad \cite{partiality}. Of special note here is that the theory of QIIT
+  signatures is itself large and infinitary, thus it can ``eat itself'',
+  i.e.\ include its own signature and provide its own metatheory. This was not
+  possible previously in \cite{kaposi2019constructing}, where only finitary
+  QIITs were described. In this paper we use self-representation to bootstrap
+  the model theory of signatures, without having to assume any pre-existing
+  internal syntax.
   \item
   \textbf{Recursive equations}, i.e. equations appearing as assumptions
   of constructors. These have occurred previously in syntaxes of cubical type
