@@ -307,6 +307,7 @@ QIITs as previously described in the literature \cite{kaposi2019constructing,
   qiits, dijkstra2017quotient}.
 
 
+
 %% Whereas the initial category can be given by first defining the type of objects
 %% (the empty type) and then defining morphisms separately, for an initial model of
 %% a type theory given as a CwF, one has to define $\mi{Ob}$, $\mi{Mor}$ and two
@@ -1595,27 +1596,27 @@ by Theorem \ref{thm:initialind} they are also initial.
 \end{proof}
 
 
+
 \section{Related Work}
 \label{sec:relatedwork}
 
-Cartmell \cite{gat} defines generalized algebraic theories (GATs) using type
-theoretic syntax. Compared to our QII signatures, his signatures support sort
-equations but do not cover infinitary constructors or recursive equations. A way
-to encode sort equations in our signatures is using isomorphisms instead of
-equalities. In contrast to our algebraic definition, Cartmell's signatures are
-given by presyntax, named variables and typing relations, there is no explicit
-model theory provided for signatures, and no explicit term model construction is
-given. Cartmell focuses instead on showing that contextual categories serve as
-classifying categories for GATs.
+Cartmell \cite{gat} defines generalized algebraic theories (GATs) using
+type-theoretic syntax. Compared to our QII signatures, his signatures support
+sort equations but do not cover infinitary constructors or recursive
+equations. A way to encode sort equations in our signatures is using
+isomorphisms instead of equalities. In contrast to our algebraic definition,
+Cartmell's signatures are given by presyntax, named variables and typing
+relations, there is no explicit model theory provided for signatures, and no
+explicit term model construction is given. Cartmell focuses instead on showing
+that contextual categories serve as classifying categories for GATs.
 
-A more semantic approach to QIITs is given by Altenkirch et al.\
-\cite{gabe}. They generalize the initial algebra semantics of
-inductive types to QIITs by considering towers of functors and
-building complete categories of algebras from such towers. Their
-notion of signature does not enforce strict positivity, hence
-describes a larger class of QII signatures. The equivalence of
-initiality and induction is showed, but initial algebras are not
-constructed.
+A more semantic approach to QIITs is given by Altenkirch et
+al.\ \cite{qiits}. They generalize the initial algebra semantics of inductive
+types to QIITs by considering towers of functors and building complete
+categories of algebras from them. Their notion of signature does not enforce
+strict positivity, hence describes a larger class of QII signatures. They show
+equivalence of initiality and induction, but do not construct initial algebras,
+nor would that be possible because of the lack of a positivity restriction.
 
 The work of Kaposi et al. \cite{kaposi2019constructing} is the direct precursor
 of our work. They do not consider infinitary constructors or constructors with
@@ -1636,13 +1637,13 @@ an ad-hoc QIIT.
 
 Higher inductive types (HITs) are generalizations of QIITs in settings with
 proof-relevant identity types. They were introduced before QIITs
-\cite{HoTTbook}. \cite{hitsinprogramming} is a description of a subset of HITs. \cite{hiit}
-describes a syntax for higher inductive-inductive types using a theory of
-signatures similar to ours, however does not construct categories of algebras or
-show initiality. Semantics for different subclasses of HITs are given by
+\cite{HoTTbook}. \cite{hiit} describes a syntax for higher inductive-inductive
+types using a theory of signatures similar to ours, but it does not construct
+categories of algebras and initial algebras. Semantics for different subclasses
+of HITs are given by
 \cite{lumsdaineShulman,10.1145/3209108.3209130,nielsmsc,sojakova,moeneclaey}. Cubical
-type theories were shown to support HITs in a computational way
-\cite{niels,hiit}.
+type theories were shown to support some HITs in a computational way
+\cite{cubicalhits,10.1145/3290314}.
 
 Our notion of displayed CwF is an extension of displayed categories
 \cite{displayedcats}, although in a setting with UIP.
@@ -1691,7 +1692,7 @@ infinitary QIITs appears to be more challenging than the finitary
 case. \cite[Section 9]{lumsdaineShulman} shows that infinitary QIITs are not
 constructible from inductive types and simple quotients with relations. In the
 finitary case, a generalization of the approach in \cite{induction-is-enough}
-seems promising ; this amounts to a Streicher-style initial algebra construction
+seems promising; this amounts to a Streicher-style initial algebra construction
 \cite{streicher2012semantics} for the theory of finitary QIIT signatures. In
 particular, Brunerie et al. \cite{brunerie} have formalized in Agda this
 construction for a comparable type theory, using UIP, function extensionality,
