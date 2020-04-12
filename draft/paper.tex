@@ -1,13 +1,5 @@
-%% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
-\documentclass[sigplan,review,anonymous]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
-%% For double-blind review submission, w/ CCS and ACM Reference
-%\documentclass[sigplan,review,anonymous]{acmart}\settopmatter{printfolios=true}
-%% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
-%\documentclass[sigplan,review]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
-%% For single-blind review submission, w/ CCS and ACM Reference
-%\documentclass[sigplan,review]{acmart}\settopmatter{printfolios=true}
-%% For final camera-ready submission, w/ required CCS and ACM Reference
-%\documentclass[sigplan]{acmart}\settopmatter{}
+
+\documentclass[sigplan,screen]{acmart}
 
 
 %% Conference information
@@ -203,12 +195,22 @@
 \author{Andr{\'a}s Kov{\'a}cs}
 \orcid{0000-0002-6375-9781}
 \affiliation{
-  \department{Department of Programming Languages and Compilers}
+  %% \department{Department of Programming Languages and Compilers}
   \institution{E{\"o}tv{\"o}s Lor{\'a}nd University}
   \city{Budapest}
-  \country{Hungary}                   %% \country is recommended
+  \country{Hungary}
 }
-\email{kovacsandras@inf.elte.hu}         %% \email is recommended
+\email{kovacsandras@inf.elte.hu}
+
+\author{Ambrus Kaposi}
+\orcid{0000-0001-9897-8936}
+\affiliation{
+  %% \department{Department of Programming Languages and Compilers}
+  \institution{E{\"o}tv{\"o}s Lor{\'a}nd University}
+  \city{Budapest}
+  \country{Hungary}
+}
+\email{akaposi@inf.elte.hu}
 
 
 %% Abstract
@@ -304,9 +306,7 @@ A prime motivation of the current work is to further develop QIITs as a
 framework for the metatheory of type theories, to cover more theories and
 support more applications. To this end, we extend the syntax and semantics of
 QIITs as previously described in the literature \cite{kaposi2019constructing,
-  qiits, dijkstra2017quotient}.
-
-
+  qiits, dijkstra2017quotient}, with the following features.
 
 %% Whereas the initial category can be given by first defining the type of objects
 %% (the empty type) and then defining morphisms separately, for an initial model of
@@ -713,9 +713,7 @@ with the following components:
     a type in any context. Clairambault and Dybjer called constant families
     ``democracy'' in \cite{clairambault2014biequivalence}.
 \end{enumerate}
-\end{definition}
-
-\begin{definition} We abbreviate the additional structure on CwFs consisting of $\Sigma$, $\Id$ and
+We abbreviate the additional structure on CwFs consisting of $\Sigma$, $\Id$ and
 $\Kfam$ as \emph{fl-structure}.
 \end{definition}
 
@@ -732,10 +730,41 @@ Given $\bGamma : \flCwF_i$, we have the following predicate on contexts:
 \end{alignat*}
 \end{definition}
 
-In the categorical semantics for a concrete signature, this informally means
-that an algebra supports induction if for any dependent algebra over it (which
-is a bundle of induction motives and methods), there is a dependent morphism
-into it (which is a bundle of eliminator functions and their $\beta$-rules).
+For an example, if we interpret $\mathsf{\NatSig}$ in the $\bM$ model, we get an
+flCwF of natural number algebras, where $\Con$ is the type of algebras and
+$\Sub\,\Gamma\,\Delta$ is the type of homomorphisms between $\Gamma$ and
+$\Delta$ algebras. $\Ty$ is the type of displayed algebras, and $\Tm$ is the
+type of their sections:
+\begin{alignat*}{3}
+  & \Ty\,(N,\,z,\,s) \equiv(N^D : N \to \Set)\\ & \hspace{2em}\times (N^D\,z)
+  \times ((n : N)\to N^D\,n \to N^D(s\,n))\\ &
+  \Tm\,(N,\,z,\,s)\,(N^D,\,z^D,\,s^D) \equiv (N^S : (n : N)\to
+  N^D\,n)\\ & \hspace{2em}\times (N^S\,z = z^D)\times ((n : N) \to N^S\,(s\,n) =
+  s^D\,n\,(N^S\,n))
+\end{alignat*}
+Thus, for natural number algebras, $\Inductive$ is exactly the predicate which
+holds when an algebra supports induction.
+
+%% $\Inductive$ can be viewed as a
+%% dependently typed analogue of initiality: an algebra $\Gamma$ is inductive if
+%% for every dependent algebra $A : \Ty\,\Gamma$ over it there is a dependent
+%% morphism from $\Gamma$ to $A$, given as an element of $\Tm\,\Gamma\,A$.
+
+%% For some $(N,\,z,\,s)$ algebra,
+%% $\Ty\,(N,\,z,\,s)$ is defined as $(N^P : N \to \Set)\times N^P\,z \times ((n :
+%% N)\to N^P\,n \to N^P(s\,n))$, the type of displayed algebras, and
+%% $\Tm\,(N,\,z,\,s)\,(N^P,\,z^P,\,s^P)$ is $(N^S : (n : N)\to N^P\,n) \times (N^S\,z = z^P)
+%% \times ((n : N) \to N^S\,(s\,n) = s^P\,(N^S\,n))$.
+
+%% Here, $\Con_{\bGamma}$ is the type of algebras for some signature, e.g.\ the
+%% type of natural number algebras in the case of
+%% $\mathsf{NatSig}$. $\Ty_{\bGamma}\,\Gamma$ is a displayed algebra over a
+%% concrete algebra
+
+%% In the categorical semantics for a concrete signature, this informally means
+%% that an algebra supports induction if for any dependent algebra over it (which
+%% is a bundle of induction motives and methods), there is a dependent morphism
+%% into it (which is a bundle of eliminator functions and their $\beta$-rules).
 
 \begin{theorem}[Equivalence of initiality and induction, c.f. \cite{kaposi2019constructing}]\label{thm:initialind}
 An object $\Gamma : \Con_{\bGamma}$ supports induction if and only if it is
@@ -1370,7 +1399,7 @@ In the following, we will need three model fragments of $\bM$, which can be used
 to compute notions of algebras, displayed algebras and sections respectively for
 each syntactic signature. This is a rephrasing of the $\blank^{\A}$,
 $\blank^{\D}$ and $\blank^{\S}$ interpretations in
-\cite{kaposi2019constructing}.
+\cite{kaposi2019constructing}, where they are discussed at more length.
 
 \begin{definition}[The $\Set$ model of $\ToS$] For each $i$ and $j$, we have $\bA : \ToS_{\max(i+1, j)+1, j}$, which can be given by restricting the $\bM_{i,j}$ model
 of Section \ref{sec:semantics} so that we only have the first $\Con$ components
