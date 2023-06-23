@@ -460,26 +460,48 @@ Goal : iso (F (Id t u)) (Id (F t) (F u))
   fro : Tm (F Γ ▶ Id (F t) (F u)) (F (Id t u))[p]
 
     transp : (P : Ty (Γ ▶ A)) → Tm Γ (Id t u) → Tm Γ P[id, t] → Tm Γ P[id, u]
+
     q : Tm (F Γ ▶ Id (F t) (F u)) (Id (F t [p]) (F u [p]))
 
-    fro := transp (F (Id (A[p]) (u[p]) q) [F▶⁻¹∘(p², q)]) q (F(refl u)[p])
+    fro := transp (F (Id (A[p]) (t[p]) q) [F▶⁻¹∘(p², q)]) q (F(refl t)[p])
 
     or without transp, by reflect:
-    fro := F (refl u)[p]
+    fro := F (refl t)[p]
+
+    Explaining the typing of the transport:
+
+    refl t         : Tm Γ (Id t t)
+    F (refl t)     : Tm (F Γ) (F (Id t t))
+    F (refl t) [p] : Tm (F Γ ▶ Id (F t) (F u)) (F (Id t t) [p])
+
+    Computing the transport target type:
+
+    F (Id (t[p]) q) [F▶⁻¹∘(p², q)])[id, F u [p]]
+    F (Id (t[p]) q) [F▶⁻¹∘(p², q) ∘ (id, F u [p])]
+    F (Id (t[p]) q) [F▶⁻¹∘(p, F u [p])]
+    F (Id (t[p]) q) [F▶⁻¹∘(id∘p, F u [p])]
+    F (Id (t[p]) q) [F▶⁻¹∘(id, F u)∘p]
+    F (Id (t[p]) q) [F▶⁻¹∘(F id, F u)∘p]
+    F (Id (t[p]) q) [F (id, u)∘p]
+    (F (Id (u[p]) q) [F (id, t)]) [p]
+    F (Id (u[p]) q [id, t]) [p]
+    F (Id u t) [p]
+
+    Likewise, the transp source type computes to (F (Id t t) [p]), aligning
+    with the type of F (refl t) [p]
 
 
   to[p, fro] = q : Tm (F Γ ▶ Id (F t) (F u)) (Id (F t [p]) (F u [p]))
-  refl (F t [p])[p, F (refl u)[p]]
-  refl (F t [p]) = q
   OK by UIP
 
-  fro[p, to] = q : Tm (F Γ ▶ F (Id t u)) (F (Id t u))[p]
-  F (refl u)[p] = q : Tm (F Γ ▶ F (Id t u)) (F (Id t u))[p]
-  F (refl u)[p ∘ F▶] = q[F▶] : Tm (F (Γ ▶ Id t u)) (F (Id t u))[p ∘ F▶]
-  F (refl u)[F p] = F q : Tm (F (Γ ▶ Id t u)) (F (Id t u))[F p]
-  F (refl u[p]) = F q : Tm (F (Γ ▶ Id t u)) (F (Id t u))[F p]
-  by UIP and (ap F)
-  OK
+
+  fro[p, to] = q                 : Tm (F Γ ▶ F (Id t u)) (F (Id t u))[p]
+  F (refl t)[p] = q              : Tm (F Γ ▶ F (Id t u)) (F (Id t u))[p]
+  F (refl t)[F p ∘ F▶] = Fq [F▶] : Tm (F (Γ ▶ Id t u)) (F (Id t u))[F p ∘ F▶]
+  F (refl t)[F p] = F q          : Tm (F (Γ ▶ Id t u)) (F (Id t u))[F p]
+  F (refl t[p]) = F q            : Tm (F (Γ ▶ Id t u)) (F (Id t u))[F p]
+  refl t[p] = q                  : Tm (Γ ▶ Id t u) (Id t[p] u[p])
+  OK by UIP
 
 
   Goal : F (refl t) = FId⁻¹[id, refl (F t)]
