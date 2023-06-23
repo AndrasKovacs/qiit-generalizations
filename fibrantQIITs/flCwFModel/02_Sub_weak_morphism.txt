@@ -476,7 +476,7 @@ Goal : iso (F (Id t u)) (Id (F t) (F u))
 
     Computing the transport target type:
 
-    F (Id (t[p]) q) [F▶⁻¹∘(p², q)])[id, F u [p]]
+    (F (Id (t[p]) q) [F▶⁻¹∘(p², q)])[id, F u [p]]
     F (Id (t[p]) q) [F▶⁻¹∘(p², q) ∘ (id, F u [p])]
     F (Id (t[p]) q) [F▶⁻¹∘(p, F u [p])]
     F (Id (t[p]) q) [F▶⁻¹∘(id∘p, F u [p])]
